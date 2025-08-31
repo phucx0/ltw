@@ -78,12 +78,8 @@ document.querySelectorAll('.showtime-item').forEach(item => {
         let board = popup.querySelector("#board");
         let closePopup = popup.querySelector("#close-popup-btn");
         if (!board) return;
-        ctx = board.getContext("2d");
-
-        configBoard(board);
-
-        load_seat();
-        draw();
+        const canvas = new Board(board);
+        canvas.init();
 
         closePopup.addEventListener('click', () => {
             popup.classList.remove("show");
@@ -91,87 +87,5 @@ document.querySelectorAll('.showtime-item').forEach(item => {
             document.body.removeChild(popup);
         })
 
-
-        // === PC: Pan bằng chuột ===
-        board.addEventListener("mousedown", e => {
-            isDragging = true;
-            startX = e.clientX - offsetX;
-            startY = e.clientY - offsetY;
-        });
-
-        board.addEventListener("mousemove", e => {
-            if (isDragging) {
-                offsetX = e.clientX - startX;
-                offsetY = e.clientY - startY;
-                // limitPan();
-                console.log(`${offsetX} - ${offsetY}`);
-                draw();
-            }
-        });
-
-        board.addEventListener("mouseup", () => isDragging = false);
-        board.addEventListener("mouseleave", () => isDragging = false);
-
-
-        // === Mobile: Pan bằng 1 ngón ===
-        board.addEventListener("touchstart", e => {
-            if (e.touches.length === 1) {
-                isDragging = true;
-                startX = e.touches[0].clientX - offsetX;
-                startY = e.touches[0].clientY - offsetY;
-            }
-        }, { passive: false });
-
-        board.addEventListener("touchmove", e => {
-            if (e.touches.length === 1 && isDragging) {
-                e.preventDefault();
-                offsetX = e.touches[0].clientX - startX;
-                offsetY = e.touches[0].clientY - startY;
-                // limitPan();
-                draw();
-            }
-        }, { passive: false });
-
-        board.addEventListener("touchend", e => {
-            if (e.touches.length === 0) isDragging = false;
-        });
-
-        // Zoom bằng cuộn chuột
-        board.addEventListener("wheel", e => {
-            e.preventDefault();
-            const zoomIntensity = 0.1;
-
-            if (e.deltaY < 0) {
-                // zoom in
-                scale *= 1 + zoomIntensity;
-            } else {
-                // zoom out
-                scale *= 1 - zoomIntensity;
-            }
-
-            // Giới hạn
-            scale = Math.min(Math.max(scale, minScale), maxScale);
-
-            draw();
-        });
-
-        board.addEventListener("click", e => {
-            const rect = board.getBoundingClientRect();
-            const mx = e.clientX - rect.left;
-            const my = e.clientY - rect.top;
-
-            // 🔑 quy đổi về tọa độ logic
-            const lx = (mx - offsetX) / scale;
-            const ly = (my - offsetY) / scale;
-
-            blocks.forEach(block => {
-                if (block.contains(lx, ly)) {
-                    block.selected = !block.selected;
-                    console.log(`${block.label} - ${block.selected}`);
-                }
-            });
-
-            draw();
-        });
     })
 })
