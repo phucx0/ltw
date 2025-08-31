@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]emp/
+[Dd]ebug/
+[Rr]elease/
+
+# Publish
+*.Publish.xml
+*.pubxml
+*.pubxml.user
+
+# Others
+*.cache
+*.pdb

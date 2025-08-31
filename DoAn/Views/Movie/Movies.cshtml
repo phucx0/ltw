@@ -1,0 +1,189 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Movie list page";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie/movies.css" asp-append-version="true" />
+}
+
+<section>
+    <h2 class="trending-movies-title">Phim nổi bật</h2>
+    <div class="trending-movies-list">
+        <div class="carousel"></div>
+        <div class="carousel-controls">
+            <div class="prev-btn">
+                <i class="bi bi-chevron-left text-white"></i>
+            </div>
+            <div class="next-btn">
+                <i class="bi bi-chevron-right text-white"></i>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="schedule-bar">
+        <div class="schedule-bar__update">
+            <span>Mới cập nhật</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ hai</span>
+            <span class="schedule-bar__date">21/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ ba</span>
+            <span class="schedule-bar__date">22/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ tư</span>
+            <span class="schedule-bar__date">23/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ năm</span>
+            <span class="schedule-bar__date">24/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ sáu</span>
+            <span class="schedule-bar__date">25/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Thứ bảy</span>
+            <span class="schedule-bar__date">26/08</span>
+        </div>
+        <div class="schedule-bar__day">
+            <span class="schedule-bar__weekday">Chủ nhật</span>
+            <span class="schedule-bar__date">27/08</span>
+        </div>
+    </div>
+    <div class="d-flex flex-column gap-4">
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="movies-title">Phim đang chiếu</div>
+                <div class="text-white">Xem thêm</div>
+            </div>
+            <div class="movies-list">
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0286bee315b92d4073efb8d2ffe6cd44.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0bb03a04fa6077fd6eee216237a51f49.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/2e2ce28a624e610548120faa0034e847.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0c561169c7cc7274a115122fed22273f.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/400-0/8caaf8685432ce8f5ed66ec74f724e33.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/400-0/f0591f308a48964ddde38e7b0eb6ab34.png" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="movies-title">Phim sắp chiếu</div>
+                <div class="text-white">Xem thêm</div>
+            </div>
+            <div class="movies-list">
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0286bee315b92d4073efb8d2ffe6cd44.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0bb03a04fa6077fd6eee216237a51f49.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/2e2ce28a624e610548120faa0034e847.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/300-0/0c561169c7cc7274a115122fed22273f.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/400-0/8caaf8685432ce8f5ed66ec74f724e33.jpg" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="movie-item">
+                    <div class="movie-thumbnail">
+                        <img src="https://static.nutscdn.com/vimg/400-0/f0591f308a48964ddde38e7b0eb6ab34.png" alt="">
+                        <div class="movie-info">
+                            <span class="movie-name">Tên phim</span>
+                            <span class="movie-author">Phúc dz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/movies.js" asp-append-version="true"></script>
+}

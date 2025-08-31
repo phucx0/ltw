@@ -1,0 +1,124 @@
+﻿::-webkit-scrollbar {
+    display: none;
+}
+
+html, body {
+    background-color: #0B0B0B;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+section, .section-padding {
+    width: 65%;
+    padding: 100px 0px 40px 0px;
+    margin: 0 auto;
+}
+
+header {
+    background-color: #0000002c;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+    padding: 12px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content {
+    margin: 0 auto;
+    width: 65%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-container {
+    /* background-color: #4d4d4d50;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); */
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    /* padding: 8px 8px 8px 32px; */
+    border-radius: 100px;
+}
+
+    .navbar-container a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: white;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .navbar-container .login-btn {
+        background-color: #E50914;
+        padding: 12px 24px;
+        border-radius: 60px;
+        font-weight: bold;
+    }
+
+    .navbar-container .logout-btn {
+        background-color: #f0f0f0;
+        padding: 12px 24px;
+        border-radius: 60px;
+        font-weight: bold;
+    }
+
+
+/* Footer */
+footer {
+    background-color: #0B0B0B;
+    width: 65%;
+    margin: 0 auto;
+    padding-bottom: 140px;
+}
+
+.footer-link-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+    .footer-link-wrapper ul, li {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .footer-link-wrapper a {
+        color: #b7b7b7;
+    }
+
+@media (max-width: 768px) {
+    section, .section-padding {
+        width: 95%;
+    }
+    /* header - mobile */
+    .header-content {
+        width: 95%;
+    }
+
+    .navbar-container {
+        display: none;
+    }
+
+    /* footer - mobile */
+    footer {
+        width: 95%;
+    }
+
+    .footer-link-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}

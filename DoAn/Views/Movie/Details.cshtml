@@ -1,0 +1,171 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Movie details page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/movie/seats.css" asp-append-version="true" />
+}
+
+<div class="hero-section">
+    <div class="movie-image-bg"></div>
+    <div class="movie-info">
+        <div class="movie-info-right">
+            <img class="movie-poster" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABZTJNQKDYRLblc8AhNAn-siYAg318qqESrrM_x-WCmcB1R0l4WAqBkgRyon18hRLW5NQjPOVMULDzAF-eQ_PBhQ5MD_-_YSYeqSAIN8YTCmGORDEla6Bodr5ImBiBAvZUuRc.webp?r=0e7" alt="">
+            <div class="movie-info-content">
+                <!-- <div>16+</div> -->
+                <!-- <div class="movie-name">Tên phim</div> -->
+                <img class="movie-name-image" width="500" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/S4oi7EPZbv2UEPaukW54OORa0S8/AAAABQz4MR6j_-z0wc04tstAaUkTqi5jcqabP8DK-tAU4S8jiVMOD8GyyW0vpf43cCUe22_uEK9RT6ORHfr4ZNuseX9vAPeHGvR3Lg.webp?r=c40" alt="">
+                <div class="movie-genres">
+                    <p class="movie-genres-item">Kinh dị</p>
+                    <p class="movie-genres-item">Bí ẩn</p>
+                    <p class="movie-genres-item">Bí ẩn</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <i class="bi bi-clock"></i>
+                    <div>2 giờ 30 phút</div>
+                </div>
+                <button class="play-trailer-btn">
+                    <span><i class="bi bi-play-fill text-white"></i></span>
+                    <span>Xem trailer</span>
+                </button>
+                <div class="movie-description-wrapper">
+                    <div class="movie-description">Khi năm người bạn vô tình gây ra một vụ tai nạn xe hơi chết người, họ quyết định che giấu và lập một giao ước giữ bí mật thay vì phải đối mặt với hậu quả. Một năm sau, quá khứ trở lại ám ảnh họ, buộc họ phải đối diện với một sự thật khủng khiếp: có ai đó biết những gì họ đã làm vào mùa hè năm ngoái… và quyết tâm trả thù họ. Khi từng người trong nhóm bị một kẻ sát nhân truy đuổi, họ phát hiện ra rằng điều này đã xảy ra trước đây, và họ tìm đến hai người sống sót từ vụ thảm sát huyền thoại ở Southport năm 1997 để cầu cứu.</div>
+                    <button class="toggle-btn">Xem thêm</button>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="movie-info-left"></div> -->
+    </div>
+</div>
+<section>
+    <div class="cinema-layout">
+        <div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="fs-3 fw-bold text-white ">Lịch chiếu</div>
+                <div class="d-flex gap-2 text-white ">
+                    <i class="bi bi-geo-alt"></i>
+                    <div>Hồ Chí Minh</div>
+                </div>
+            </div>
+            <div class="day-list my-4">
+                <div class="day">T2 - 21/08</div>
+                <div class="day">T3 - 21/08</div>
+                <div class="day">T4 - 21/08</div>
+                <div class="day">T5 - 21/08</div>
+                <div class="day">T6 - 21/08</div>
+                <div class="day">T7 - 21/08</div>
+                <div class="day">CN - 21/08</div>
+            </div>
+            <div class="fs-3 fw-bold text-white">Các rạp</div>
+            <div class="text-white cinema-list">
+                <div class="cinema-wrapper d-flex flex-column gap-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="cinema-info d-flex gap-2">
+                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
+                            <div>
+                                <div class="fw-bold cinema-name">Tên rạp</div>
+                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
+                            </div>
+                        </div>
+                        <div class="show-cinema-toggle">
+                            <i class="bi bi-chevron-up"></i>
+                        </div>
+                    </div>
+                    <div class="showtime-list">
+                        <div class="showtime-item">18:00 ~ 20:00</div>
+                        <div class="showtime-item">20:00 ~ 22:00</div>
+                        <div class="showtime-item">22:00 ~ 24:00</div>
+                    </div>
+                </div>
+                <div class="cinema-wrapper d-flex flex-column gap-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="cinema-info d-flex gap-2">
+                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
+                            <div>
+                                <div class="fw-bold cinema-name">Tên rạp</div>
+                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
+                            </div>
+                        </div>
+                        <div class="show-cinema-toggle">
+                            <i class="bi bi-chevron-up"></i>
+                        </div>
+                    </div>
+                    <div class="showtime-list">
+                        <div class="showtime-item">18:00 ~ 20:00</div>
+                        <div class="showtime-item">20:00 ~ 22:00</div>
+                        <div class="showtime-item">22:00 ~ 24:00</div>
+                    </div>
+                </div>
+                <div class="cinema-wrapper d-flex flex-column gap-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="cinema-info d-flex gap-2">
+                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
+                            <div>
+                                <div class="fw-bold cinema-name">Tên rạp</div>
+                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
+                            </div>
+                        </div>
+                        <div class="show-cinema-toggle">
+                            <i class="bi bi-chevron-up"></i>
+                        </div>
+                    </div>
+                    <div class="showtime-list">
+                        <div class="showtime-item">18:00 ~ 20:00</div>
+                        <div class="showtime-item">20:00 ~ 22:00</div>
+                        <div class="showtime-item">22:00 ~ 24:00</div>
+                    </div>
+                </div>
+                <div class="cinema-wrapper d-flex flex-column gap-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="cinema-info d-flex gap-2">
+                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
+                            <div>
+                                <div class="fw-bold cinema-name">Tên rạp</div>
+                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
+                            </div>
+                        </div>
+                        <div class="show-cinema-toggle">
+                            <i class="bi bi-chevron-up"></i>
+                        </div>
+                    </div>
+                    <div class="showtime-list">
+                        <div class="showtime-item">18:00 ~ 20:00</div>
+                        <div class="showtime-item">20:00 ~ 22:00</div>
+                        <div class="showtime-item">22:00 ~ 24:00</div>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <div class="fs-3 fw-bold text-white">Bình luận</div>
+                <div class="mt-2">
+                    <input class="comment-input" type="text" placeholder="Viết nhận xét">
+                </div>
+            </div>
+        </div>
+        <div class="text-white">
+            <div class="fs-3 fw-bold text-white ">Phim đang chiếu</div>
+            <div class="movie-list">
+                <div class="movie">
+                    <img src="../images/100.jpg" loading="lazy" alt="">
+                    <div>
+                        <div class="fw-bold">Tên phim</div>
+                        <div>
+                            <div>Kịch tính</div>
+                            <div>Bí ẩn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/details.js" asp-append-version="true"></script>
+    <script src="~/js/seats.js" asp-append-version="true"></script>
+}

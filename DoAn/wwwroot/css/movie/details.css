@@ -1,0 +1,255 @@
+﻿.hero-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+
+.movie-image-bg {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    filter: brightness(80%);
+    background-image: url("https://occ-0-58-64.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABfFad_ad9UMvks1cdmzaKZ4Oo3Pq7UnGeye3EOtCbnSSr3_nIP6_vqo3oYRyx6GosUoJ5rtYsjs0NsH6hma7p3TxtQ6XItzntOxD.webp?r=0be");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+    .movie-image-bg::before {
+        content: "";
+        position: absolute;
+        inset: 0px;
+        z-index: 2;
+        background: linear-gradient(40deg, rgb(22, 22, 22) 24.16%, rgba(6, 10, 23, 0) 56.61%), linear-gradient(0deg, rgb(22, 22, 22) 3.91%, rgba(6, 10, 23, 0) 69.26%);
+    }
+
+.movie-info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    color: white;
+    /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    align-items: center; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* margin: 0 auto; */
+}
+
+.movie-info-right {
+    width: 65%;
+    height: fit-content;
+    display: flex;
+    justify-content: start;
+    gap: 24px;
+    /* margin: 0 auto; */
+    /* height: auto; */
+}
+
+.movie-poster {
+    width: 280px;
+    height: 375px;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.movie-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+}
+
+.movie-name {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.play-trailer-btn {
+    background-color: rgb(240, 40, 40);
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.movie-description {
+    margin-top: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* số dòng hiển thị */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+    color: rgb(218, 218, 218);
+}
+
+    .movie-description.expanded {
+        -webkit-line-clamp: unset; /* bỏ giới hạn dòng */
+    }
+
+.toggle-btn {
+    /* margin-top: 8px; */
+    border: none;
+    background: none;
+    color: #ffd000;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
+}
+
+.movie-genres {
+    display: flex;
+    gap: 8px;
+}
+
+.movie-genres-item {
+    padding: 4px 8px;
+    background-color: black;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+    .movie-genres-item:hover {
+        color: rgb(255, 239, 18);
+    }
+
+
+/*  */
+.cinema-layout {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    gap: 64px;
+}
+
+.cinema-list {
+    display: flex;
+    flex-direction: column;
+    /* gap: 16px; */
+}
+
+.cinema-wrapper {
+    border-bottom: 1px solid rgb(136, 136, 136);
+    padding: 24px 0;
+}
+
+    .cinema-wrapper:last-child {
+        border-bottom: none;
+    }
+
+.cinema-logo {
+    width: 70px;
+    height: 70px;
+}
+
+.cinema-name {
+    font-size: 16px;
+}
+
+.cinema-address {
+    font-size: 13px;
+}
+
+.day-list, .showtime-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.showtime-item, .day {
+    font-size: 13px;
+    border: 1px solid #2192fc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: #2192fc;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+    .showtime-item:hover, .day:hover {
+        /* border: 1px solid white; */
+        background-color: #0084FF;
+        color: white;
+    }
+
+.show-cinema-toggle {
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.cinema-wrapper.collapsed .showtime-list {
+    display: none;
+}
+
+.cinema-wrapper.expanded .show-cinema-toggle {
+    transform: rotate(180deg);
+}
+
+/* COLUM 2 - cinema layout */
+.movie-list {
+    margin-top: 24px;
+}
+
+.movie {
+    display: flex;
+    gap: 16px;
+}
+
+/* Comment */
+
+.comment-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 100%;
+    }
+
+    .movie-image-bg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .movie-info-right {
+        display: grid;
+        grid-template-columns: 40% 60%;
+        gap: 16px;
+        width: 90%;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: auto;
+    }
+
+    .movie-name-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .cinema-layout {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewData["Title"] = "Landing page";
+}
+
+<section class="hero-section">
+    <div class="hero-section-content">
+        <p class="fw-bold text-white slogan">“Trải nghiệm điện ảnh <br />đỉnh cao ngay hôm nay”</p>
+        <p class="text-white">Xem trailer, chọn ghế, thanh toán nhanh chóng.</p>
+        <a href="@Url.Action("Movies", "Movie")">
+            <button class="buy-btn">Đặt vé ngay</button>
+        </a>
+    </div>
+</section>
+<section class="trending-section">
+    <div class="d-flex align-items-center justify-content-between">
+        <p class="text-white fs-2 fw-bold">Hiện đang thịnh hành</p>
+        <p class="text-white">Xem thêm</p>
+    </div>
+    <div class="carousel">
+        <div class="poster-film">
+            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
+        </div>
+        <div class="poster-film">
+            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
+        </div>
+        <div class="poster-film">
+            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
+        </div>
+        <div class="poster-film">
+            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
+        </div>
+        <div class="poster-film">
+            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
+        </div>
+    </div>
+</section>
+<section class="feature-section">
+    <div class="feature-wrapper">
+        <div class="col-md-4 d-flex flex-column align-items-center">
+            <div class="feature-circle">
+                <i class="bi bi-calendar text-white fs-4"></i>
+            </div>
+            <p class="feature-title">Đặt vé dễ dàng</p>
+            <p class="fs-6 text-white">Chọn phim, chọn ghế và thanh toán chỉ trong vài phút</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center">
+            <div class="feature-circle">
+                <i class="bi bi-geo-alt text-white fs-4"></i>
+            </div>
+            <p class="feature-title">Nhiều rạp phim</p>
+            <p class="fs-6 text-white">Hệ thống rạp phim trên toàn quốc với chất lượng cao</p>
+        </div>
+        <div class="col-md-4 d-flex flex-column align-items-center">
+            <div class="feature-circle">
+                <i class="bi bi-star text-white fs-4"></i>
+            </div>
+            <p class="feature-title">Ưu đãi hấp dẫn</p>
+            <p class="fs-6 text-white">Nhiều chương trình khuyến mãi và ưu đãi đặc biệt</p>
+        </div>
+    </div>
+</section>
+<section>
+    <p class="text-white fs-2 fw-bold mb-4">Lý do nên đặt vé online</p>
+    <div class="reason-card-wrapper">
+        <div class="reason-card">
+            <p class="reason-card-title">Tiện lợi đặt vé mọi lúc, mọi nơi</p>
+            <p class="reason-card-content">Đặt vé dễ dàng chỉ với vài cú nhấp chuột, không cần xếp hàng chờ đợi.</p>
+        </div>
+        <div class="reason-card">
+            <p class="reason-card-title">Chọn ghế yêu thích trước</p>
+            <p class="reason-card-content">Xem sơ đồ rạp trực tuyến, đặt ngay chỗ ngồi đẹp nhất cho trải nghiệm trọn vẹn.</p>
+        </div>
+        <div class="reason-card">
+            <p class="reason-card-title">Thanh toán an toàn, nhanh chóng</p>
+            <p class="reason-card-content">Hỗ trợ nhiều hình thức thanh toán trực tuyến, xác nhận vé ngay sau khi đặt.</p>
+        </div>
+        <div class="reason-card">
+            <p class="reason-card-title">Đa dạng rạp chiếu</p>
+            <p class="reason-card-content">Hệ thống liên kết nhiều rạp lớn nhỏ, thoải mái chọn địa điểm và suất chiếu phù hợp.</p>
+        </div>
+    </div>
+</section>
+<section>
+    <h2 class="text-white fs-2 fw-bold mb-4">Câu hỏi thường gặp</h2>
+    <div class="faq-wrapper">
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Tôi có thể chọn chỗ ngồi khi đặt vé không?</span>
+                <i class="bi bi-plus-lg text-white fs-4 faq-toggle"></i>
+            </div>
+            <div class="faq-answer">
+                <span>Có. Bạn có thể xem sơ đồ rạp và chọn ghế yêu thích ngay trong quá trình đặt vé.</span>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Nếu tôi không nhận được email/xác nhận vé thì sao?</span>
+                <i class="bi bi-plus-lg text-white fs-4 faq-toggle"></i>
+            </div>
+            <div class="faq-answer">
+                <span>Vui lòng kiểm tra trong mục Spam/Quảng cáo của email. Nếu vẫn chưa có, liên hệ hotline hỗ trợ khách hàng để được cấp lại mã vé.</span>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Tôi có thể đặt vé cho nhiều rạp khác nhau trên cùng hệ thống không?</span>
+                <i class="bi bi-plus-lg text-white fs-4 faq-toggle"></i>
+            </div>
+            <div class="faq-answer">
+                <span>Có. Bạn có thể chọn bất kỳ rạp nào liên kết trong hệ thống và đặt vé nhanh chóng trên cùng một website.</span>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Sau khi đặt vé, làm thế nào để nhận vé?</span>
+                <i class="bi bi-plus-lg text-white fs-4 faq-toggle"></i>
+            </div>
+            <div class="faq-answer">
+                <span>Sau khi thanh toán thành công, bạn sẽ nhận mã QR hoặc mã đặt vé qua email/SMS. Chỉ cần quét mã tại quầy là vào rạp.</span>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="text-center">
+    <p class="text-white">Ready to watch? Enter your email to create or restart your membership.</p>
+    <div class="d-flex gap-2 mt-3">
+        <input class="email-input" placeholder="Email address" />
+        <button class="get-started-btn">Get Started</button>
+    </div>
+</section>
