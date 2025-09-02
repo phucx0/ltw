@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace DoAn.Controllers
 {
@@ -18,9 +19,14 @@ namespace DoAn.Controllers
                 if (email == "admin@gmail.com" && password == "123")
                 {
                     TempData["Message"] = "Đăng nhập thành công!";
+                    Response.Cookies.Append("UserEmail", email, new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(7),
+                        HttpOnly = true
+                    });
                     return RedirectToAction("Index", "Home");
                 }
-                ViewBag.Error = "Sai tài khoản hoặc mật khẩu!";
+                ViewBag.Error = "Sai email hoặc mật khẩu!";
                 return View();
             }
             ViewBag.Error = "Không đúng định dạng email";
@@ -43,6 +49,14 @@ namespace DoAn.Controllers
             }
             //TempData["Message"] = "Đăng ký thành công!";
             return RedirectToAction("Index", "Home");
+        }
+
+        // GET: /Auth/Logout
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("UserEmail"); // xoá cookie
+            return RedirectToAction("Login");
         }
     }
 }
