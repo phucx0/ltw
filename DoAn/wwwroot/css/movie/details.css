@@ -1,7 +1,9 @@
-﻿.hero-section {
+﻿.movie-content-wrapper {
     position: relative;
     width: 100%;
     height: 100vh;
+
+    overflow: hidden;
 }
 
 
@@ -17,26 +19,21 @@
     z-index: 1;
 }
 
-    .movie-image-bg::before {
-        content: "";
-        position: absolute;
-        inset: 0px;
-        z-index: 2;
-        background: linear-gradient(40deg, rgb(22, 22, 22) 24.16%, rgba(6, 10, 23, 0) 56.61%), linear-gradient(0deg, rgb(22, 22, 22) 3.91%, rgba(6, 10, 23, 0) 69.26%);
-    }
+.movie-image-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    z-index: 2;
+    background: linear-gradient(40deg, rgb(22, 22, 22) 24.16%, rgba(6, 10, 23, 0) 56.61%), linear-gradient(0deg, rgb(22, 22, 22) 3.91%, rgba(6, 10, 23, 0) 69.26%);
+}
 
 .movie-info {
     position: absolute;
-    bottom: 0;
+    bottom: 32px;
     width: 100%;
-    height: 100%;
+    height: auto;
     z-index: 10;
     color: white;
-    /* display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-content: center;
-    align-items: center; */
-
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,23 +61,25 @@
 .movie-info-content {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     align-items: start;
 }
 
 .movie-name {
-    font-size: 24px;
+    font-size: var(--text-4xl);
     font-weight: bold;
 }
-
+.time {
+    font-size: var(--text-md);
+}
 .play-trailer-btn {
     background-color: rgb(240, 40, 40);
     border: none;
     border-radius: 8px;
     outline: none;
     color: white;
-    padding: 12px 24px;
-    font-size: 14px;
+    padding: 12px 16px;
+    font-size: var(--text-md);
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -96,11 +95,13 @@
     text-overflow: ellipsis;
     transition: all 0.3s ease;
     color: rgb(218, 218, 218);
+
+    font-size: var(--text-lg);
 }
 
-    .movie-description.expanded {
-        -webkit-line-clamp: unset; /* bỏ giới hạn dòng */
-    }
+.movie-description.expanded {
+    -webkit-line-clamp: unset; /* bỏ giới hạn dòng */
+}
 
 .toggle-btn {
     /* margin-top: 8px; */
@@ -125,9 +126,9 @@
     cursor: pointer;
 }
 
-    .movie-genres-item:hover {
-        color: rgb(255, 239, 18);
-    }
+.movie-genres-item:hover {
+    color: rgb(255, 239, 18);
+}
 
 
 /*  */
@@ -219,37 +220,54 @@
     outline: none;
     color: white;
 }
+@media (max-width: 1200px) {
+    .movie-info {
+        bottom: 32px;
+    }
+}
 
 @media (max-width: 768px) {
-    .hero-section {
-        height: 100%;
+    .movie-content-wrapper {
+        aspect-ratio: 16 / 9;
+        height: auto;
     }
-
     .movie-image-bg {
         width: 100%;
         height: 100%;
     }
-
+    .movie-info {
+        top: 0;
+        bottom: auto;
+    }
     .movie-info-right {
-        display: grid;
-        grid-template-columns: 40% 60%;
-        gap: 16px;
-        width: 90%;
-        margin: 0 auto;
-        overflow: hidden;
+        margin-top: 16px;
+        width: 95%;
+        gap: 0;
     }
 
     .movie-poster {
-        width: 100%;
-        height: auto;
+/*        width: 100%;
+        height: auto;*/
+        display: none;
     }
 
     .movie-name-image {
         width: 100%;
         height: auto;
     }
+    .movie-description {
+        font-size: var(--text-md);
+    }
 
     .cinema-layout {
         grid-template-columns: repeat(1, 1fr);
+    }
+
+    .play-trailer-btn{
+/*        font-size: 13px;*/
+    }
+
+    .movie-genres-item {
+        font-size: var(--text-xs);
     }
 }

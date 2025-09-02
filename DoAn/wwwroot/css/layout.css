@@ -24,12 +24,16 @@ header {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(10px);
     width: 100%;
-    position: fixed;
+/*    position: fixed;*/
     z-index: 100;
     padding: 12px 0px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.header-fixed {
+    position: fixed;
 }
 
 .header-content {
@@ -107,7 +111,7 @@ footer {
         padding: 40px 0;
     }
     /* header - mobile */
-    header {
+    .header-fixed {
         position: relative;
     }
     .header-content {

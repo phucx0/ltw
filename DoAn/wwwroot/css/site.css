@@ -1,4 +1,14 @@
 :root {
     --bg-primary: #0B0B0B;
-   
+
+    /* Font size */
+    --text-xs: 10px;
+    --text-sm: 12px;
+    --text-md: 14px;
+    --text-lg: 16px;
+    --text-xl: 18px;
+    --text-2xl: 20px;
+    --text-3xl: 24px;
+    --text-4xl: 28px;
+    --text-5xl: 32px;
 }
