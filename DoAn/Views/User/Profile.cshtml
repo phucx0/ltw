@@ -1,0 +1,63 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Profile";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/user/profile.css" asp-append-version="true" />
+}
+
+<div class="profile-container">
+    <!-- Header -->
+    <div class="profile-header">
+        <img src="https://imgs.search.brave.com/xuGTfXYuSalY6cchsDQSZT8OihBNvHJ4uGDrFxMhNfU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS12ZWN0/b3IvbWFuLWZhY2Ut/dmVjdG9yXzEwNzI4/NTctNzY0My5qcGc_/c2VtdD1haXNfaHli/cmlkJnc9NzQwJnE9/ODA" alt="Avatar">
+        <div>
+            <h2>Nguyễn Văn A</h2>
+            <p>Mã thành viên: <strong>MEM12345</strong></p>
+        </div>
+    </div>
+
+    <!-- Thành tích -->
+    <div class="profile-section">
+        <h3>Thành tích & Điểm</h3>
+        <p>Bạn đã tích lũy được <strong>1200 điểm</strong>. Hạng hiện tại: <strong>Vàng</strong></p>
+    </div>
+
+    <!-- Vé của tôi -->
+    <div class="profile-section">
+        <h3>Vé của tôi</h3>
+        <ul>
+            <li>Vé xem phim: Spider-Man (02/09/2025 - 19:00)</li>
+            <li>Vé xem phim: Avatar 2 (15/08/2025 - 20:30)</li>
+        </ul>
+        <a href="#" class="btn">Xem tất cả vé</a>
+    </div>
+
+    <!-- Ưu đãi -->
+    <div class="profile-section">
+        <h3>Ưu đãi</h3>
+        <ul>
+            <li>Giảm 20% cho thành viên hạng Vàng</li>
+            <li>Tặng bắp rang miễn phí cho hóa đơn trên 200k</li>
+        </ul>
+    </div>
+
+    <!-- Thay đổi thông tin -->
+    <div class="profile-section">
+        <h3>Thay đổi thông tin</h3>
+        <a href="#" class="btn">Chỉnh sửa thông tin</a>
+    </div>
+
+    <!-- Lịch sử mua vé -->
+    <div class="profile-section">
+        <h3>Lịch sử mua vé</h3>
+        <ul>
+            <li>01/08/2025 - Inside Out 2 - 100.000đ</li>
+            <li>20/07/2025 - Fast & Furious 10 - 120.000đ</li>
+            <li>10/07/2025 - Minions - 80.000đ</li>
+        </ul>
+        <a href="#" class="btn">Xem thêm</a>
+    </div>
+</div>

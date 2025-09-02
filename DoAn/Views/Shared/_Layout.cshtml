@@ -14,7 +14,7 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <header>
+    @* <header>
         <div class="header-content">
             <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
                 <div class="logo text-white fw-bold fs-3">
@@ -31,7 +31,8 @@
                 </a>
             </div>
         </div>
-    </header>
+    </header> *@
+    <partial name="Components/_Header" />
     <div class="">
         <div role="main" class="">
             @RenderBody()
