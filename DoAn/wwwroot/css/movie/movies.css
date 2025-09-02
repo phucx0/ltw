@@ -1,8 +1,10 @@
 ﻿/* Trending movies section */
 .trending-movies-title {
     color: white;
+    font-size: 32px;
+    font-style: italic;
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 24px;
     font-weight: bold;
     background: linear-gradient(45deg, #F7D793, #ff9900);
     -webkit-background-clip: text;
@@ -220,6 +222,13 @@
 }
 
 @media (max-width: 768px) {
+    .trending-movie-name {
+        font-size: 16px;
+        text-wrap: nowrap;
+    }
+    .trending-movie-author {
+        font-size: 13px;
+    }
     .schedule-bar {
         grid-template-columns: repeat(4, 1fr);
     }

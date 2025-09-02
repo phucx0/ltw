@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+    ViewBag.Title = "Đăng nhập";
+}
+
+
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-title">Đăng nhập</div>
+
+        <form method="post" asp-action="Login" asp-controller="Auth" class="auth-form">
+            <div class="form-group">
+                <label class="">Email</label>
+                <input type="text" name="email" placeholder="Email" required class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="">Mật khẩu</label>
+                <input type="password" name="password" placeholder="Mật khẩu" required class="form-input" />
+            </div>
+            @if (ViewBag.Error != null)
+            {
+                <p style="color:red">@ViewBag.Error</p>
+            }
+            <button type="submit" class="login-btn">Đăng nhập</button>
+        </form>
+
+        <a href="Register" class="auth-link">Tạo tài khoản</a>
+    </div>
+</div>
+

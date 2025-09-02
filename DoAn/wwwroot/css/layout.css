@@ -3,7 +3,7 @@
 }
 
 html, body {
-    background-color: #0B0B0B;
+    background-color: var(--bg-primary);
 }
 a {
     text-decoration: none;
@@ -51,36 +51,36 @@ header {
     border-radius: 100px;
 }
 
-    .navbar-container a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: white;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-        font-size: 16px;
-    }
+.navbar-container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: white;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 16px;
+}
 
-    .navbar-container .login-btn {
-        background-color: #E50914;
-        padding: 12px 24px;
-        border-radius: 60px;
-        font-weight: bold;
-    }
+.navbar-container .login-btn {
+    background-color: #E50914;
+    padding: 12px 24px;
+    border-radius: 60px;
+    font-weight: bold;
+}
 
-    .navbar-container .logout-btn {
-        background-color: #f0f0f0;
-        padding: 12px 24px;
-        border-radius: 60px;
-        font-weight: bold;
-    }
+.navbar-container .logout-btn {
+    background-color: #f0f0f0;
+    padding: 12px 24px;
+    border-radius: 60px;
+    font-weight: bold;
+}
 
 
 /* Footer */
 footer {
-    background-color: #0B0B0B;
+    background-color: var(--bg-primary);
     width: 65%;
     margin: 0 auto;
     padding-bottom: 140px;
@@ -104,8 +104,12 @@ footer {
 @media (max-width: 768px) {
     section, .section-padding {
         width: 95%;
+        padding: 40px 0;
     }
     /* header - mobile */
+    header {
+        position: relative;
+    }
     .header-content {
         width: 95%;
     }

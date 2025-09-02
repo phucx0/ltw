@@ -1,0 +1,48 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace DoAn.Controllers
+{
+    public class AuthController : Controller
+    {
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: /Auth/Login
+        [HttpPost]
+        public IActionResult Login(string email, string password)
+        {
+            if (email.Contains("@gmail.com"))
+            {
+                if (email == "admin@gmail.com" && password == "123")
+                {
+                    TempData["Message"] = "Đăng nhập thành công!";
+                    return RedirectToAction("Index", "Home");
+                }
+                ViewBag.Error = "Sai tài khoản hoặc mật khẩu!";
+                return View();
+            }
+            ViewBag.Error = "Không đúng định dạng email";
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+        // POST: /Auth/Register
+        [HttpPost]
+        public IActionResult Register(string email, string password)
+        {
+            List<string> Emails = ["admin@gmail.com", "admin1@gmail.com", "admin2@gmail.com"];
+            if (Emails.Any(e => e == email))
+            {
+                ViewBag.Error = "Tài khoản đã tồn tại!";
+                return View();
+            }
+            //TempData["Message"] = "Đăng ký thành công!";
+            return RedirectToAction("Index", "Home");
+        }
+    }
+}

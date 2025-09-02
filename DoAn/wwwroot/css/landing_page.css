@@ -43,14 +43,14 @@ body {
     margin-top: 8px;
 }
 
-    .buy-btn:hover {
-        background-color: #AA060E;
-        transition: 0.5s ease-in-out;
-    }
+.buy-btn:hover {
+    background-color: #AA060E;
+    transition: 0.5s ease-in-out;
+}
 
-    .buy-btn:active {
-        animation: buy-animation 0.5s ease;
-    }
+.buy-btn:active {
+    animation: buy-animation 0.5s ease;
+}
 
 @keyframes buy-animation {
     0% {

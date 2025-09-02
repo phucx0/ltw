@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+    ViewBag.Title = "Đăng ký";
+}
+
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-title">Đăng ký</div>
+        <form method="post" asp-action="Register" asp-controller="Auth" class="auth-form">
+            <div class="d-flex gap-4">
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" name="fullname" placeholder="Họ và tên" required class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="number" name="phone" placeholder="Số điện thoại" required class="form-input" />
+                </div>
+            </div>
+            <div class="d-flex gap-4">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Email" required class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày sinh</label>
+                    <input type="date" name="birthdate" required class="form-input" />
+                </div>
+            </div>
+
+            <div class ="d-flex gap-4">
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" name="password" placeholder="Mật khẩu" required class="form-input" />
+                </div>
+
+                <div class="form-group">
+                    <label>Xác thực mật khẩu</label>
+                    <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" required class="form-input" />
+                </div>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <p style="color:red">@ViewBag.Error</p>
+            }
+            <button type="submit" class="register-btn">Đăng ký</button>
+        </form>
+
+        <a href="Login" class="auth-link">Đã có tài khoản</a>
+    </div>
+</div>
