@@ -36,9 +36,7 @@ public partial class ModelContext : DbContext
     public virtual DbSet<TicketCombo> TicketCombos { get; set; }
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //=> optionsBuilder.UseOracle("User Id=movie_tickets;Password=123;Data Source=localhost:1521/FREEPDB1;");
-        => optionsBuilder.UseOracle("User Id=cinema;Password=123;Data Source=localhost:1521/ORCL21PDB1;");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
