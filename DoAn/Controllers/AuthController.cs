@@ -24,7 +24,7 @@ namespace DoAn.Controllers
                         Expires = DateTime.Now.AddDays(7),
                         HttpOnly = true
                     });
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Profile", "User");
                 }
                 ViewBag.Error = "Sai email hoặc mật khẩu!";
                 return View();

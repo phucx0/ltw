@@ -1,10 +1,13 @@
 ﻿@{
-    var userEmail = Context.Request.Cookies["UserEmail"];
-    bool isGuest = String.IsNullOrEmpty(userEmail);
-
+    // var userEmail = Context.Request.Cookies["UserEmail"];
+    // bool isGuest = String.IsNullOrEmpty(userEmail);
+    bool isGuest = !User.Identity.IsAuthenticated;
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     bool isUserPage = currentController == "User";
+
+    var userEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+    var fullName = User.Identity.Name;
 }
 
 <header class="@(isUserPage ? "" : "header-fixed")">
@@ -24,14 +27,12 @@
                 <a href="@Url.Action("Login", "Auth")" class="login-btn">
                     Tài khoản
                 </a>
-            } else 
+            }
+            else
             {
                 <div class="d-flex gap-2 align-items-center">
                     <a href="@Url.Action("Profile", "User")" class="login-btn">
-                        Xin chào, @userEmail?.Substring(0, 5);
-                    </a>
-                    <a asp-controller="Auth" asp-action="Logout" class="text-decoration-none">
-                        <i class="bi bi-box-arrow-right text-white"></i>
+                        @fullName
                     </a>
                 </div>
             }

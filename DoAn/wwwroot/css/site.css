@@ -1,6 +1,6 @@
 :root {
     --bg-primary: #0B0B0B;
-
+    --highlight-darkest: #e50914;
     /* Font size */
     --text-xs: 10px;
     --text-sm: 12px;

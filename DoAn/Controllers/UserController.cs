@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DoAn.Models.Accounts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DoAn.Controllers
 {
     public class UserController : Controller
     {
-        public IActionResult Profile()
+        public IActionResult Profile(User user)
         {
-            return View();
+            return View(user);
         }
     }
 }
