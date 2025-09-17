@@ -1,6 +1,4 @@
 ﻿using DoAn.Models.Booking;
-using System;
-using System.Collections.Generic;
 
 namespace DoAn.Models.Movies;
 
@@ -28,7 +26,7 @@ public partial class Movie
 
     public decimal? ImdbRating { get; set; }
 
-    public virtual AgeRating? Rating { get; set; }
+    public virtual AgeRating? AgeRating { get; set; }
 
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
 

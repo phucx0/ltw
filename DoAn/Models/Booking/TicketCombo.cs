@@ -11,7 +11,7 @@ public partial class TicketCombo
 
     public short? Quantity { get; set; }
 
-    public virtual ComboItem Combo { get; set; } = null!;
+    public virtual ComboItem ComboItem { get; set; } = null!;
 
     public virtual Ticket Ticket { get; set; } = null!;
 }
