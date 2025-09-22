@@ -14,15 +14,15 @@
         <div class="profile-header">
             <img src="https://imgs.search.brave.com/xuGTfXYuSalY6cchsDQSZT8OihBNvHJ4uGDrFxMhNfU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS12ZWN0/b3IvbWFuLWZhY2Ut/dmVjdG9yXzEwNzI4/NTctNzY0My5qcGc_/c2VtdD1haXNfaHli/cmlkJnc9NzQwJnE9/ODA" alt="Avatar">
             <div>
-                <h2>Test 001</h2>
-                <p>Mã thành viên: <strong>MEM0001</strong></p>
-                <p>Hạng thành viên: <strong>@(Model.Membership != null ? Model.Membership.Tier : "Bronze")</strong> | Điểm: <strong>@(Model.Membership != null ? Model.Membership.Points : 0)</strong></p>
+                <h2>@(Model?.FullName ?? "Unknow")</h2>
+                <p>Mã thành viên: <strong>MEM @(Model?.UserId.ToString() ?? "NaN")</strong></p>
+                <p>Hạng thành viên: <strong>@(Model?.Membership?.MembershipTier?.TierName ?? "NaN")</strong></p>
             </div>
         </div>
 
         <div class="stats-row">
             <div class="stat-card">
-                <div class="stat-number">0</div>
+                <div class="stat-number">@(Model?.Membership?.Points ?? 0)</div>
                 <div class="stat-label">Điểm tích lũy</div>
             </div>
             <div class="stat-card">

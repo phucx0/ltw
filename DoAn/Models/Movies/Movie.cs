@@ -33,4 +33,8 @@ public partial class Movie
     public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
 
     public virtual ICollection<Director> Directors { get; set; } = new List<Director>();
+    public virtual ICollection<MovieDirector> MovieDirectors { get; set; } = new List<MovieDirector>();
+
+    public virtual ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
+
 }

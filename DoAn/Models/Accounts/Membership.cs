@@ -11,9 +11,10 @@ public partial class Membership
 
     public int? Points { get; set; }
 
-    public string? Tier { get; set; }
+    public int? TierId { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 
     public virtual User User { get; set; } = null!;
+    public virtual MembershipTier MembershipTier { get; set; }
 }

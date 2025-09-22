@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 
 namespace DoAn.Controllers
@@ -55,7 +54,7 @@ namespace DoAn.Controllers
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName.ToString()),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
                 new Claim(ClaimTypes.Email, user.Email)
             };
 
@@ -105,6 +104,7 @@ namespace DoAn.Controllers
                 return View();
             }
 
+            
             // Tạo user mới
             var user = new User
             {
@@ -112,8 +112,8 @@ namespace DoAn.Controllers
                 Phone = phone,
                 Email = email,
                 Birthday = birthdate,
-                CreatedAt = DateTime.Now,
-                Role = "user",
+                //CreatedAt = DateTime.Now,
+                RoleId = 1,
                 IsActive = true
             };
 
@@ -138,3 +138,4 @@ namespace DoAn.Controllers
         }
     }
 }
+  

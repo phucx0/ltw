@@ -18,13 +18,13 @@ public partial class User
 
     public string? Phone { get; set; }
 
-    public string? Role { get; set; }
-
+    public int RoleId { get; set; }
     public DateTime? CreatedAt { get; set; }
 
     public bool? IsActive { get; set; }
+    public UserRole Role { get; set; }
 
-    public virtual Membership? Membership { get; set; }
-
+    public virtual Membership Membership { get; set; }
+    public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

@@ -14,9 +14,12 @@ public partial class Room
 
     public short? Capacity { get; set; }
 
-    public string? RoomType { get; set; }
+    public int? RoomTypeId { get; set; }
 
     public virtual Branch Branch { get; set; } = null!;
+
+    public virtual RoomType? RoomType { get; set; }
+
 
     public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 
