@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model DoAn.ViewModels.MoviesPageViewModel
 @{
     ViewData["Title"] = "Movie list page";
 }
@@ -11,7 +9,35 @@
 <section>
     <div class="trending-movies-title">Phim nổi bật</div>
     <div class="trending-movies-list">
-        <div class="carousel"></div>
+        <div class="carousel">
+            @if (Model.TredingMovies != null)
+            {
+                foreach (var movie in Model.TredingMovies)
+                {
+                    <div class="trending-movie-wrapper">
+                        <a href="/Movie/Details">
+                            <div class="trending-movie-thumbnail">
+                                <div class="movie-thumbnail-content">
+                                    <img src="@movie.PosterUrl" alt="@movie.Title" />
+                                    <div class="movie-rating">@movie.Rating</div>
+                                </div>
+                            </div>
+                            <div class="trending-movie-info">
+                                <p class="rank">1</p>
+                                <div>
+                                    <p class="trending-movie-name">@movie.Title</p>
+                                    <p class="trending-movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Không có phim nào!</p>
+            }
+        </div>
         <div class="carousel-controls">
             <div class="prev-btn">
                 <i class="bi bi-chevron-left text-white"></i>
@@ -28,31 +54,31 @@
             <span>Mới cập nhật</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ hai</span>
+            <span class="schedule-bar__weekday">T2</span>
             <span class="schedule-bar__date">21/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ ba</span>
+            <span class="schedule-bar__weekday">T3</span>
             <span class="schedule-bar__date">22/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ tư</span>
+            <span class="schedule-bar__weekday">T4</span>
             <span class="schedule-bar__date">23/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ năm</span>
+            <span class="schedule-bar__weekday">T5</span>
             <span class="schedule-bar__date">24/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ sáu</span>
+            <span class="schedule-bar__weekday">T6</span>
             <span class="schedule-bar__date">25/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Thứ bảy</span>
+            <span class="schedule-bar__weekday">T7</span>
             <span class="schedule-bar__date">26/08</span>
         </div>
         <div class="schedule-bar__day">
-            <span class="schedule-bar__weekday">Chủ nhật</span>
+            <span class="schedule-bar__weekday">CN</span>
             <span class="schedule-bar__date">27/08</span>
         </div>
     </div>
@@ -63,60 +89,25 @@
                 <div class="text-white">Xem thêm</div>
             </div>
             <div class="movies-list">
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0286bee315b92d4073efb8d2ffe6cd44.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
+                @if (@Model.NowShowingMovies.Count() > 0) 
+                {
+                    @foreach (var movie in Model.NowShowingMovies)
+                    {
+                        <div class="movie-item">
+                            <div class="movie-thumbnail">
+                                <img src="@movie.PosterUrl" alt="@movie.Title">
+                                <div class="movie-info">
+                                    <span class="movie-name">@movie.Title</span>
+                                    <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0bb03a04fa6077fd6eee216237a51f49.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/2e2ce28a624e610548120faa0034e847.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0c561169c7cc7274a115122fed22273f.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/400-0/8caaf8685432ce8f5ed66ec74f724e33.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/400-0/f0591f308a48964ddde38e7b0eb6ab34.png" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
+                    }
+                }
+                else
+                {
+                    <div>khong co phim</div>
+                }
             </div>
         </div>
         <div class="">
@@ -125,60 +116,25 @@
                 <div class="text-white">Xem thêm</div>
             </div>
             <div class="movies-list">
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0286bee315b92d4073efb8d2ffe6cd44.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
+                @if (@Model.NowShowingMovies.Count() > 0)
+                {
+                    @foreach (var movie in Model.NowShowingMovies)
+                    {
+                        <div class="movie-item">
+                            <div class="movie-thumbnail">
+                                <img src="@movie.PosterUrl" alt="@movie.Title">
+                                <div class="movie-info">
+                                    <span class="movie-name">@movie.Title</span>
+                                    <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0bb03a04fa6077fd6eee216237a51f49.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/2e2ce28a624e610548120faa0034e847.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/300-0/0c561169c7cc7274a115122fed22273f.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/400-0/8caaf8685432ce8f5ed66ec74f724e33.jpg" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="movie-item">
-                    <div class="movie-thumbnail">
-                        <img src="https://static.nutscdn.com/vimg/400-0/f0591f308a48964ddde38e7b0eb6ab34.png" alt="">
-                        <div class="movie-info">
-                            <span class="movie-name">Tên phim</span>
-                            <span class="movie-author">Phúc dz</span>
-                        </div>
-                    </div>
-                </div>
+                    }
+                }
+                else
+                {
+                    <div>khong co phim</div>
+                }
             </div>
         </div>
     </div>

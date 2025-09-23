@@ -86,10 +86,18 @@ function updateSize() {
     }
     width = ((carousel.clientWidth - ((col - 1) * 24)) / col);
     height = width * (4 / 3);
+
+    const wrappers = document.querySelectorAll(".trending-movie-wrapper");
+    wrappers.forEach(w => w.style.width = width + "px");
+    const images = document.querySelectorAll(".movie-thumbnail-content img");
+    images.forEach(img => {
+        img.style.width = width + "px";
+        img.style.height = height + "px";
+    });
+
     console.log("width:", width, "height:", height);
 }
 
-updateSize();
 window.addEventListener("resize", updateSize);
 
 function load_trending_movies_list() {
@@ -99,7 +107,7 @@ function load_trending_movies_list() {
     movies.forEach(movie => {
         const item = document.createElement("div");
         item.className = "trending-movie-wrapper";
-        item.style.width = width + "px";;
+        item.style.width = width + "px";
         item.innerHTML = `
         <a href="Details">
             <div class="trending-movie-thumbnail">
@@ -122,10 +130,8 @@ function load_trending_movies_list() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    load_trending_movies_list();
-    // console.log("Chiều rộng khung nhìn:", trending_movies_list.clientWidth);
-    // console.log("Chiều rộng có border:", trending_movies_list.offsetWidth);
-    // console.log("Chiều rộng toàn bộ nội dung:", trending_movies_list.scrollWidth);
+    updateSize();
+    //load_trending_movies_list();
 })
 
 document.querySelector('.prev-btn').addEventListener('click', () => {

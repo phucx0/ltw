@@ -24,8 +24,11 @@
     display: flex;
     gap: 24px;
     width: 100%;
-    overflow: hidden;
+    overflow-x: auto;
     transition: all 0.3s ease;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
 }
 
 .trending-movie-wrapper {
@@ -35,10 +38,13 @@
     gap: 16px;
     cursor: pointer;
     overflow: hidden;
+
+    scroll-snap-align: start;
 }
 
 .trending-movie-thumbnail {
     overflow: hidden;
+    background-color: #161414;
 }
 
 .trending-movie-wrapper:nth-child(odd) .trending-movie-thumbnail {
@@ -50,8 +56,6 @@
 }
 
 .trending-movie-thumbnail img {
-    /* width: 100%; */
-    /* height: auto; */
     transition: all 0.3s ease;
     display: block;
     z-index: 1;
@@ -61,6 +65,7 @@
 } */
 .movie-thumbnail-content {
     position: relative;
+}
 }
 
 .movie-rating {
@@ -175,11 +180,14 @@
     border-radius: 8px;
 }
 
-/*  */
+/* Danh sach phim dang chieu & sap chieu */
 .movies-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 16px;
+}
+.movie-item {
+    cursor: pointer;
 }
 
 .movies-title {
@@ -194,10 +202,11 @@
     position: relative;
 }
 
-    .movie-thumbnail img {
-        width: 100%;
-        height: auto;
-    }
+.movie-thumbnail img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
 
 .movie-info {
     position: absolute;
@@ -207,7 +216,7 @@
     display: flex;
     flex-direction: column;
     padding: 12px 12px;
-    background: linear-gradient(to top, #161616, #0000);
+    background: linear-gradient(to top, #0d0d0d, #0000);
     width: 100%;
 }
 
@@ -218,6 +227,7 @@
 }
 
 .movie-author {
+    text-wrap: nowrap;
     color: rgb(204, 204, 204);
 }
 
