@@ -152,6 +152,15 @@ CREATE TABLE user_role_permissions (
     CONSTRAINT fk_user_role_permissions_permissions FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
 );
 
+GO
+CREATE FUNCTION fn_default_user_role()
+RETURNS INT
+AS
+BEGIN
+    RETURN (SELECT role_id FROM user_roles WHERE role_name = 'user');
+END;
+GO
+
 CREATE TABLE users (
     user_id INT IDENTITY(1,1) NOT NULL,
     full_name NVARCHAR(50),
@@ -165,7 +174,8 @@ CREATE TABLE users (
     CONSTRAINT pk_users PRIMARY KEY (user_id),
     CONSTRAINT fk_users_roles FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
     CONSTRAINT uni_users_email UNIQUE (email),
-    CONSTRAINT uni_users_phone UNIQUE (phone)
+    CONSTRAINT uni_users_phone UNIQUE (phone),
+    CONSTRAINT df_users_role_id DEFAULT (fn_default_user_role()) FOR role_id
 );
 
 -- =======================
@@ -462,8 +472,13 @@ INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
 VALUES ('Le Van User', '2000-07-20', 'user@example.com', 'hashed_pw_user', '0909090909',
         (SELECT role_id FROM user_roles WHERE role_name = 'user'));
 
+-- Không chi định role_id
+INSERT INTO users (full_name, birthday, email, password_hash, phone)
+VALUES ('Le Van NoUser', '2000-07-20', 'nouser@example.com', 'hashed_pw_nouser', '0909090909');
+
 -- Test dữ liệu
 SELECT * FROM permissions;
 SELECT * FROM user_roles;
 SELECT * FROM user_role_permissions;
+SELECT * FROM users;
 SELECT full_name, role_id FROM users;
