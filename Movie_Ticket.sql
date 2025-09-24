@@ -127,14 +127,29 @@ CREATE TABLE showtimes (
 );
 
 -- =======================
--- 5. Người dùng
+-- 5. Người dùng và phân quyền
 -- =======================
+CREATE TABLE permissions (
+    permission_id INT IDENTITY(1,1) NOT NULL,
+    permission_name NVARCHAR(50),
+    permission_description NVARCHAR(255),
+    CONSTRAINT pk_permission PRIMARY KEY (permission_id),
+    CONSTRAINT uni_permission_name UNIQUE (permission_name)
+);
+
 CREATE TABLE user_roles (
     role_id INT IDENTITY(1,1) NOT NULL,
     role_name NVARCHAR(50),
-    description NVARCHAR(255),
     CONSTRAINT pk_user_roles PRIMARY KEY (role_id),
     CONSTRAINT uni_user_role_name UNIQUE (role_name)
+);
+
+CREATE TABLE user_role_permissions (
+    role_id INT,
+    permission_id INT,
+    CONSTRAINT pk_user_role_permissions PRIMARY KEY (role_id, permission_id),
+    CONSTRAINT fk_user_role_permissions_roles FOREIGN KEY (role_id) REFERENCES user_roles(role_id),
+    CONSTRAINT fk_user_role_permissions_permissions FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
 );
 
 CREATE TABLE users (
@@ -386,3 +401,69 @@ VALUES (N'user', N'Đặt vé')
 
 SELECT * FROM users
 SELECT * FROM user_roles
+
+
+-- Nhập liệu test phân quyền users --
+-- Thêm các quyền (permissions)
+INSERT INTO permissions (permission_name, permission_description) VALUES ('CREATE_MOVIE', 'Quyền thêm phim mới');
+INSERT INTO permissions (permission_name, permission_description) VALUES ('UPDATE_MOVIE', 'Quyền cập nhật thông tin phim');
+INSERT INTO permissions (permission_name, permission_description) VALUES ('DELETE_MOVIE', 'Quyền xóa phim');
+INSERT INTO permissions (permission_name, permission_description) VALUES ('VIEW_REPORTS', 'Quyền xem báo cáo thống kê');
+INSERT INTO permissions (permission_name, permission_description) VALUES ('BUY_TICKET', 'Quyền mua vé xem phim');
+
+-- Thêm các role (user_roles)
+INSERT INTO user_roles (role_name) VALUES ('admin');
+INSERT INTO user_roles (role_name) VALUES ('staff');
+INSERT INTO user_roles (role_name) VALUES ('user');
+
+-- Gán quyền cho role admin
+INSERT INTO user_role_permissions (role_id, permission_id)
+SELECT r.role_id, p.permission_id
+FROM user_roles r, permissions p
+WHERE r.role_name = 'admin';
+
+-- Gán quyền cho role staff (ví dụ chỉ được thêm và cập nhật phim, không được xóa)
+INSERT INTO user_role_permissions (role_id, permission_id)
+SELECT r.role_id, p.permission_id
+FROM user_roles r
+JOIN permissions p ON p.permission_name IN ('CREATE_MOVIE', 'UPDATE_MOVIE')
+WHERE r.role_name = 'staff';
+
+-- Gán quyền cho role user (chỉ được mua vé)
+INSERT INTO user_role_permissions (role_id, permission_id)
+SELECT r.role_id, p.permission_id
+FROM user_roles r
+JOIN permissions p ON p.permission_name = 'BUY_TICKET'
+WHERE r.role_name = 'user';
+
+-- Thêm các membership tiers
+INSERT INTO membership_tiers (tier_name, min_points, max_points)
+VALUES ('Bronze', 0, 999);
+
+INSERT INTO membership_tiers (tier_name, min_points, max_points)
+VALUES ('Silver', 1000, 4999);
+
+INSERT INTO membership_tiers (tier_name, min_points, max_points)
+VALUES ('Gold', 5000, 9999);
+
+INSERT INTO membership_tiers (tier_name, min_points, max_points)
+VALUES ('Platinum', 10000, 999999);
+
+-- Thêm các user
+INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
+VALUES ('Nguyen Van Admin', '1990-01-01', 'admin@example.com', 'hashed_pw_admin', '0123456789',
+        (SELECT role_id FROM user_roles WHERE role_name = 'admin'));
+
+INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
+VALUES ('Tran Thi Staff', '1995-05-10', 'staff@example.com', 'hashed_pw_staff', '0987654321',
+        (SELECT role_id FROM user_roles WHERE role_name = 'staff'));
+
+INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
+VALUES ('Le Van User', '2000-07-20', 'user@example.com', 'hashed_pw_user', '0909090909',
+        (SELECT role_id FROM user_roles WHERE role_name = 'user'));
+
+-- Test dữ liệu
+SELECT * FROM permissions;
+SELECT * FROM user_roles;
+SELECT * FROM user_role_permissions;
+SELECT full_name, role_id FROM users;
