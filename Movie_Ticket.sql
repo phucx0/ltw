@@ -75,7 +75,7 @@ CREATE TABLE movies (
     release_date DATETIME,
     poster_url VARCHAR(255),
     cover_url VARCHAR(255),
-    trailer_url VARCHAR(255),
+    trailer_url VARCHAR(555),
     status NVARCHAR(50),
     imdb_rating DECIMAL(3,1),
     CONSTRAINT pk_movies PRIMARY KEY (movie_id),
@@ -482,3 +482,72 @@ SELECT * FROM user_roles;
 SELECT * FROM user_role_permissions;
 SELECT * FROM users;
 SELECT full_name, role_id FROM users;
+
+
+INSERT INTO age_ratings (rating_code, description)
+VALUES
+('G', N'General Audiences – Phù hợp cho mọi lứa tuổi'),
+('PG', N'Parental Guidance Suggested – Có một số nội dung cha mẹ cần lưu ý'),
+('PG-13', N'Parents Strongly Cautioned – Một số nội dung không phù hợp cho trẻ dưới 13 tuổi'),
+('R', N'Restricted – Trẻ dưới 17 tuổi cần có cha mẹ hoặc người giám hộ đi cùng'),
+('NC-17', N'Adults Only – Chỉ dành cho khán giả từ 18 tuổi trở lên');
+
+
+INSERT INTO movies 
+(title, description, duration, genre, rating_id, release_date, poster_url, cover_url, trailer_url, status, imdb_rating)
+VALUES
+('The Shawshank Redemption',
+ 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+ 142, 'Drama', 3, '1994-09-23',
+ 'https://m.media-amazon.com/images/M/MV5BMDAyY2FhYjctNDc5OS00MDNlLThiMGUtY2UxYWVkNGY2ZjljXkEyXkFqcGc@._V1_.jpg',
+ 'https://www.hollywoodreporter.com/wp-content/uploads/2018/03/the_shawshank_redemption_-_h_-_1994.jpg',
+ 'https://www.youtube.com/watch?v=NmzuHjWmXOc',
+ 1, 9.3),
+
+('The Godfather',
+ 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
+ 175, 'Crime', 3, '1972-03-24',
+ 'https://i.pinimg.com/736x/96/5c/8b/965c8b35458e5a14b4dacaa0a91b0a77.jpg',
+ 'https://imgs.search.brave.com/a06gQzxqWP4jzDNrafHNB8KDPXKTQ8K89XdVc6axwlk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudGltZXNub3du/ZXdzLmNvbS9waG90/by9tc2lkLTE1Mjc5/MTM1OS8xNTI3OTEz/NTkuanBn',
+ 'https://www.youtube.com/watch?v=UaVTIH8mujA',
+ 1, 9.2),
+
+('The Dark Knight',
+ 'Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
+ 152, 'Action', 3, '2008-07-18',
+ 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg',
+ 'https://m.media-amazon.com/images/M/MV5BMTM5NjA1OTYyOV5BMl5BanBnXkFtZTcwMzgzMTk2Mw@@._V1_.jpg',
+ 'https://imdb-video.media-imdb.com/vi324468761/1434659607842-pgv4ql-1563712918369.mp4?Expires=1759060140&Signature=RyUDmTv6FWYHfmFfZAzo-fYEd7dUkDSFAiAPk1QNaqa42jcMRuEz4DvKjjPe2cSDQzSebQJ144d4a4qkCNijzRlkNDcF1eVyOSMPhRmB~PsGr04US9DGKKGHCbC~dp28vZJQXsc~Txr0anhFOJqimLjj3nK~MHDWcJScrMM1h9ilVhtYYLlNWdDZnYXpADriXsoR-xoXKb4R6OEacE4pQKauGIcsQYxre0ERSAVnp5wQfyDH7q5y4jVa8JAmsHfht4Upm-vCHzRoxnsbWZnEM0mqnaaQ2xXLkDvc4L-ni~KXguglB-Ka3Q285tV3TzscjxpCAwQMsz1xNKZAhyC-WQ__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
+ 1, 9.0),
+
+('Pulp Fiction',
+ 'The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.',
+ 154, 'Crime', 3, '1994-10-14',
+ 'https://m.media-amazon.com/images/M/MV5BYTViYTE3ZGQtNDBlMC00ZTAyLTkyODMtZGRiZDg0MjA2YThkXkEyXkFqcGc@._V1_.jpg',
+ 'https://static0.srcdn.com/wordpress/wp-content/uploads/2025/07/quentin-tarantino-s-most-quotable-movie-is-a-major-hit-after-hitting-streaming-platform-for-free.jpg',
+ 'https://imdb-video.media-imdb.com/vi2620371481/1434659607842-pgv4ql-1450205469045.mp4?Expires=1759060243&Signature=aZsfjHdhY4u~rqSruqrIF-NlBRef9XUBReWlONrUu4lZow77gMIh~R2tfQnZbecZMCFx1sJ6JZBlnQoUCS6mBz89eHNx2SoiGRgPQk3x2-AY1eEsktwXUSwwXvKeEU0lj29cu-JMbG32UWuGnZDWABVCqufYcz0CjfM23NynwO5ekJqqcpX~5RUp6A6MMaN7XjwbSUkfLs46mnFEEeBNuEP-L70JQzxAlc-hyDnNnuyxhMVva1VvwCRjM1chti2uTJW-IiOSGcUCwP2FUA72vRqgcAbRsYvSdinFD6nShzrq6aLQm7Kyh1yFBg7jqoyrQtNZoTzBnDSIWsV3ZZzLTQ__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
+ 1, 8.9),
+
+('Forrest Gump',
+ 'The presidencies of Kennedy and Johnson, Vietnam, Watergate, and other history unfold through the perspective of an Alabama man.',
+ 142, 'Drama', 4, '1994-07-06',
+ 'https://m.media-amazon.com/images/M/MV5BZGY1NDllYjgtMzg1NS00YWMwLTkxYzgtM2I1MjU0MmMyNzA2XkEyXkFqcGc@._V1_.jpg',
+ 'https://m.media-amazon.com/images/M/MV5BOTI4NDZjYjQtMjBhZS00NDMxLTljOTktNzBmY2NhOTM1ZjA3XkEyXkFqcGc@._V1_.jpg',
+ 'https://imdb-video.media-imdb.com/vi3567517977/1434659607842-pgv4ql-1564505606861.mp4?Expires=1759060486&Signature=OP4hQpLq2cTYKhNQuvr1gF-uU7ktetUpOoHXFby1V6CwWsncY8x7qWRtu8mbCf9y6~3INQPwhiysuBpDhi93l1Ble~2qzpfAUzegBippZiYlrjVuC4XWsJJ1DQDJ2aLTDArI7dcguymC1uSNWzRlpyevyDrJQ5ah7V3y227zCtFuDqMoAaAV5DVqagMf~cfmJCKt3EQs5l8gALVS01ch3BY9I6b~jhpRYje1Y-mw21LaBYYSFZocuihi7Y7Z6tfNqj6cqjZsL36JtB8T~znNQfo8NFfyC8L42saQcOYD49UfFNN47h-35TZU90wmhFobfqky85JdacqyskJ-9HHK-Q__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
+ 1, 8.8),
+
+('Inception',
+ 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.',
+ 148, 'Sci-Fi', 5, '2010-07-16',
+ 'https://m.media-amazon.com/images/M/MV5BMTMyMzYxMDQ3NV5BMl5BanBnXkFtZTcwNTA1NTcwMw@@._V1_.jpg',
+ 'https://pad.mymovies.it/cinemanews/2017/147071/coverlg_home.jpg',
+ 'https://imdb-video.media-imdb.com/vi2959588889/1434659607842-pgv4ql-1596404706743.mp4?Expires=1759060613&Signature=bJRgT5AtDIOiL3QX7Yqp1ekyY33NGbnC~mg8PgWZcJuOcdBO6FP18usy4Lcka6yt5KIgVj3kzWW7E0CyPb6mTc3lCNOM7o87-EWi~K-cFmyqOwZvANRQQHHallPpXZJ~lEFqKuUShTdoO2b8b-WhGj-~PwbB3RtXqxCIKE4fOJEZr1Xz86424N6xGfR6h9hvwaU64s2r59UQofpc1b7dJjL31kMr5U562wy27K-SoBEsxxsr6-9TDctc-CQDDQymPLN87UU2XcvxUa6X68OgofwcBXaCa6vcPCnkAgHU4LMcykzCwssZuFaoty3yGEas49Uhfpsxsbs68RXSyjyOnw__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
+ 1, 8.8),
+
+('Interstellar',
+ 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity’s survival.',
+ 169, 'Sci-Fi', 2, '2014-11-07',
+ 'https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_.jpg',
+ 'https://images.bauerhosting.com/legacy/media/6214/2fda/2bc7/18a7/e20d/f5fd/Whatisinterstellar.jpg',
+ 'https://imdb-video.media-imdb.com/vi1586278169/1434659607842-pgv4ql-1616202363366.mp4?Expires=1759060769&Signature=SS47po6TB5vicWVQIuLAnTwN7lfQYkGBE1H25En84B9NKR3y2YA-szRyUPYfgVsCe-H5-mHVxObY1h4c5rePmbYNWkH-~~MaXYeFxYxIvIE~I5K66yNELf8WFkrSUDt8xbAkcTJSvuhtB3GnrUfIZv6V5pHfRhltwqT7eiukWJShegSAHj1tLDgBJv3uUaA2ZsbDtAC2QRxw4cRKU7INorBs1K~ZvcLITLdhrvH8vaabYJxTJlDlzNZlfwJPgEVU1EooejuGLcBg5iyl~qXiZrYftD6hFppROqKX50e9ojNdzHsA53B5ZWuKvLROiDKJMmL9b8lpDEIEKlWK~bAXDw__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
+ 1, 8.6)
