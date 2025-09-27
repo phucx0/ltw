@@ -15,6 +15,6 @@ public partial class Membership
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual User User { get; set; }
     public virtual MembershipTier MembershipTier { get; set; }
 }

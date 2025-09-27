@@ -12,10 +12,12 @@ namespace DoAn.Controllers
     {
         private readonly ModelContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
-        public AuthController(ModelContext context)
+        private readonly ILogger<AuthController> _logger;
+        public AuthController(ModelContext context, ILogger<AuthController> logger)
         {
             _context = context;
             _passwordHasher = new PasswordHasher<User>();
+            _logger = logger;
         }
         public IActionResult Login()
         {
@@ -104,7 +106,7 @@ namespace DoAn.Controllers
                 return View();
             }
 
-            
+            //var defaultRole = _context.UserRoles.First(r => r.RoleName == "user");
             // Tạo user mới
             var user = new User
             {
@@ -112,8 +114,7 @@ namespace DoAn.Controllers
                 Phone = phone,
                 Email = email,
                 Birthday = birthdate,
-                //CreatedAt = DateTime.Now,
-                RoleId = 1,
+                //RoleId = defaultRole.RoleId,
                 IsActive = true
             };
 

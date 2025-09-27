@@ -17,26 +17,26 @@
     margin-bottom: 20px;
 }
 
-    .profile-header img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        margin-right: 20px;
-    }
+.profile-header img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
 
-    .profile-header h2 {
-        margin: 0;
-        font-size: 24px;
-    }
+.profile-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
 
 .profile-info {
     margin-bottom: 20px;
 }
 
-    .profile-info p {
-        margin: 5px 0;
-        font-size: 16px;
-    }
+.profile-info p {
+    margin: 5px 0;
+    font-size: 16px;
+}
 
 .stats-row {
     display: grid;
@@ -86,35 +86,40 @@
     color: white;
 }
 
-    .card-header .title {
-        font-size: var(--text-lg);
-        font-weight: bold;
-    }
+.card-header .title {
+    font-size: var(--text-lg);
+    font-weight: bold;
+}
 
 .card-content {
     display: flex;
     flex-direction: column;
 }
 
-    .card-content .item {
-        display: flex;
-        gap: 16px;
-        padding: 12px 16px;
-        align-items: center;
-        cursor: pointer;
-        border-bottom: 1px solid #383838;
-    }
+.card-content .item {
+    display: flex;
+    gap: 16px;
+    padding: 12px 16px;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #383838;
+}
 
-        .card-content .item:last-child {
-            border: none;
-        }
+.no-ticket {
+    margin: 12px 0px;
+    text-align: center;
+}
 
-        .card-content .item:hover {
-            background-color: #f6f6f6;
-        }
+.card-content .item:last-child {
+    border: none;
+}
 
-        .card-content .item .icon {
-        }
+.card-content .item:hover {
+    background-color: #f6f6f6;
+}
+
+.card-content .item .icon {
+}
 
 .info {
     display: flex;
@@ -122,14 +127,14 @@
     gap: 8px;
 }
 
-    .info .movie-name {
-        font-weight: bold;
-        font-size: var(--text-lg);
-    }
+.info .movie-name {
+    font-weight: bold;
+    font-size: var(--text-lg);
+}
 
-    .info .detail {
-        font-size: var(--text-md);
-    }
+.info .detail {
+    font-size: var(--text-md);
+}
 
 @media (max-width: 768px) {
     .profile-container {

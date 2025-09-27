@@ -10,5 +10,4 @@
         // Navigation properties
         public ICollection<Membership> Memberships { get; set; }
     }
-
 }
