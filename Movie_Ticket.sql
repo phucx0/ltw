@@ -415,16 +415,67 @@ SELECT * FROM user_roles
 
 -- Nhập liệu test phân quyền users --
 -- Thêm các quyền (permissions)
-INSERT INTO permissions (permission_name, permission_description) VALUES ('CREATE_MOVIE', 'Quyền thêm phim mới');
-INSERT INTO permissions (permission_name, permission_description) VALUES ('UPDATE_MOVIE', 'Quyền cập nhật thông tin phim');
-INSERT INTO permissions (permission_name, permission_description) VALUES ('DELETE_MOVIE', 'Quyền xóa phim');
-INSERT INTO permissions (permission_name, permission_description) VALUES ('VIEW_REPORTS', 'Quyền xem báo cáo thống kê');
-INSERT INTO permissions (permission_name, permission_description) VALUES ('BUY_TICKET', 'Quyền mua vé xem phim');
+INSERT INTO permissions (permission_name, permission_description) VALUES
+-- Quản lý phim
+('CREATE_MOVIE', N'Quyền thêm phim mới'),
+('UPDATE_MOVIE', N'Quyền cập nhật thông tin phim'),
+('DELETE_MOVIE', N'Quyền xóa phim'),
+('VIEW_MOVIE', N'Quyền xem danh sách phim'),
+
+-- Quản lý lịch chiếu
+('CREATE_SHOWTIME', N'Quyền tạo lịch chiếu mới'),
+('UPDATE_SHOWTIME', N'Quyền cập nhật lịch chiếu'),
+('DELETE_SHOWTIME', N'Quyền xóa lịch chiếu'),
+('VIEW_SHOWTIME', N'Quyền xem lịch chiếu'),
+
+-- Quản lý rạp chiếu
+('CREATE_CINEMA', N'Quyền thêm rạp chiếu mới'),
+('UPDATE_CINEMA', N'Quyền cập nhật thông tin rạp chiếu'),
+('DELETE_CINEMA', N'Quyền xóa rạp chiếu'),
+('VIEW_CINEMA', N'Quyền xem danh sách rạp chiếu'),
+
+-- Quản lý phòng chiếu
+('CREATE_ROOM', N'Quyền thêm phòng chiếu mới'),
+('UPDATE_ROOM', N'Quyền cập nhật thông tin phòng chiếu'),
+('DELETE_ROOM', N'Quyền xóa phòng chiếu'),
+('VIEW_ROOM', N'Quyền xem danh sách phòng chiếu'),
+
+-- Quản lý vé
+('BUY_TICKET', N'Quyền mua vé xem phim'),
+('CANCEL_TICKET', N'Quyền hủy vé đã mua'),
+('VIEW_TICKET', N'Quyền xem thông tin vé'),
+
+-- Quản lý tài khoản
+('CREATE_USER', N'Quyền thêm tài khoản người dùng'),
+('UPDATE_USER', N'Quyền chỉnh sửa thông tin người dùng'),
+('DELETE_USER', N'Quyền xóa tài khoản người dùng'),
+('VIEW_USER', N'Quyền xem danh sách tài khoản'),
+
+-- Quản lý báo cáo & doanh thu
+('VIEW_REPORTS', N'Quyền xem báo cáo thống kê'),
+('EXPORT_REPORTS', N'Quyền xuất báo cáo doanh thu'),
+
+-- Quản lý khuyến mãi
+('CREATE_PROMOTION', N'Quyền thêm khuyến mãi mới'),
+('UPDATE_PROMOTION', N'Quyền cập nhật khuyến mãi'),
+('DELETE_PROMOTION', N'Quyền xóa khuyến mãi'),
+('VIEW_PROMOTION', N'Quyền xem danh sách khuyến mãi'),
+
+
+-- Quản lý nhân viên
+('CREATE_STAFF', N'Quyền thêm nhân viên mới'),
+('UPDATE_STAFF', N'Quyền chỉnh sửa thông tin nhân viên'),
+('DELETE_STAFF', N'Quyền xóa nhân viên'),
+('VIEW_STAFF', N'Quyền xem danh sách nhân viên');
+
 
 -- Thêm các role (user_roles)
 INSERT INTO user_roles (role_name) VALUES ('admin');
 INSERT INTO user_roles (role_name) VALUES ('staff');
 INSERT INTO user_roles (role_name) VALUES ('user');
+INSERT INTO user_roles (role_name) VALUES ('manager');
+
+select * from permissions
 
 -- Gán quyền cho role admin
 INSERT INTO user_role_permissions (role_id, permission_id)
@@ -432,58 +483,42 @@ SELECT r.role_id, p.permission_id
 FROM user_roles r, permissions p
 WHERE r.role_name = 'admin';
 
+-- Gán quyền cho role manager (ví dụ chỉ được thêm và cập nhật phim, không được xóa)
+INSERT INTO user_role_permissions (role_id, permission_id)
+SELECT r.role_id, p.permission_id
+FROM user_roles r
+JOIN permissions p ON p.permission_name IN ('CREATE_CINEMA', 'UPDATE_CINEMA', 'DELETE_CINEMA', 'VIEW_CINEMA', 'CREATE_ROOM', 'UPDATE_ROOM', 'DELETE_ROOM', 'VIEW_ROOM', 'VIEW_REPORTS')
+WHERE r.role_name = 'manager';
+
 -- Gán quyền cho role staff (ví dụ chỉ được thêm và cập nhật phim, không được xóa)
 INSERT INTO user_role_permissions (role_id, permission_id)
 SELECT r.role_id, p.permission_id
 FROM user_roles r
-JOIN permissions p ON p.permission_name IN ('CREATE_MOVIE', 'UPDATE_MOVIE')
+JOIN permissions p ON p.permission_name IN ('VIEW_MOVIE', 'VIEW_SHOWTIME', 'VIEW_CINEMA', 'VIEW_ROOM')
 WHERE r.role_name = 'staff';
 
 -- Gán quyền cho role user (chỉ được mua vé)
 INSERT INTO user_role_permissions (role_id, permission_id)
 SELECT r.role_id, p.permission_id
 FROM user_roles r
-JOIN permissions p ON p.permission_name = 'BUY_TICKET'
+JOIN permissions p ON p.permission_name IN ( 'BUY_TICKET', 'CANCEL_TICKET', 'VIEW_TICKET')
 WHERE r.role_name = 'user';
 
+--select * from users 
+
+--update users 
+--set role_id = (select role_id from user_roles where role_name = 'admin')
+--where user_id = 10 
+
 -- Thêm các membership tiers
-INSERT INTO membership_tiers (tier_name, min_points, max_points)
-VALUES ('Bronze', 0, 999);
-
-INSERT INTO membership_tiers (tier_name, min_points, max_points)
-VALUES ('Silver', 1000, 4999);
-
-INSERT INTO membership_tiers (tier_name, min_points, max_points)
-VALUES ('Gold', 5000, 9999);
-
-INSERT INTO membership_tiers (tier_name, min_points, max_points)
-VALUES ('Platinum', 10000, 999999);
-
--- Thêm các user
-INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
-VALUES ('Nguyen Van Admin', '1990-01-01', 'admin@example.com', 'hashed_pw_admin', '0123456789',
-        (SELECT role_id FROM user_roles WHERE role_name = 'admin'));
-
-INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
-VALUES ('Tran Thi Staff', '1995-05-10', 'staff@example.com', 'hashed_pw_staff', '0987654321',
-        (SELECT role_id FROM user_roles WHERE role_name = 'staff'));
-
-INSERT INTO users (full_name, birthday, email, password_hash, phone, role_id)
-VALUES ('Le Van User', '2000-07-20', 'user@example.com', 'hashed_pw_user', '0909090909',
-        (SELECT role_id FROM user_roles WHERE role_name = 'user'));
-
--- Không chi định role_id
-INSERT INTO users (full_name, birthday, email, password_hash, phone)
-VALUES ('Le Van NoUser', '2000-07-20', 'nouser@example.com', 'hashed_pw_nouser', '0909090909');
-
--- Test dữ liệu
-SELECT * FROM permissions;
-SELECT * FROM user_roles;
-SELECT * FROM user_role_permissions;
-SELECT * FROM users;
-SELECT full_name, role_id FROM users;
+INSERT INTO membership_tiers (tier_name, min_points, max_points) VALUES 
+('Bronze', 0, 999),
+('Silver', 1000, 4999),
+('Gold', 5000, 9999),
+('Platinum', 10000, 999999);
 
 
+-- Thêm 
 INSERT INTO age_ratings (rating_code, description)
 VALUES
 ('G', N'General Audiences – Phù hợp cho mọi lứa tuổi'),
@@ -493,6 +528,7 @@ VALUES
 ('NC-17', N'Adults Only – Chỉ dành cho khán giả từ 18 tuổi trở lên');
 
 
+-- Thêm danh sách phim
 INSERT INTO movies 
 (title, description, duration, genre, rating_id, release_date, poster_url, cover_url, trailer_url, status, imdb_rating)
 VALUES
