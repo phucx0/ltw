@@ -1,0 +1,130 @@
+﻿body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+/*    font-weight: 500;*/
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+p {
+    margin: 0;   
+}
+.main-wrapper {
+    width: 100%;
+    display: flex;
+}
+
+/* Header*/
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid #d8d8d8;
+}
+.header-logo {
+    font-size: var(--text-3xl);
+    font-weight: bold;
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.header-search {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #d8d8d8;
+    border-radius: 12px;
+    padding: 12px 16px;
+    background-color: white;
+}
+.header-search input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: var(--text-lg);
+}
+
+.header-search input:-webkit-autofill,
+.header-search input:-webkit-autofill:hover,
+.header-search input:-webkit-autofill:focus,
+.header-search input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+}
+
+.search-btn {
+    border: none;
+    outline: none;
+    padding: 0;
+    background-color:white;
+    cursor: pointer;
+}
+
+.header-user {
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.header-user img {
+    width: 50px;
+    height: 50px;
+}
+.header-user .details {
+}
+.details .fullname {
+    font-size: var(--text-lg);
+    font-weight: bold;
+}
+.details .user-role {
+    font-size: var(--text-md);
+    color: #808080;
+}
+
+/* Sidebar*/
+.sidebar {
+    height: 100vh;
+    padding: 12px;
+    border-right: 1px solid #d8d8d8;
+}
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #4B5563;
+}
+.sidebar-item svg path {
+    fill: #4B5563;
+}
+
+.sidebar-item:hover {
+    background-color: #D8E7F6;
+    color: #0084FF;
+}
+.sidebar-item:hover svg path {
+    fill: #0084FF;
+/*    stroke: #0084FF;*/
+}
+
+.sidebar-item.active {
+    background-color: #D8E7F6;
+    color: #0084FF;
+}
+.sidebar-item.active svg path {
+    fill: #0084FF;
+}
