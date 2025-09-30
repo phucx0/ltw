@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Landing page";
 }
-
+@model List<DoAn.Models.Movies.Movie>
 <section class="hero-section">
     <div class="hero-section-content">
         <p class="fw-bold text-white slogan">“Trải nghiệm điện ảnh <br />đỉnh cao ngay hôm nay”</p>
@@ -18,21 +18,12 @@
         <p class="text-white">Xem thêm</p>
     </div>
     <div class="carousel">
-        <div class="poster-film">
-            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
-        </div>
-        <div class="poster-film">
-            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
-        </div>
-        <div class="poster-film">
-            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
-        </div>
-        <div class="poster-film">
-            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
-        </div>
-        <div class="poster-film">
-            <img src="https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/3/thumbnail/240x388/c88460ec71d04fa96e628a21494d2fd3/p/o/poster_dm.jpg" alt="a1" />
-        </div>
+        @foreach (var movie in Model)
+        {
+            <div class="poster-film">
+                <img src="@movie.PosterUrl" alt="@movie.Title" />
+            </div>
+        }
     </div>
 </section>
 <section class="feature-section">
