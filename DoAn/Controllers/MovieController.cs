@@ -1,11 +1,20 @@
-﻿using DoAn.Models.Movies;
+﻿using DoAn.Models.Data;
+using DoAn.Models.Movies;
 using DoAn.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoAn.Controllers
 {
     public class MovieController : Controller
     {
+        private readonly ModelContext _context;
+
+        public MovieController(ModelContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Movies()
         {
             List<Movie> treding_movies = new List<Movie>
@@ -116,9 +125,20 @@ namespace DoAn.Controllers
             return View(model);
         }
 
-        public IActionResult Details()
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var movie = await _context.Movies
+                .Include(m => m.AgeRating)
+                .Include(m => m.Directors)
+                .Include(m => m.Actors)
+                .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            return View(movie);
         }
     }
 }
