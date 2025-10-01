@@ -81,6 +81,8 @@ CREATE TABLE movies (
     CONSTRAINT pk_movies PRIMARY KEY (movie_id),
     CONSTRAINT fk_movies_age_ratings FOREIGN KEY (rating_id) REFERENCES age_ratings(rating_id) ON DELETE SET NULL
 );
+ALTER TABLE movies ALTER COLUMN status INT;
+
 
 CREATE TABLE actors (
     actor_id INT IDENTITY(1,1) NOT NULL,
