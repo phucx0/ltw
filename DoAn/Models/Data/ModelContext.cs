@@ -75,14 +75,6 @@ public partial class ModelContext : DbContext
 
         });
 
-        //modelBuilder.Entity<Branch>()
-        //    .HasIndex(b => b.Address)
-        //    .IsUnique();
-
-        //modelBuilder.Entity<Branch>()
-        //    .HasIndex(b => b.Phone)
-        //    .IsUnique();
-
         // ========================
         // 2. RoomTypes (Loại phòng)
         // ========================
@@ -101,22 +93,19 @@ public partial class ModelContext : DbContext
         // ========================
         // 3. Rooms (Phòng)
         // ========================
-        modelBuilder.Entity<Room>()
-            .HasKey(r => r.RoomId);
-
-        modelBuilder.Entity<Room>()
-            .HasOne(r => r.Branch)
-            .WithMany(b => b.Rooms)
-            .HasForeignKey(r => r.BranchId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Room>()
-            .HasOne(r => r.RoomType)
-            .WithMany(rt => rt.Rooms)
-            .HasForeignKey(r => r.RoomTypeId);
-
-        //modelBuilder.Entity<Room>()
-        //    .HasCheckConstraint("chk_rooms_capacity", "capacity > 0");
+        modelBuilder.Entity<Room>(entity =>
+        {
+            entity.ToTable("rooms");
+            entity.HasKey(r => r.RoomId);
+            entity.Property(r => r.RoomId).HasColumnName("room_id");
+            entity.Property(r => r.BranchId).HasColumnName("branch_id");
+            entity.Property(r => r.Name).HasColumnName("name");
+            entity.Property(r => r.Capacity).HasColumnName("capacity");
+            entity.Property(r => r.RoomTypeId).HasColumnName("room_type_id");
+            //entity.HasIndex(r => new { r.BranchId, r.Name }).IsUnique().HasDatabaseName("uni_rooms_branch_name");
+            entity.HasOne(r => r.Branch).WithMany(b => b.Rooms).HasForeignKey(r => r.BranchId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(r => r.RoomType).WithMany(rt => rt.Rooms).HasForeignKey(r => r.RoomTypeId);
+        });
 
         // ========================
         // 4. SeatTypes (Loại ghế)
@@ -131,12 +120,6 @@ public partial class ModelContext : DbContext
             entity.Property(st => st.ExtraPrice).HasColumnName("extra_price").HasColumnType("decimal(10,2)");
         });
 
-        //modelBuilder.Entity<SeatType>()
-        //    .Property(st => st.ExtraPrice);
-
-        //modelBuilder.Entity<SeatType>()
-        //    .HasCheckConstraint("chk_seat_types_price", "extra_price >= 0");
-
         // ========================
         // 5. Seats (Ghế)
         // ========================
@@ -144,6 +127,11 @@ public partial class ModelContext : DbContext
         {
             entity.ToTable("seats");
             entity.HasKey(s => s.SeatId);
+            entity.Property(s => s.SeatId).HasColumnName("seat_id");
+            entity.Property(s => s.RoomId).HasColumnName("room_id");
+            entity.Property(s => s.SeatRow).HasColumnName("seat_row");
+            entity.Property(s => s.SeatNumber).HasColumnName("seat_number");
+            entity.Property(s => s.TypeId).HasColumnName("type_id");
 
             entity.HasOne(s => s.Room)
             .WithMany(r => r.Seats)
@@ -154,114 +142,120 @@ public partial class ModelContext : DbContext
             .HasForeignKey(s => s.TypeId);
 
             entity.HasIndex(s => new { s.RoomId, s.SeatRow, s.SeatNumber })
-            .IsUnique();
+            .IsUnique()
+            .HasDatabaseName("uni_seats");
         });
 
-        //modelBuilder.Entity<Seat>()
-        //    .HasOne(s => s.Room)
-        //    .WithMany(r => r.Seats)
-        //    .HasForeignKey(s => s.RoomId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Seat>()
-        //    .HasOne(s => s.SeatType)
-        //    .WithMany(st => st.Seats)
-        //    .HasForeignKey(s => s.TypeId)
-        //    .OnDelete(DeleteBehavior.SetNull);
-
-        //modelBuilder.Entity<Seat>()
-        //    .HasIndex(s => new { s.RoomId, s.SeatRow, s.SeatNumber })
-        //    .IsUnique();
-
-        //modelBuilder.Entity<Seat>()
-        //    .HasCheckConstraint("chk_seats_number", "seat_number > 0");
 
         // ========================
         // 6. AgeRatings (Độ tuổi)
         // ========================
-        modelBuilder.Entity<AgeRating>()
-            .HasKey(ar => ar.RatingId);
+        modelBuilder.Entity<AgeRating>(entity =>
+        {
+            entity.ToTable("age_ratings");
+            entity.HasKey(ar => ar.RatingId);
 
-        modelBuilder.Entity<AgeRating>()
-            .HasIndex(ar => ar.RatingCode)
-            .IsUnique();
+            entity.Property(ar => ar.RatingId).HasColumnName("rating_id");
+            entity.Property(ar => ar.RatingCode).HasColumnName("rating_code");
+            entity.Property(ar => ar.Description).HasColumnName("description");
+            entity.HasIndex(ar => ar.RatingCode).IsUnique().HasDatabaseName("uni_age_ratings");
+        });
 
         // ========================
         // 7. Movies (Phim)
         // ========================
-        modelBuilder.Entity<Movie>()
-            .HasKey(m => m.MovieId);
-        modelBuilder.Entity<Movie>()
-            .Property(m => m.ImdbRating).HasColumnName("imdb_rating").HasColumnType("decimal(3,1)");
-        modelBuilder.Entity<Movie>()
-            .HasOne(m => m.AgeRating)
-            .WithMany(ar => ar.Movies)
-            .HasForeignKey(m => m.RatingId)
-            .OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<Movie>(entity =>
+        {
+            entity.ToTable("movies");
+            entity.HasKey(m => m.MovieId);
 
-        //modelBuilder.Entity<Movie>()
-        //    .HasCheckConstraint("chk_movies_imdb_rating", "imdb_rating BETWEEN 0 AND 10");
+            entity.Property(m => m.MovieId).HasColumnName("movie_id");
+            entity.Property(m => m.Title).HasColumnName("title");
+            entity.Property(m => m.Description).HasColumnName("description");
+            entity.Property(m => m.Duration).HasColumnName("duration");
+            entity.Property(m => m.Genre).HasColumnName("genre");
+            entity.Property(m => m.RatingId).HasColumnName("rating_id");
+            entity.Property(m => m.ReleaseDate).HasColumnName("release_date").HasColumnType("date");
+            entity.Property(m => m.PosterUrl).HasColumnName("poster_url");
+            entity.Property(m => m.CoverUrl).HasColumnName("cover_url");
+            entity.Property(m => m.TrailerUrl).HasColumnName("trailer_url");
+            entity.Property(m => m.Status).HasColumnName("status");
+            entity.Property(m => m.ImdbRating).HasColumnName("imdb_rating").HasColumnType("decimal(3,1)");
 
-        //modelBuilder.Entity<Movie>()
-        //    .HasCheckConstraint("chk_movies_duration", "duration > 0");
+            entity.HasOne(m => m.AgeRating)
+                .WithMany(ar => ar.Movies)
+                .HasForeignKey(m => m.RatingId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+ 
 
         // =========================
         // 8. Actor (Diễn viên)
         // =========================
-        modelBuilder.Entity<Actor>()
-            .HasKey(a => a.ActorId);  // Khóa chính cho Actor
+        modelBuilder.Entity<Actor>(entity =>
+        {
+            entity.ToTable("actors");
+            entity.HasKey(a => a.ActorId);
 
-        modelBuilder.Entity<Actor>()
-            .Property(a => a.ActorName)
-            .IsRequired()  // Nếu cần, có thể yêu cầu ActorName không null
-            .HasMaxLength(200);  // Đặt độ dài tối đa cho ActorName nếu cần
+            entity.Property(a => a.ActorId).HasColumnName("actor_id");
+            entity.Property(a => a.ActorName).HasColumnName("actor_name");
+
+        });
 
         // =========================
         // 9. Director (Đạo diễn)
         // =========================
-        modelBuilder.Entity<Director>()
-            .HasKey(d => d.DirectorId);  // Khóa chính cho Director
+        modelBuilder.Entity<Director>(entity =>
+        {
+            entity.ToTable("directors");
+            entity.HasKey(d => d.DirectorId);
 
-        modelBuilder.Entity<Director>()
-            .Property(d => d.DirectorName)
-            .IsRequired()  // Nếu cần, có thể yêu cầu DirectorName không null
-            .HasMaxLength(200);  // Đặt độ dài tối đa cho DirectorName nếu cần
+            entity.Property(d => d.DirectorId).HasColumnName("director_id");
+            entity.Property(d => d.DirectorName).HasColumnName("director_name");
+        });
 
         // ========================
         // 8. MovieActors (Diễn viên)
         // ========================
-        modelBuilder.Entity<MovieActor>()
-            .HasKey(ma => new { ma.MovieId, ma.ActorId });
+        modelBuilder.Entity<MovieActor>(entity =>
+        {
+            entity.ToTable("movie_actors");
+            entity.HasKey(ma => new { ma.MovieId, ma.ActorId });
 
-        modelBuilder.Entity<MovieActor>()
-            .HasOne(ma => ma.Movie)
+            entity.Property(ma => ma.MovieId).HasColumnName("movie_id");
+            entity.Property(ma => ma.ActorId).HasColumnName("actor_id");
+
+            entity.HasOne(ma => ma.Movie)
             .WithMany(m => m.MovieActors)
             .HasForeignKey(ma => ma.MovieId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<MovieActor>()
-            .HasOne(ma => ma.Actor)
+            entity.HasOne(ma => ma.Actor)
             .WithMany(a => a.MovieActors)
             .HasForeignKey(ma => ma.ActorId)
             .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        // ========================
         // 9. MovieDirectors (Đạo diễn)
         // ========================
-        modelBuilder.Entity<MovieDirector>()
-            .HasKey(md => new { md.MovieId, md.DirectorId });
+        modelBuilder.Entity<MovieDirector>(entity =>
+        {
+            entity.ToTable("movie_directors");
+            entity.HasKey(md => new { md.MovieId, md.DirectorId });
 
-        modelBuilder.Entity<MovieDirector>()
-            .HasOne(md => md.Movie)
+            entity.Property(md => md.MovieId).HasColumnName("movie_id");
+            entity.Property(md => md.DirectorId).HasColumnName("director_id");
+
+            entity.HasOne(md => md.Movie)
             .WithMany(m => m.MovieDirectors)
             .HasForeignKey(md => md.MovieId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<MovieDirector>()
-            .HasOne(md => md.Director)
+            entity.HasOne(md => md.Director)
             .WithMany(d => d.MovieDirectors)
             .HasForeignKey(md => md.DirectorId)
             .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // ========================
         // 10. Showtimes (Lịch chiếu)
@@ -289,28 +283,6 @@ public partial class ModelContext : DbContext
             .HasForeignKey(s => s.RoomId);
         });
             
-
-        //modelBuilder.Entity<Showtime>()
-        //    .HasOne(s => s.Movie)
-        //    .WithMany(m => m.Showtimes)
-        //    .HasForeignKey(s => s.MovieId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Showtime>()
-        //    .HasOne(s => s.Room)
-        //    .WithMany(r => r.Showtimes)
-        //    .HasForeignKey(s => s.RoomId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Showtime>()
-        //    .HasCheckConstraint("chk_showtimes_time", "end_time > start_time");
-
-        //modelBuilder.Entity<Showtime>()
-        //    .HasCheckConstraint("chk_showtimes_base_price", "base_price >= 0");
-
-        //modelBuilder.Entity<Showtime>()
-        //    .HasIndex(s => new { s.MovieId, s.RoomId, s.StartTime })
-        //    .IsUnique();
 
         // ========================
         // 11. Permissions (Vai trò người dùng)
@@ -373,21 +345,6 @@ public partial class ModelContext : DbContext
             entity.HasIndex(u => u.Phone).IsUnique().HasDatabaseName("uni_users_phone");
         });
 
-        //modelBuilder.Entity<User>()
-        //    .HasOne(u => u.Role)
-        //    .WithMany(ur => ur.Users)
-        //    .HasForeignKey(u => u.RoleId);
-
-        //modelBuilder.Entity<User>()
-        //    .HasCheckConstraint("chk_users_birthday", "birthday <= GETDATE()");
-
-        //modelBuilder.Entity<User>()
-        //    .HasIndex(u => u.Email)
-        //    .IsUnique();
-
-        //modelBuilder.Entity<User>()
-        //    .HasIndex(u => u.Phone)
-        //    .IsUnique();
 
         // ========================
         // 15. Promotions (Khuyến mãi)
@@ -409,19 +366,6 @@ public partial class ModelContext : DbContext
             entity.HasIndex(p => p.Code).IsUnique().HasDatabaseName("uni_promotions_code");
         });
 
-        //modelBuilder.Entity<Promotion>()
-        //    .HasIndex(p => p.Code)
-        //    .IsUnique();
-
-        //modelBuilder.Entity<Promotion>()
-        //    .HasCheckConstraint("chk_promotions_value", "value >= 0");
-
-        //modelBuilder.Entity<Promotion>()
-        //    .HasCheckConstraint("chk_promotions_date", "end_date >= start_date");
-
-        //modelBuilder.Entity<Promotion>()
-        //    .HasCheckConstraint("chk_promotions_status", "status IN ('active', 'expired', 'upcoming')");
-
         // ========================
         // 16. Tickets (Vé)
         // ========================
@@ -441,28 +385,6 @@ public partial class ModelContext : DbContext
             entity.HasOne(t => t.User).WithMany(u => u.Tickets).HasForeignKey(t => t.UserId);
         });
 
-        //modelBuilder.Entity<Ticket>()
-        //    .HasOne(t => t.Showtime)
-        //    .WithMany(s => s.Tickets)
-        //    .HasForeignKey(t => t.ShowtimeId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Ticket>()
-        //    .HasOne(t => t.Seat)
-        //    .WithMany(s => s.Tickets)
-        //    .HasForeignKey(t => t.SeatId);
-
-        //modelBuilder.Entity<Ticket>()
-        //    .HasOne(t => t.User)
-        //    .WithMany(u => u.Tickets)
-        //    .HasForeignKey(t => t.UserId)
-        //    .OnDelete(DeleteBehavior.SetNull);
-
-        //modelBuilder.Entity<Ticket>()
-        //    .HasCheckConstraint("chk_tickets_status", "status IN ('booked', 'canceled', 'used')");
-
-        //modelBuilder.Entity<Ticket>()
-        //    .HasCheckConstraint("chk_tickets_price", "price >= 0");
 
         // ========================
         // 17. TicketCombos (Combo vé)
@@ -481,18 +403,6 @@ public partial class ModelContext : DbContext
             .WithMany(ci => ci.TicketCombos)
             .HasForeignKey(tc => tc.ComboId);
         });
-
-        //modelBuilder.Entity<TicketCombo>()
-        //    .HasOne(tc => tc.Ticket)
-        //    .WithMany(t => t.TicketCombos)
-        //    .HasForeignKey(tc => tc.TicketId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<TicketCombo>()
-        //    .HasOne(tc => tc.ComboItem)
-        //    .WithMany(ci => ci.TicketCombos)
-        //    .HasForeignKey(tc => tc.ComboId)
-        //    .OnDelete(DeleteBehavior.Cascade);
 
         // ========================
         // 18. Payments (Thanh toán)
@@ -520,24 +430,6 @@ public partial class ModelContext : DbContext
             .HasForeignKey(p => p.PromotionId);
 
         });
-
-        //modelBuilder.Entity<Payment>()
-        //    .HasOne(p => p.Ticket)
-        //    .WithMany(t => t.Payments)
-        //    .HasForeignKey(p => p.TicketId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Payment>()
-        //    .HasOne(p => p.Promotion)
-        //    .WithMany(p => p.Payments)
-        //    .HasForeignKey(p => p.PromotionId)
-        //    .OnDelete(DeleteBehavior.SetNull);
-
-        //modelBuilder.Entity<Payment>()
-        //    .HasCheckConstraint("chk_payments_status", "status IN ('pending', 'paid', 'canceled')");
-
-        //modelBuilder.Entity<Payment>()
-        //    .HasCheckConstraint("chk_payments_amount", "amount >= 0");
 
         // ========================
         // 19. MembershipTiers (Cấp bậc thành viên)
@@ -572,20 +464,6 @@ public partial class ModelContext : DbContext
         });
 
 
-        //modelBuilder.Entity<Membership>()
-        //    .HasOne(m => m.User)
-        //    .WithMany(u => u.Memberships)
-        //    .HasForeignKey(m => m.UserId)
-        //    .OnDelete(DeleteBehavior.Cascade);
-
-        //modelBuilder.Entity<Membership>()
-        //    .HasOne(m => m.MembershipTier)
-        //    .WithMany(mt => mt.Memberships)
-        //    .HasForeignKey(m => m.TierId);
-
-        //modelBuilder.Entity<Membership>()
-        //    .HasCheckConstraint("chk_memberships_points", "points >= 0");
-
         // ========================
         // 21. ComboItems (Món combo)
         // ========================
@@ -599,14 +477,13 @@ public partial class ModelContext : DbContext
             entity.Property(ci => ci.Description).HasColumnName("description");
         });
 
-        //modelBuilder.Entity<ComboItem>()
-        //    .HasCheckConstraint("chk_comboitems_price", "price >= 0");
 
         // ========================
         // 22. TicketPriceHistory (Lịch sử thay đổi giá vé)
         // ========================
         modelBuilder.Entity<TicketPriceHistory>(entity =>
         {
+            entity.ToTable("ticket_price_history");
             entity.HasKey(e => e.HistoryId);
 
             entity.HasOne(e => e.Showtime)
@@ -631,7 +508,6 @@ public partial class ModelContext : DbContext
                   .HasColumnName("ChangedBy")
                   .HasMaxLength(50);
 
-            //entity.HasCheckConstraint("chk_ticket_price_history_old_new_price", "OldPrice >= 0 AND NewPrice >= 0");
         });
     }
 
