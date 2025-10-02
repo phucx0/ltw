@@ -17,7 +17,8 @@
                 CINEMA
             </div>
         </a>
-        <div class="navbar-container">
+         <!-- Navbar + User -->
+        <div class="navbar-container d-flex align-items-center gap-3">
             <a href="#">Đang chiếu</a>
             <a href="#">Sắp chiếu</a>
             <a href="#">Mô tả</a>
@@ -37,5 +38,16 @@
                 </div>
             }
         </div>
+
+        <!-- Search ép sát phải -->
+        <form asp-controller="Search" asp-action="Index" method="get"
+              class="d-flex align-items-center ms-auto" style="max-width:250px;">
+            <input type="text" name="query" class="form-control form-control-sm"
+                   placeholder="Tìm phim..." />
+            <button type="submit" class="btn btn-sm btn-outline-light ms-1">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+
     </div>
 </header>

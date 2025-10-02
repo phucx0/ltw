@@ -1,0 +1,36 @@
+﻿@model List<DoAn.Models.Movies.Movie>
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Kết quả tìm kiếm</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">
+            Không tìm thấy phim nào.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var movie in Model)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" />
+                        <div class="card-body">
+                            <h5 class="card-title">@movie.Title</h5>
+                            <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" 
+                               class="btn btn-sm btn-primary">
+                                Chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
