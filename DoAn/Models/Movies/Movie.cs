@@ -18,8 +18,8 @@ public partial class Movie
     public decimal? ImdbRating { get; set; }
     public virtual AgeRating? AgeRating { get; set; }
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
-    public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
-    public virtual ICollection<Director> Directors { get; set; } = new List<Director>();
+    //public virtual ICollection<Actor> Actors { get; set; } = new List<Actor>();
+    //public virtual ICollection<Director> Directors { get; set; } = new List<Director>();
     public virtual ICollection<MovieDirector> MovieDirectors { get; set; } = new List<MovieDirector>();
     public virtual ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 }

@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Movie details page";
 }
+@model DoAn.Models.Movies.Movie
 
 @section Styles {
     <link rel="stylesheet" href="~/css/movie/details.css" asp-append-version="true" />
@@ -14,26 +15,26 @@
     <div class="movie-image-bg"></div>
     <div class="movie-info">
         <div class="movie-info-right">
-            <img class="movie-poster" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABZTJNQKDYRLblc8AhNAn-siYAg318qqESrrM_x-WCmcB1R0l4WAqBkgRyon18hRLW5NQjPOVMULDzAF-eQ_PBhQ5MD_-_YSYeqSAIN8YTCmGORDEla6Bodr5ImBiBAvZUuRc.webp?r=0e7" alt="">
+            <img class="movie-poster" src=@Model.PosterUrl alt="">
             <div class="movie-info-content">
                 <!-- <div>16+</div> -->
-                <div class="movie-name">Bon appetit your majesty</div>
+                <div class="movie-name">@Model.Title</div>
                 @* <img class="movie-name-image" width="500" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/S4oi7EPZbv2UEPaukW54OORa0S8/AAAABQz4MR6j_-z0wc04tstAaUkTqi5jcqabP8DK-tAU4S8jiVMOD8GyyW0vpf43cCUe22_uEK9RT6ORHfr4ZNuseX9vAPeHGvR3Lg.webp?r=c40" alt=""> *@
                 <div class="movie-genres">
-                    <p class="movie-genres-item">Kinh dị</p>
-                    <p class="movie-genres-item">Bí ẩn</p>
-                    <p class="movie-genres-item">Bí ẩn</p>
+                    <p class="movie-genres-item">@Model.Genre</p>
+                    @* <p class="movie-genres-item">Bí ẩn</p>
+                    <p class="movie-genres-item">Bí ẩn</p> *@
                 </div>
                 <div class="d-flex gap-2">
                     <i class="bi bi-clock"></i>
-                    <div class="time">2 giờ 30 phút</div>
+                    <div class="time">@Model.Duration</div>
                 </div>
                 <button class="play-trailer-btn">
                     <span><i class="bi bi-play-fill text-white"></i></span>
                     <span>Xem trailer</span>
                 </button>
                 <div class="movie-description-wrapper">
-                    <div class="movie-description">Khi năm người bạn vô tình gây ra một vụ tai nạn xe hơi chết người, họ quyết định che giấu và lập một giao ước giữ bí mật thay vì phải đối mặt với hậu quả. Một năm sau, quá khứ trở lại ám ảnh họ, buộc họ phải đối diện với một sự thật khủng khiếp: có ai đó biết những gì họ đã làm vào mùa hè năm ngoái… và quyết tâm trả thù họ. Khi từng người trong nhóm bị một kẻ sát nhân truy đuổi, họ phát hiện ra rằng điều này đã xảy ra trước đây, và họ tìm đến hai người sống sót từ vụ thảm sát huyền thoại ở Southport năm 1997 để cầu cứu.</div>
+                    <div class="movie-description">@Model.Description</div>
                     <button class="toggle-btn">Xem thêm</button>
                 </div>
             </div>

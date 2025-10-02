@@ -26,7 +26,7 @@
                                 <p class="rank">1</p>
                                 <div>
                                     <p class="trending-movie-name">@movie.Title</p>
-                                    <p class="trending-movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</p>
+                                    @* <p class="trending-movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</p> *@
                                 </div>
                             </div>
                         </a>
@@ -98,7 +98,7 @@
                                 <img src="@movie.PosterUrl" alt="@movie.Title">
                                 <div class="movie-info">
                                     <span class="movie-name">@movie.Title</span>
-                                    <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span>
+                                    @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
                                 </div>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                                 <img src="@movie.PosterUrl" alt="@movie.Title">
                                 <div class="movie-info">
                                     <span class="movie-name">@movie.Title</span>
-                                    <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span>
+                                    @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
                                 </div>
                             </div>
                         </div>

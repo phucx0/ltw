@@ -82,6 +82,9 @@ CREATE TABLE movies (
     CONSTRAINT fk_movies_age_ratings FOREIGN KEY (rating_id) REFERENCES age_ratings(rating_id) ON DELETE SET NULL
 );
 
+ALTER TABLE movies
+ALTER COLUMN trailer_url VARCHAR(555);
+
 CREATE TABLE actors (
     actor_id INT IDENTITY(1,1) NOT NULL,
     actor_name NVARCHAR(255),
@@ -587,3 +590,7 @@ VALUES
  'https://images.bauerhosting.com/legacy/media/6214/2fda/2bc7/18a7/e20d/f5fd/Whatisinterstellar.jpg',
  'https://imdb-video.media-imdb.com/vi1586278169/1434659607842-pgv4ql-1616202363366.mp4?Expires=1759060769&Signature=SS47po6TB5vicWVQIuLAnTwN7lfQYkGBE1H25En84B9NKR3y2YA-szRyUPYfgVsCe-H5-mHVxObY1h4c5rePmbYNWkH-~~MaXYeFxYxIvIE~I5K66yNELf8WFkrSUDt8xbAkcTJSvuhtB3GnrUfIZv6V5pHfRhltwqT7eiukWJShegSAHj1tLDgBJv3uUaA2ZsbDtAC2QRxw4cRKU7INorBs1K~ZvcLITLdhrvH8vaabYJxTJlDlzNZlfwJPgEVU1EooejuGLcBg5iyl~qXiZrYftD6hFppROqKX50e9ojNdzHsA53B5ZWuKvLROiDKJMmL9b8lpDEIEKlWK~bAXDw__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
  1, 8.6)
+ DBCC CHECKIDENT ('movies', RESEED, 0);
+
+ select * from movies
+ DELETE FROM movies
