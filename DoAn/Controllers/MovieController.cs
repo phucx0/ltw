@@ -127,6 +127,10 @@ namespace DoAn.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            if (string.IsNullOrEmpty(id.ToString()))
+            {
+                return RedirectToAction("Error404", "Home");
+            }
             var movie = await _context.Movies
                 .Include(m => m.AgeRating)
                 //.Include(m => m.Directors)
@@ -134,10 +138,9 @@ namespace DoAn.Controllers
                 .Include(m => m.MovieDirectors)
                 .Include(m => m.MovieActors)
                 .FirstOrDefaultAsync(m => m.MovieId == id);
-
             if (movie == null)
             {
-                return NotFound();
+                return RedirectToAction("Error404", "Home");
             }
 
             return View(movie);

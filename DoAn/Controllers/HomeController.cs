@@ -9,6 +9,7 @@ namespace DoAn.Controllers
             return View();
         }
 
+        public IActionResult Error404() => View();
         public IActionResult Error() => View();
     }
 }
