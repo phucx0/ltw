@@ -24,5 +24,8 @@ namespace DoAn.Controllers
 
             return View(trendingMovies); // Gửi qua View
         }
+
+        public IActionResult Error404() => View();
+        public IActionResult Error() => View();
     }
 }

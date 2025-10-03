@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "404 - Not Found";
+}
+<style>
+    .return-btn {
+        background-color: #e50914; /* đỏ Netflix */
+        color: #fff;
+        padding: 10px 20px;
+        outline: none;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .return-btn:hover {
+        background-color: #b20710; 
+        color: #fff;
+        /* transform: translateY(-2px); */
+        /* box-shadow: 0 4px 8px rgba(229, 9, 20, 0.4); */
+    }
+
+</style>
+<div class="d-flex flex-column align-items-center justify-content-center vh-100 text-center text-white">
+    <h1 class="display-1 fw-bold text-danger">404</h1>
+    <h2 class="mt-2 mb-4">Oops! Không tìm thấy trang</h2>
+    <a class="return-btn" href="@Url.Action("Index", "Home")">
+        Quay lại trang chủ
+    </a>
+</div>
