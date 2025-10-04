@@ -1,24 +1,25 @@
-﻿using DoAn.Models.Accounts;
+﻿using DoAn.Controllers;
 using DoAn.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Security.Claims;
 
-namespace DoAn.Controllers
+namespace DoAn.Areas.User.Controllers
 {
-    public class UserController : Controller
+    [Area("User")]
+    public class ProfileController : Controller
     {
         private readonly ModelContext _context;
-        private readonly ILogger<UserController> _logger;
-        public UserController(ModelContext context, ILogger<UserController> logger)
+        private readonly ILogger<ProfileController> _logger;
+
+        public ProfileController(ModelContext context, ILogger<ProfileController> logger)
         {
             _context = context;
             _logger = logger;
         }
-        public IActionResult Profile()
-        {
 
+        public IActionResult Index()
+        {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
@@ -35,8 +36,7 @@ namespace DoAn.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            _logger.LogInformation($"User loaded: {user.Membership.MembershipTier.TierName}");
-
+            //_logger.LogInformation($"User loaded: {user.Membership.MembershipTier.TierName}");
             return View(user);
         }
     }

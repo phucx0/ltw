@@ -2,30 +2,29 @@
 using DoAn.Models.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace DoAn.Controllers
+namespace DoAn.Areas.Admin.Controllers
 {
-    public class AdminController : Controller
+    [Area("Admin")]
+    public class AuthController : Controller
     {
         private readonly ModelContext _context;
-        private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        private readonly PasswordHasher<Models.Accounts.User> _passwordHasher = new PasswordHasher<Models.Accounts.User>();
 
-        public AdminController (ModelContext context)
+        public AuthController(ModelContext context)
         {
             _context = context;
         }
-
-        public string HashPassword(User user, string password)
+        public string HashPassword(Models.Accounts.User user, string password)
         {
             return _passwordHasher.HashPassword(user, password);
         }
 
-        public bool VerifyPassword(User user, string hashedPassword, string providedPassword)
+        public bool VerifyPassword(Models.Accounts.User user, string hashedPassword, string providedPassword)
         {
             var result = _passwordHasher.VerifyHashedPassword(user, hashedPassword, providedPassword);
             return result == PasswordVerificationResult.Success;
@@ -54,10 +53,12 @@ namespace DoAn.Controllers
                 .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == email && u.Role.RoleName == "admin");
             //&& u.PasswordHash == HashPassword(password)
-            if (user == null) {
+            if (user == null)
+            {
                 ViewBag.Error = "Tài khoản không tồn tại";
                 return View();
             }
+
             string hashed = HashPassword(user, password);
             var result = VerifyPassword(user, user.PasswordHash, password);
 
@@ -80,20 +81,14 @@ namespace DoAn.Controllers
                     principal,
                     new AuthenticationProperties
                     {
-                        IsPersistent = true, 
-                        ExpiresUtc = DateTime.UtcNow.AddHours(12) 
+                        IsPersistent = true,
+                        ExpiresUtc = DateTime.UtcNow.AddHours(12)
                     }
                 );
-                return RedirectToAction("Dashboard", "Admin");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             ViewBag.Error = "Tài khoản hoặc mật khẩu không chính xác";
-            return View();
-        }
-
-        [Authorize(Roles = "admin, manager")]
-        public IActionResult Dashboard()
-        {
             return View();
         }
     }

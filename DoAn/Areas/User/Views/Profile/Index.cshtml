@@ -1,6 +1,7 @@
 ﻿@model DoAn.Models.Accounts.User;
 
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Profile";
     int countTicket = (Model != null && Model.Tickets != null) ? Model.Tickets.Count() : 0;
 }

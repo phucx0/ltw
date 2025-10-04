@@ -39,41 +39,7 @@
         </div>
     </header>
     <div class="main-wrapper">
-        @* <div class="sidebar">
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Tổng quan</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý phim</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/movie.svg" alt="Alternate Text" />
-                <p>Quản lý rạp & phòng chiếu</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý suất chiếu</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý vé & đơn đặt vé</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý người dùng</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý nhân viên</p>
-            </div>
-            <div class="sidebar-item">
-                <img src="~/svg/dashboard.svg" alt="Alternate Text" />
-                <p>Quản lý mã giảm giá</p>
-            </div>
-        </div> *@
-        <partial name="Components/_SideBar.cshtml"/>
+        @await Html.PartialAsync("~/Areas/Admin/Views/Components/_SideBar.cshtml")
         @RenderBody()
     </div>
 </body>
