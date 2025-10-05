@@ -15,7 +15,7 @@
                 foreach (var movie in Model.TredingMovies)
                 {
                     <div class="trending-movie-wrapper">
-                        <a href="/Movie/Details">
+                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId">
                             <div class="trending-movie-thumbnail">
                                 <div class="movie-thumbnail-content">
                                     <img src="@movie.PosterUrl" alt="@movie.Title" />
@@ -93,15 +93,17 @@
                 {
                     @foreach (var movie in Model.NowShowingMovies)
                     {
-                        <div class="movie-item">
-                            <div class="movie-thumbnail">
-                                <img src="@movie.PosterUrl" alt="@movie.Title">
-                                <div class="movie-info">
-                                    <span class="movie-name">@movie.Title</span>
-                                    @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
+                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId">
+                            <div class="movie-item">
+                                <div class="movie-thumbnail">
+                                    <img src="@movie.PosterUrl" alt="@movie.Title">
+                                    <div class="movie-info">
+                                        <span class="movie-name">@movie.Title</span>
+                                        @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     }
                 }
                 else
@@ -116,19 +118,21 @@
                 <div class="text-white">Xem thêm</div>
             </div>
             <div class="movies-list">
-                @if (@Model.NowShowingMovies.Count() > 0)
+                @if (@Model.ComingSoonMovies.Count() > 0)
                 {
-                    @foreach (var movie in Model.NowShowingMovies)
+                    @foreach (var movie in Model.ComingSoonMovies)
                     {
-                        <div class="movie-item">
-                            <div class="movie-thumbnail">
-                                <img src="@movie.PosterUrl" alt="@movie.Title">
-                                <div class="movie-info">
-                                    <span class="movie-name">@movie.Title</span>
-                                    @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
+                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId">
+                            <div class="movie-item">
+                                <div class="movie-thumbnail">
+                                    <img src="@movie.PosterUrl" alt="@movie.Title">
+                                    <div class="movie-info">
+                                        <span class="movie-name">@movie.Title</span>
+                                        @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     }
                 }
                 else
