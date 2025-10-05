@@ -1,0 +1,16 @@
+﻿@model DoAn.Models.Movies.Movie
+
+@{
+}
+
+<a asp-controller="Movie" asp-action="Details" asp-route-id="@Model.MovieId">
+    <div class="movie-item">
+        <div class="movie-thumbnail">
+            <img src="@Model.PosterUrl" alt="@Model.Title">
+            <div class="movie-info">
+                <span class="movie-name">@Model.Title</span>
+                @* <span class="movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</span> *@
+            </div>
+        </div>
+    </div>
+</a>

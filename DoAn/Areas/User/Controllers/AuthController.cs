@@ -1,5 +1,4 @@
-﻿using DoAn.Models.Accounts;
-using DoAn.Models.Data;
+﻿using DoAn.Models.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -130,12 +129,23 @@ namespace DoAn.Areas.User.Controllers
             return RedirectToAction("Login", "Auth");
         }
 
-        // GET: /Auth/Logout
-        [HttpGet]
-        public IActionResult Logout()
+        // POST: /Auth/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete("UserEmail"); // xoá cookie
-            return RedirectToAction("Login", "Auth");
+            try
+            {
+                _logger.LogInformation("Logout");
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                // Xóa luôn session nếu có
+                HttpContext.Session.Clear();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error: {ex}");
+            }
+            return RedirectToAction("Login", "Auth", new { area = "User" });
         }
     }
 }

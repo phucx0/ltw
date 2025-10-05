@@ -1,8 +1,20 @@
 :root {
-    --bg-primary: #0B0B0B;
-    --highlight-darkest: #e50914;
-    --color-black-600: #4B5563;
-    --color-black-100: #0066f6;
+    --bg-primary: #0B0B0B; /* n?n chính ðen */
+    --bg-secondary: #141414; /* n?n ph? xám ð?m */
+    --highlight-darkest: #e50914; /* ð? ch? ð?o (nút chính, accent) */
+    --highlight-light: #ff404c; /* ð? sáng hõn khi hover */
+    --text-primary: #ffffff; /* ch? tr?ng */
+    --text-secondary: #b3b3b3; /* ch? ph?, mô t? */
+    --border-color: #2f2f2f; /* vi?n nh?t */
+
+    /* Button */
+    --btn-primary-bg: #e50914; /* ð? ch? ð?o */
+    --btn-primary-text: #ffffff; /* ch? tr?ng */
+    --btn-primary-hover: #ff0a16; /* ð? sáng khi hover */
+    --btn-secondary-bg: #2f2f2f; /* xám ð?m */
+    --btn-secondary-text: #ffffff; /* ch? tr?ng */
+    --btn-secondary-hover: #3d3d3d; /* hover nh? */
+
     /* Font size */
     --text-xs: 10px;
     --text-sm: 12px;
@@ -13,4 +25,10 @@
     --text-3xl: 24px;
     --text-4xl: 28px;
     --text-5xl: 32px;
+
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.3);
 }

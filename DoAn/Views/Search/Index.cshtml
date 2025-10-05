@@ -1,0 +1,29 @@
+﻿@model List<DoAn.Models.Movies.Movie>
+
+@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie/movies.css" asp-append-version="true" />
+}
+
+<section>
+    <h2 class="mb-4 text-white">Kết quả tìm kiếm</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">
+            Không tìm thấy phim nào.
+        </div>
+    }
+    else
+    {
+        <div class="movies-list">
+            @foreach (var movie in Model)
+            {
+                @await Html.PartialAsync("Components/_MovieCard", movie);
+            }
+        </div>
+    }
+</section>

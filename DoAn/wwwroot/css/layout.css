@@ -4,10 +4,11 @@
 
 html, body {
     background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 a {
     text-decoration: none;
-    color: white;
+    color: var(--text-primary);
 }
 p {
     padding: 0;
@@ -25,7 +26,6 @@ header {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(10px);
     width: 100%;
-/*    position: fixed;*/
     z-index: 100;
     padding: 12px 0px;
     display: flex;
@@ -46,14 +46,19 @@ header {
 }
 
 .navbar-container {
-    /* background-color: #4d4d4d50;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); */
     display: flex;
     justify-content: center;
     gap: 40px;
-    /* padding: 8px 8px 8px 32px; */
     border-radius: 100px;
+}
+
+.link-group {
+    display: flex;
+    gap: 12px; 
+}
+
+.link-group a:hover {
+    color: #ffcc25;
 }
 
 .navbar-container a {
@@ -83,6 +88,41 @@ header {
 }
 
 
+/* Search */
+.search-ctn {
+    border: 1px solid white;
+    border-radius: 24px;
+    overflow: hidden;
+    color: var(--text-primary);
+    padding: 8px 16px;
+}
+.search-ctn input {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+.search-ctn button {
+    outline: none;
+    border: none;
+    color: var(--text-primary);
+    background-color: transparent;
+}
+
+
+.search-ctn input:-webkit-autofill,
+.search-ctn input:-webkit-autofill:hover,
+.search-ctn input:-webkit-autofill:focus,
+.search-ctn input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px #00000000 inset !important; /* màu nền mong muốn */
+    box-shadow: 0 0 0px 1000px #00000000 inset !important;
+    -webkit-text-fill-color: white !important; /* chữ trắng */
+    caret-color: white; /* con trỏ trắng */
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+
 /* Footer */
 footer {
     background-color: var(--bg-primary);
@@ -96,15 +136,15 @@ footer {
     grid-template-columns: repeat(4, 1fr);
 }
 
-    .footer-link-wrapper ul, li {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
+.footer-link-wrapper ul, li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
 
-    .footer-link-wrapper a {
-        color: #b7b7b7;
-    }
+.footer-link-wrapper a {
+    color: var(--text-secondary);
+}
 
 @media (max-width: 768px) {
     section, .section-padding {
@@ -133,3 +173,5 @@ footer {
         gap: 16px;
     }
 }
+
+

@@ -1,9 +1,11 @@
 ﻿@model DoAn.Models.Accounts.User;
+@* Tag này hỗ trợ cấu hình asp-...*@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Profile";
-    int countTicket = (Model != null && Model.Tickets != null) ? Model.Tickets.Count() : 0;
+    int countTicket = Model?.Tickets?.Count() ?? 0;
 }
 
 @section Styles {
@@ -168,10 +170,12 @@
                 </div>
             </div>
         </div>
-
-        <a asp-controller="Auth" asp-action="Logout" method="post" class="text-decoration-none text-black">
-            <span>Đăng xuất</span>
-            <i class="bi bi-box-arrow-right"></i>
-        </a>
+        <form asp-area="User" asp-controller="Auth" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="text-black btn btn-link p-0" style="text-decoration: none;">
+                <span>Đăng xuất</span>
+                <i class="bi bi-box-arrow-right"></i>
+            </button>
+        </form>
     </div>
 </main>

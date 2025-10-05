@@ -12,16 +12,29 @@
 
 <header class="@(isUserPage ? "" : "header-fixed")">
     <div class="header-content @(isUserPage ? "" : "_header-fixed")">
-        <a href="@Url.Action("Index", "Home", new { area = "" })" class="text-decoration-none">
-            <div class="logo text-white fw-bold fs-3">
-                CINEMA
+        <div class="d-flex align-items-center justify-content-center gap-4">
+            <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+                <div class="logo text-white fw-bold fs-3">
+                    CINEMA
+                </div>
+            </a>
+            <div class="link-group">
+                <a href="#">Đang chiếu</a>
+                <a href="#">Sắp chiếu</a>
+                <a href="#">Mô tả</a>
+                <a href="#">Mô tả</a>
             </div>
-        </a>
-        <div class="navbar-container">
-            <a href="#">Đang chiếu</a>
-            <a href="#">Sắp chiếu</a>
-            <a href="#">Mô tả</a>
-            <a href="#">Mô tả</a>
+        </div>
+
+         <!-- Search + User -->
+        <div class="navbar-container d-flex align-items-center gap-3">
+            <form asp-controller="Search" asp-action="Index" method="get" class="search-ctn">
+                <input type="text" name="query" placeholder="Tìm kiếm" spellcheck="false"/>
+                <button type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+
             @if (isGuest)
             {
                 <a href="@Url.Action("Login", "Auth", new { area = "User" })" class="login-btn">
@@ -37,5 +50,7 @@
                 </div>
             }
         </div>
+
+
     </div>
 </header>
