@@ -7,7 +7,7 @@
 
         public Movie Movie { get; set; }
         public Director Director { get; set; }
-        public virtual ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
+        //public virtual ICollection<MovieDirector> MovieDirectors { get; set; } = new List<MovieDirector>();
 
     }
 }

@@ -12,17 +12,29 @@
 
 <header class="@(isUserPage ? "" : "header-fixed")">
     <div class="header-content @(isUserPage ? "" : "_header-fixed")">
-        <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
-            <div class="logo text-white fw-bold fs-3">
-                CINEMA
+        <div class="d-flex align-items-center justify-content-center gap-4">
+            <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+                <div class="logo text-white fw-bold fs-3">
+                    CINEMA
+                </div>
+            </a>
+            <div class="link-group">
+                <a href="#">Đang chiếu</a>
+                <a href="#">Sắp chiếu</a>
+                <a href="#">Mô tả</a>
+                <a href="#">Mô tả</a>
             </div>
-        </a>
-         <!-- Navbar + User -->
+        </div>
+
+         <!-- Search + User -->
         <div class="navbar-container d-flex align-items-center gap-3">
-            <a href="#">Đang chiếu</a>
-            <a href="#">Sắp chiếu</a>
-            <a href="#">Mô tả</a>
-            <a href="#">Mô tả</a>
+            <form asp-controller="Search" asp-action="Index" method="get" class="search-ctn">
+                <input type="text" name="query" placeholder="Tìm kiếm" spellcheck="false"/>
+                <button type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+
             @if (isGuest)
             {
                 <a href="@Url.Action("Login", "Auth")" class="login-btn">
@@ -39,15 +51,6 @@
             }
         </div>
 
-        <!-- Search ép sát phải -->
-        <form asp-controller="Search" asp-action="Index" method="get"
-              class="d-flex align-items-center ms-auto" style="max-width:250px;">
-            <input type="text" name="query" class="form-control form-control-sm"
-                   placeholder="Tìm phim..." />
-            <button type="submit" class="btn btn-sm btn-outline-light ms-1">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
 
     </div>
 </header>

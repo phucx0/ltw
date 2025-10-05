@@ -4,8 +4,12 @@
     ViewData["Title"] = "Kết quả tìm kiếm";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">Kết quả tìm kiếm</h2>
+@section Styles {
+    <link rel="stylesheet" href="~/css/movie/movies.css" asp-append-version="true" />
+}
+
+<section>
+    <h2 class="mb-4 text-white">Kết quả tìm kiếm</h2>
 
     @if (Model == null || !Model.Any())
     {
@@ -15,22 +19,11 @@
     }
     else
     {
-        <div class="row">
+        <div class="movies-list">
             @foreach (var movie in Model)
             {
-                <div class="col-md-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" />
-                        <div class="card-body">
-                            <h5 class="card-title">@movie.Title</h5>
-                            <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" 
-                               class="btn btn-sm btn-primary">
-                                Chi tiết
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @await Html.PartialAsync("Components/_MovieCard", movie);
             }
         </div>
     }
-</div>
+</section>

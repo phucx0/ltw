@@ -48,6 +48,10 @@ public partial class ModelContext : DbContext
     public DbSet<Membership> Memberships { get; set; }
     public DbSet<ComboItem> ComboItems { get; set; }
     public DbSet<TicketCombo> TicketCombos { get; set; }
+    
+
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(connectionString);
@@ -509,6 +513,8 @@ public partial class ModelContext : DbContext
                   .HasMaxLength(50);
 
         });
+
+
     }
 
 }

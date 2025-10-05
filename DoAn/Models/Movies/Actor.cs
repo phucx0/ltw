@@ -9,7 +9,7 @@ public partial class Actor
 
     public string? ActorName { get; set; }
 
-    public virtual ICollection<Movie> Movies { get; set; } = new List<Movie>();
+    //public virtual ICollection<Movie> Movies { get; set; } = new List<Movie>();
     public virtual ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
 
 }
