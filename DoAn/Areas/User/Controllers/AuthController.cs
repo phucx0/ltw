@@ -76,7 +76,7 @@ namespace DoAn.Areas.User.Controllers
             );
 
             TempData["Message"] = "Đăng nhập thành công!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         public IActionResult Register()

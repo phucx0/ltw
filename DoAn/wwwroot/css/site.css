@@ -1,6 +1,8 @@
 :root {
     --bg-primary: #0B0B0B;
     --highlight-darkest: #e50914;
+    --color-black-600: #4B5563;
+    --color-black-100: #0066f6;
     /* Font size */
     --text-xs: 10px;
     --text-sm: 12px;

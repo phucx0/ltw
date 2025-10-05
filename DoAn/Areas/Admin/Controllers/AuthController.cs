@@ -68,7 +68,7 @@ namespace DoAn.Areas.Admin.Controllers
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Name, user.FullName.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.RoleName.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.RoleName.ToString().ToLower()),
                     new Claim(ClaimTypes.Email, user.Email)
                 };
 

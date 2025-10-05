@@ -1,9 +1,64 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<DoAn.Models.Movies.Movie>
 @{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<div>
-    Movie
+
+
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Quản lý phim</h2>
+    </div>
+
+    <!-- Thanh công cụ -->
+    <div class="admin-toolbar">
+        <div class="filter-group">
+            <div class="filter-item">Tất cả</div>
+            <div class="filter-item">Trạng thái</div>
+            <div class="filter-item">Sắp xếp</div>
+        </div>
+        <div class="action-group">
+            <button class="btn btn--primary">Thêm mới</button>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <table class="table table--dark">
+        <thead>
+            <tr>
+                <th><input type="checkbox" name="name" value="false" /></th>
+                <th>Hình ảnh</th>
+                <th>Tên phim</th>
+                <th>Thể loại</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var movie in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" name="name" value="false" /></td>
+                    <td><img src="@movie.PosterUrl" height="100" width="100" alt="@movie.Title" /></td>
+                    <td><p class="movie-title">@movie.Title</p></td>
+                    <td><p class="movie-description">@movie.Description</p></td>
+                    <td><p class="">@movie.Duration</p></td>
+                    <td><p class="">@movie.Status</p></td>
+                    <td>
+                        <div class="actions">
+                            <button><i class="bi bi-eye-fill"></i></button>
+                            <button><i class="bi bi-pencil-square"></i></button>
+                            <button><i class="bi bi-trash3-fill"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">Tổng kết</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>

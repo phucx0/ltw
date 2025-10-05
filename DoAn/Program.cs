@@ -41,7 +41,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ⚡ Thêm route cho Areas
+// Thêm route cho Areas
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}",
