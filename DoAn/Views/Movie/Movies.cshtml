@@ -1,6 +1,7 @@
 ﻿@model DoAn.ViewModels.MoviesPageViewModel
 @{
     ViewData["Title"] = "Movie list page";
+    int rank = 1;
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/movie/movies.css" asp-append-version="true" />
@@ -23,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="trending-movie-info">
-                                <p class="rank">1</p>
+                                <p class="rank">@rank</p>
                                 <div>
                                     <p class="trending-movie-name">@movie.Title</p>
                                     @* <p class="trending-movie-author">@string.Join(", ", movie.Directors.Select(d => d.DirectorName))</p> *@
@@ -31,6 +32,8 @@
                             </div>
                         </a>
                     </div>
+
+                    rank++;
                 }
             }
             else
