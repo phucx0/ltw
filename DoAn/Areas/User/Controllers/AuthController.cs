@@ -1,22 +1,22 @@
-﻿using DoAn.Models.Accounts;
-using DoAn.Models.Data;
+﻿using DoAn.Models.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace DoAn.Controllers
+namespace DoAn.Areas.User.Controllers
 {
+    [Area("User")]
     public class AuthController : Controller
     {
         private readonly ModelContext _context;
-        private readonly PasswordHasher<User> _passwordHasher;
+        private readonly PasswordHasher<Models.Accounts.User> _passwordHasher;
         private readonly ILogger<AuthController> _logger;
         public AuthController(ModelContext context, ILogger<AuthController> logger)
         {
             _context = context;
-            _passwordHasher = new PasswordHasher<User>();
+            _passwordHasher = new PasswordHasher<Models.Accounts.User>();
             _logger = logger;
         }
         public IActionResult Login()
@@ -75,7 +75,7 @@ namespace DoAn.Controllers
             );
 
             TempData["Message"] = "Đăng nhập thành công!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         public IActionResult Register()
@@ -108,7 +108,7 @@ namespace DoAn.Controllers
 
             //var defaultRole = _context.UserRoles.First(r => r.RoleName == "user");
             // Tạo user mới
-            var user = new User
+            var user = new Models.Accounts.User
             {
                 FullName = fullname,
                 Phone = phone,
@@ -129,14 +129,23 @@ namespace DoAn.Controllers
             return RedirectToAction("Login", "Auth");
         }
 
-
-        // GET: /Auth/Logout
-        [HttpGet]
-        public IActionResult Logout()
+        // POST: /Auth/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete("UserEmail"); // xoá cookie
-            return RedirectToAction("Login");
+            try
+            {
+                _logger.LogInformation("Logout");
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                // Xóa luôn session nếu có
+                HttpContext.Session.Clear();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error: {ex}");
+            }
+            return RedirectToAction("Login", "Auth", new { area = "User" });
         }
     }
 }
-  

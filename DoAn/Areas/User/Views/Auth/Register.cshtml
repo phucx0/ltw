@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
     ViewBag.Title = "Đăng ký";
 }
 
@@ -31,15 +31,15 @@
             </div>
 
             @* <div class ="d-flex gap-4"> *@
-                <div class="form-group">
-                    <label>Mật khẩu</label>
-                    <input type="password" name="password" placeholder="Mật khẩu" required class="form-input" />
-                </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" placeholder="Mật khẩu" required class="form-input" />
+            </div>
 
-                <div class="form-group">
-                    <label>Xác thực mật khẩu</label>
-                    <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" required class="form-input" />
-                </div>
+            <div class="form-group">
+                <label>Xác thực mật khẩu</label>
+                <input type="password" name="confirmPassword" placeholder="Nhập lại mật khẩu" required class="form-input" />
+            </div>
             @* </div> *@
 
             @if (ViewBag.Error != null)

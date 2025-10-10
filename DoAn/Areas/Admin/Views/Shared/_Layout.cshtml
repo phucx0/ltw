@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin/layout.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    
+    @RenderSection("Styles", required: false)
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="main-wrapper">
+        <header>
+            <div class="header-logo">CINEMA</div>
+            <div class="header-right">
+                <div class="header-search search-wrapper">
+                    <input type="type" name="name" placeholder="Tìm kiếm" value="" />
+                    <button class="search-btn">
+                        <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_561_1170)">
+                                <path d="M19.192 19.1333L13.9517 13.8932C15.0697 12.5747 15.7461 10.8708 15.7461 9.01098C15.7459 4.84191 12.3544 1.4502 8.18547 1.4502C4.01656 1.4502 0.625 4.84191 0.625 9.01098C0.625 13.1799 4.01656 16.5714 8.18547 16.5714C10.0455 16.5714 11.7495 15.895 13.0678 14.7771L18.3081 20.0172C18.4302 20.1393 18.5902 20.2004 18.7502 20.2004C18.9102 20.2004 19.07 20.1393 19.1922 20.0172C19.3093 19.9 19.3751 19.741 19.3751 19.5752C19.3751 19.4095 19.3092 19.2505 19.192 19.1333ZM1.875 9.01098C1.875 5.53113 4.70578 2.7002 8.18547 2.7002C11.6652 2.7002 14.4961 5.53113 14.4961 9.01098C14.4961 12.4907 11.6652 15.3214 8.18547 15.3214C4.70578 15.3213 1.875 12.4905 1.875 9.01098Z" fill="#1F2024" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_561_1170">
+                                    <rect width="20" height="20" fill="white" transform="translate(0 0.825195)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </button>
+                </div>
+                <div class="header-user">
+                    <img src="~/images/user.png" alt="" />
+                    <div class="details">
+                        <div class="fullname">ABC</div>
+                        <div class="user-role">Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="layout">
+            @await Html.PartialAsync("~/Areas/Admin/Views/Components/_SideBar.cshtml")
+            <div class="main-content" id="main-content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on("click", ".sidebar-item", function (e) {
+            e.preventDefault();
+            const url = $(this).attr("href");
+
+            // Thêm loading hiệu ứng (tuỳ chọn)
+            $(".sidebar-item").removeClass("active");
+            $(this).addClass("active");
+            $("#main-content").css("opacity", 0.5);
+
+            // Load nội dung chính (phần trong <main>)
+            $("#main-content").load(url + " #main-content>*", function () {
+                $("#main-content").css("opacity", 1);
+                window.history.pushState({}, '', url); // cập nhật URL
+            });
+        });
+    </script>
+</body>
+</html>

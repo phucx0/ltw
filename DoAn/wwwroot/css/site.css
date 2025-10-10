@@ -1,5 +1,4 @@
 :root {
-    /* Màu n?n & ði?m nh?n */
     --bg-primary: #0B0B0B; /* n?n chính ðen */
     --bg-secondary: #141414; /* n?n ph? xám ð?m */
     --highlight-darkest: #e50914; /* ð? ch? ð?o (nút chính, accent) */
@@ -27,7 +26,6 @@
     --text-4xl: 28px;
     --text-5xl: 32px;
 
-    /* Bo góc & ð? bóng */
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;

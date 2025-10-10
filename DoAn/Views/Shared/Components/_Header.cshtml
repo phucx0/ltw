@@ -4,7 +4,7 @@
     bool isGuest = !User.Identity.IsAuthenticated;
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    bool isUserPage = currentController == "User";
+    bool isUserPage = currentController == "Profile";
 
     var userEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
     var fullName = User.Identity.Name;
@@ -37,14 +37,14 @@
 
             @if (isGuest)
             {
-                <a href="@Url.Action("Login", "Auth")" class="login-btn">
+                <a href="@Url.Action("Login", "Auth", new { area = "User" })" class="login-btn">
                     Tài khoản
                 </a>
             }
             else
             {
                 <div class="d-flex gap-2 align-items-center">
-                    <a href="@Url.Action("Profile", "User")" class="login-btn">
+                    <a href="@Url.Action("Index", "Profile", new { area = "User" })" class="login-btn">
                         @fullName
                     </a>
                 </div>
