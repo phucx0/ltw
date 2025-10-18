@@ -6,16 +6,19 @@ namespace DoAn.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "admin,manager")]
-    public class DashboardController : Controller
+    public class BranchesController : Controller
     {
         private ModelContext _context;
-        public DashboardController(ModelContext context)
+        public BranchesController(ModelContext context)
         {
             _context = context;
         }
         public IActionResult Index()
         {
-            return View();
+            var branches = _context.Branches
+                .Take(10)
+                .ToList();
+            return View(branches);
         }
     }
 }

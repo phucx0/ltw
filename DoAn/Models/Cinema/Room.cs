@@ -12,7 +12,7 @@ public partial class Room
 
     public string? Name { get; set; }
 
-    public short? Capacity { get; set; }
+    public int? Capacity { get; set; }
 
     public int? RoomTypeId { get; set; }
 

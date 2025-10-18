@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model List<DoAn.Models.Booking.Showtime>
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Quản lý suất chiếu</h2>
+    </div>
+    <!-- Thanh công cụ -->
+    <div class="admin-toolbar">
+        <div class="filter-group">
+            <div class="filter-item">Tất cả</div>
+            <div class="filter-item">Trạng thái</div>
+            <div class="filter-item">Sắp xếp</div>
+        </div>
+        <div class="action-group">
+            <button class="btn btn--primary">Thêm mới</button>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <table class="table table--dark">
+        <thead>
+            <tr>
+                <th><input type="checkbox" name="name" value="false" /></th>
+                <th>Tên phim</th>
+                <th>Tên phòng</th>
+                <th>Bắt đầu lúc</th>
+                <th>Kết thúc lúc</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var showtime in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" name="name" value="false" /></td>
+                    <td><p>@showtime.Movie.Title</p></td>
+                    <td><p>@showtime.Room.Name</p></td>
+                    <td><p>@showtime.StartTime</p></td>
+                    <td><p>@showtime.EndTime</p></td>
+                    <td>
+                        <div class="actions">
+                            <button><i class="bi bi-eye-fill"></i></button>
+                            <button><i class="bi bi-pencil-square"></i></button>
+                            <button><i class="bi bi-trash3-fill"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">Tổng kết</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

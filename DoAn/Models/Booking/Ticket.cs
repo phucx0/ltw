@@ -28,5 +28,5 @@ public partial class Ticket
 
     public virtual ICollection<TicketCombo> TicketCombos { get; set; } = new List<TicketCombo>();
 
-    public virtual User? User { get; set; }
+    public virtual User User { get; set; }
 }

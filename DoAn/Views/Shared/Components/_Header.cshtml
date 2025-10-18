@@ -13,7 +13,7 @@
 <header class="@(isUserPage ? "" : "header-fixed")">
     <div class="header-content @(isUserPage ? "" : "_header-fixed")">
         <div class="d-flex align-items-center justify-content-center gap-4">
-            <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+            <a href="@Url.Action("Index", "Home", new { area = "" })" class="text-decoration-none">
                 <div class="logo text-white fw-bold fs-3">
                     CINEMA
                 </div>
