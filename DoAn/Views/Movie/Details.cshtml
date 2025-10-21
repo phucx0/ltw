@@ -3,6 +3,9 @@
 *@
 @{
     ViewData["Title"] = "Movie details page";
+    var showDates = ViewBag.ShowDates as List<DateTime>;
+    var selectedDate = (DateTime)ViewBag.SelectedDate;
+    var groupedShowtimes = ViewBag.GroupedShowtimes as List<IGrouping<DoAn.Models.Cinema.Branch, DoAn.Models.Booking.Showtime>>;
 }
 @model DoAn.Models.Movies.Movie
 
@@ -52,7 +55,7 @@
                     <div>Hồ Chí Minh</div>
                 </div>
             </div>
-            <div class="day-list my-4">
+            @* <div class="day-list my-4">
                 <div class="day">T2 - 21/08</div>
                 <div class="day">T3 - 21/08</div>
                 <div class="day">T4 - 21/08</div>
@@ -60,9 +63,20 @@
                 <div class="day">T6 - 21/08</div>
                 <div class="day">T7 - 21/08</div>
                 <div class="day">CN - 21/08</div>
+            </div> *@
+            <div class="day-list my-4">
+                @foreach (var date in (List<DateTime>)ViewBag.ShowDates)
+                {
+                    var dayName = date.ToString("ddd", new System.Globalization.CultureInfo("vi-VN"));
+                    var label = $"{dayName.ToUpper()} - {date:dd/MM}";
+                    <a asp-action="Details" asp-route-id="@Model.MovieId" asp-route-date="@date.ToString("yyyy-MM-dd")"
+                       class="btn day">
+                        @label
+                    </a>
+                }
             </div>
             <div class="fs-3 fw-bold text-white">Các rạp</div>
-            <div class="text-white cinema-list">
+            @* <div class="text-white cinema-list">
                 <div class="cinema-wrapper d-flex flex-column gap-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="cinema-info d-flex gap-2">
@@ -82,64 +96,80 @@
                         <div class="showtime-item">22:00 ~ 24:00</div>
                     </div>
                 </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
+                @if (Model.Showtimes != null && Model.Showtimes.Any(s => s.StartTime == selectedDate))
+                {
+                    var showtimesByBranch = Model.Showtimes
+                    .Where(s => s.StartTime == selectedDate)
+                    .GroupBy(s => s.Room.Branch);
 
+                    foreach (var branchGroup in showtimesByBranch)
+                    {
+                        <div class="cinema-wrapper d-flex flex-column gap-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <img class="rounded cinema-logo" src="../images/100.jpg" alt="Cinema" loading="lazy" width="60" height="60" />
+                                <div>
+                                    <div class="fw-bold cinema-name">@branchGroup.Key.Name</div>
+                                    <div class="cinema-address">@branchGroup.Key.Address</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-2">
+                                @foreach (var roomGroup in branchGroup.GroupBy(s => s.Room))
+                                {
+                                    <div class="room-item mt-2">
+                                        <strong>Phòng: @roomGroup.Key.Name</strong><br />
+                                        @foreach (var st in roomGroup.OrderBy(s => s.StartTime))
+                                        {
+                                            <span class="badge bg-secondary me-1">
+                                                @st.StartTime?.ToString("HH:mm")
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Không có lịch chiếu trong ngày này.</p>
+                }
+            </div> *@
+            <div class="text-white cinema-list">
+                @if (groupedShowtimes != null && groupedShowtimes.Any())
+                {
+                    foreach (var branchGroup in groupedShowtimes)
+                    {
+                        var branch = branchGroup.Key;
+                        <div class="cinema-wrapper d-flex flex-column gap-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="cinema-info d-flex gap-2">
+                                    <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="Cinema">
+                                    <div>
+                                        <div class="fw-bold cinema-name">@branch.Name</div>
+                                        <div class="cinema-address">Địa chỉ: @branch.Address</div>
+                                    </div>
+                                </div>
+                                <div class="show-cinema-toggle">
+                                    <i class="bi bi-chevron-up"></i>
+                                </div>
+                            </div>
+
+                            <div class="showtime-list">
+                                @foreach (var showtime in branchGroup.OrderBy(s => s.StartTime))
+                                {
+                                    <div class="showtime-item">
+                                        @showtime.StartTime?.ToString("HH:mm") ~ @showtime.EndTime?.ToString("HH:mm")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Không có suất chiếu nào trong ngày này.</p>
+                }
             </div>
             <div>
                 <div class="fs-3 fw-bold text-white">Bình luận</div>
