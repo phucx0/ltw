@@ -86,5 +86,28 @@ namespace DoAn.Controllers
             ViewBag.ShowtimesForDate = showtimesForDate;
             return View(movie);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetShowtimesPartial(int id, DateTime? date)
+        {
+            var movie = await _context.Movies
+                .Include(m => m.Showtimes)
+                    .ThenInclude(s => s.Room)
+                        .ThenInclude(r => r.Branch)
+                .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+                return RedirectToAction("Error404", "Home");
+
+            var selectedDate = date ?? DateTime.Now.Date;
+
+            var showtimesForDate = movie.Showtimes
+                .Where(s => s.StartTime.HasValue && s.StartTime.Value.Date == selectedDate.Date)
+                .ToList();
+
+            var grouped = showtimesForDate.GroupBy(s => s.Room.Branch);
+            
+            return PartialView("_ShowtimesPartial", grouped);
+        }
     }
 }
