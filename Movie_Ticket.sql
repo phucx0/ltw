@@ -589,3 +589,155 @@ VALUES
  'https://images.bauerhosting.com/legacy/media/6214/2fda/2bc7/18a7/e20d/f5fd/Whatisinterstellar.jpg',
  'https://imdb-video.media-imdb.com/vi1586278169/1434659607842-pgv4ql-1616202363366.mp4?Expires=1759060769&Signature=SS47po6TB5vicWVQIuLAnTwN7lfQYkGBE1H25En84B9NKR3y2YA-szRyUPYfgVsCe-H5-mHVxObY1h4c5rePmbYNWkH-~~MaXYeFxYxIvIE~I5K66yNELf8WFkrSUDt8xbAkcTJSvuhtB3GnrUfIZv6V5pHfRhltwqT7eiukWJShegSAHj1tLDgBJv3uUaA2ZsbDtAC2QRxw4cRKU7INorBs1K~ZvcLITLdhrvH8vaabYJxTJlDlzNZlfwJPgEVU1EooejuGLcBg5iyl~qXiZrYftD6hFppROqKX50e9ojNdzHsA53B5ZWuKvLROiDKJMmL9b8lpDEIEKlWK~bAXDw__&Key-Pair-Id=APKAIFLZBVQZ24NQH3KA',
  'Now Showing', 8.6)
+
+-- Thêm danh sách Branches (Nhánh Rạp)
+INSERT INTO branches (name, address, phone) VALUES
+(N'CGV HCM Center', N'01 Lê Lợi, Quận 1, TP.HCM', '028-3888-0001'),
+(N'CGV Hà Nội Lake', N'36 Hoàn Kiếm, Hà Nội', '024-3888-0002'),
+(N'CGV Đà Nẵng Riverside', N'12 Bạch Đằng, Đà Nẵng', '0236-3888-0003');
+
+-- Thêm danh sách Loại Phòng
+INSERT INTO room_types (type_name, base_price) VALUES
+(N'Thường', 70000),
+(N'Deluxe', 100000),
+(N'IMAX', 150000);
+
+-- Thêm danh sách phòng
+INSERT INTO rooms (branch_id, name, capacity, room_type_id) VALUES
+(1, N'Room A', 60, 1),
+(1, N'Room B', 80, 2),
+(1, N'IMAX-1', 150, 3),
+(2, N'Room A', 60, 1),
+(2, N'Room B', 80, 2),
+(3, N'Room A', 60, 1),
+(3, N'Room B', 80, 2);
+
+-- Thêm danh sách Seat_types (loại ghế)
+INSERT INTO seat_types (name, extra_price) VALUES
+(N'Regular', 0),
+(N'VIP', 30000),
+(N'Couple', 40000),
+(N'Disabled', 0);
+
+-- Thêm danh sách Seat (Ghế)
+INSERT INTO seats (room_id, type_id, seat_row, seat_number) VALUES
+-- A1..A6 ( Couple) 
+(1,3,'A',1),(1,3,'A',2),(1,3,'A',3),(1,3,'A',4),(1,3,'A',5),(1,3,'A',6),
+-- B1..B12
+(1,1,'B',1),(1,1,'B',2),(1,1,'B',3),(1,1,'B',4),(1,1,'B',5),(1,1,'B',6),
+(1,1,'B',7),(1,1,'B',8),(1,1,'B',9),(1,1,'B',10),(1,1,'B',11),(1,1,'B',12),
+-- C1..C12
+(1,1,'C',1),(1,1,'C',2),(1,1,'C',3),(1,1,'C',4),(1,1,'C',5),(1,1,'C',6),
+(1,1,'C',7),(1,1,'C',8),(1,1,'C',9),(1,1,'C',10),(1,1,'C',11),(1,1,'C',12),
+-- D1..D12
+(1,1,'D',1),(1,1,'D',2),(1,1,'D',3),(1,1,'D',4),(1,1,'D',5),(1,1,'D',6),
+(1,1,'D',7),(1,1,'D',8),(1,1,'D',9),(1,1,'D',10),(1,1,'D',11),(1,1,'D',12),
+-- E1..E12 (VIP)
+(1,2,'E',1),(1,2,'E',2),(1,2,'E',3),(1,2,'E',4),(1,2,'E',5),(1,2,'E',6),
+(1,2,'E',7),(1,2,'E',8),(1,2,'E',9),(1,2,'E',10),(1,2,'E',11),(1,2,'E',12),
+-- F1..F12
+(1,1,'F',1),(1,1,'F',2),(1,1,'F',3),(1,1,'F',4),(1,1,'F',5),(1,1,'F',6),
+(1,1,'F',7),(1,1,'F',8),(1,1,'F',9),(1,1,'F',10),(1,1,'F',11),(1,1,'F',12),
+-- G1..G12
+(1,1,'G',1),(1,1,'G',2),(1,1,'G',3),(1,1,'G',4),(1,1,'G',5),(1,1,'G',6),
+(1,1,'G',7),(1,1,'G',8),(1,1,'G',9),(1,1,'G',10),(1,1,'G',11),(1,1,'G',12),
+-- H1..H12
+(1,1,'H',1),(1,1,'H',2),(1,1,'H',3),(1,1,'H',4),(1,1,'H',5),(1,1,'H',6),
+(1,1,'H',7),(1,1,'H',8),(1,1,'H',9),(1,1,'H',10),(1,1,'H',11),(1,1,'H',12),
+-- I1..I12
+(1,1,'I',1),(1,1,'I',2),(1,1,'I',3),(1,1,'I',4),(1,1,'I',5),(1,1,'I',6),
+(1,1,'I',7),(1,1,'I',8),(1,1,'I',9),(1,1,'I',10),(1,1,'I',11),(1,1,'I',12),
+-- J1..J12
+(1,1,'J',1),(1,1,'J',2),(1,1,'J',3),(1,1,'J',4),(1,1,'J',5),(1,1,'J',6),
+(1,1,'J',7),(1,1,'J',8),(1,1,'J',9),(1,1,'J',10),(1,1,'J',11),(1,1,'J',12);
+
+
+-- Thêm danh sách ACTORS
+ 
+INSERT INTO actors (actor_name) VALUES
+(N'Tim Robbins'),
+(N'Morgan Freeman'),
+(N'Marlon Brando'),
+(N'Al Pacino'),
+(N'Christian Bale'),
+(N'Heath Ledger'),
+(N'John Travolta'),
+(N'Samuel L. Jackson'),
+(N'Tom Hanks'),
+(N'Robin Wright'),
+(N'Leonardo DiCaprio'),
+(N'Joseph Gordon-Levitt'),
+(N'Matthew McConaughey'),
+(N'Anne Hathaway');
+
+
+--Thêm danh sách DIRECTORS
+
+INSERT INTO directors (director_name) VALUES
+(N'Frank Darabont'),
+(N'Francis Ford Coppola'),
+(N'Christopher Nolan'),
+(N'Quentin Tarantino'),
+(N'Robert Zemeckis');
+
+--Thêm danh sách MOVIE_ACTORS 
+
+INSERT INTO movie_actors (movie_id, actor_id) VALUES
+(1, 1), (1, 2),    -- The Shawshank Redemption
+(2, 3), (2, 4),    -- The Godfather
+(3, 5), (3, 6),    -- The Dark Knight
+(4, 7), (4, 8),    -- Pulp Fiction
+(5, 9), (5, 10),   -- Forrest Gump
+(6, 11), (6, 12),  -- Inception
+(7, 13), (7, 14);  -- Interstellar
+
+
+--Thêm danh sách MOVIE_DIRECTORS
+
+INSERT INTO movie_directors (movie_id, director_id) VALUES
+(1, 1),   -- The Shawshank Redemption - Frank Darabont
+(2, 2),   -- The Godfather - Coppola
+(3, 3),   -- The Dark Knight - Nolan
+(4, 4),   -- Pulp Fiction - Tarantino
+(5, 5),   -- Forrest Gump - Zemeckis
+(6, 3),   -- Inception - Nolan
+(7, 3);   -- Interstellar - Nolan
+
+select * from movies
+DELETE FROM movies
+
+INSERT INTO showtimes (movie_id, room_id, start_time, end_time, base_price) VALUES
+-- Branch 1
+(1, 1, '2025-10-22 09:00:00', '2025-10-22 11:30:00', 80000),
+(1, 1, '2025-10-23 14:00:00', '2025-10-23 16:30:00', 80000),
+(2, 2, '2025-10-24 10:00:00', '2025-10-24 12:30:00', 120000),
+(2, 3, '2025-10-25 19:00:00', '2025-10-25 21:30:00', 200000),
+
+-- Branch 2
+(2, 4, '2025-10-22 09:30:00', '2025-10-22 12:00:00', 80000),
+(1, 5, '2025-10-23 13:30:00', '2025-10-23 16:00:00', 120000),
+
+-- Branch 3
+(1, 6, '2025-10-22 10:30:00', '2025-10-22 13:00:00', 80000),
+(2, 7, '2025-10-23 17:00:00', '2025-10-23 19:30:00', 120000);
+
+select * from showtimes
+
+-- Trigger gán role tự động
+CREATE TRIGGER trg_users_default_role
+ON users
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE u
+    SET u.role_id = ur.role_id
+    FROM users u
+    INNER JOIN inserted i ON u.user_id = i.user_id
+    CROSS APPLY (
+        SELECT role_id FROM user_roles WHERE role_name = 'user'
+    ) AS ur
+    WHERE i.role_id IS NULL;
+END;
+GO
