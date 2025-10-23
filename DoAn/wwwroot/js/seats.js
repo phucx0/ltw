@@ -1,13 +1,14 @@
 ﻿class Block {
-    constructor(x, y, width, height, color, label) {
+    constructor(x, y, width, height, color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.color = color;
-        this.label = label;
+        this.label = "";
         this.selected = false;
-
+        this.booked = false;
+        this.blockId = null;
     }
 
     draw(ctx) {
@@ -30,22 +31,12 @@
 }
 
 class Board {
-    constructor(board) {
+    constructor(board, showtimeId) {
         this.board = board;
-        this.map = [
-            "00000000000000000",
-            "00000000000000000",
-            "000000x0000000000",
-            "11111111111111111",
-            "11111111111111111",
-            "  111111111111111",
-            "  111111111111111",
-            "  111111111111111",
-            "  111111111111111",
-            "  2 2 2 2 2 2 2  "
-        ];
-        this.columnCount = 17;
-        this.rowCount = 10;
+        this.showtimeId = showtimeId;
+        this.map = {};
+        this.columnCount = 0;
+        this.rowCount = 0;
         this.ctx = board.getContext("2d");
         this.offsetX = 0;
         this.offsetY = 0;
@@ -72,6 +63,15 @@ class Board {
     
 
     configBoard() {
+        const lengths = Object.entries(this.map).map(([row, seats]) => ({
+            row,
+            count: seats.length
+        }));
+        const maxCount = Math.max(...lengths.map(l => l.count));
+
+        this.columnCount = maxCount;
+        this.rowCount = Object.keys(this.map).length;
+
         const deviceType = getDeviceType();
         if (deviceType === "Mobile") {
             this.spacing = 4;
@@ -85,7 +85,8 @@ class Board {
         }
     }
 
-    init() {
+    async init() {
+        this.map = await this.fetchSeat(this.showtimeId);
         this.configBoard();
         this.load_seat();
         this.draw();
@@ -94,32 +95,48 @@ class Board {
 
     load_seat() {
         this.blocks = [];
-        this.map.forEach((row, rowIndex) => {
-            row.split("").forEach((seat, colIndex) => {
-                if (seat === " ") return;
-                let color = "#000";
-                const x = colIndex * (this.blockWidth + this.spacing) + 16;
+        let rowIndex = 0;
+        Object.keys(this.map).forEach(rowKey => {
+            const rowSeats = this.map[rowKey];
+            let color = "#000";
+            rowSeats.forEach(seat => {
+                const x = (seat.seatNumber - 1) * (this.blockWidth + this.spacing) + 16;
                 const y = rowIndex * (this.blockHeight + this.spacing) + 16;
-                const label = indexToLetters(rowIndex) + (colIndex + 1);
+                const label = seat.seatRow + seat.seatNumber;
 
-                if (seat === "0") {
-                    color = "#4C13A8";
-                } else if (seat === "1") {
-                    color = "#DC030E";
-                } else if (seat === "2") {
+                // Cần thêm trường hợp ghế đã bán!
+                if (seat.booked) {
+                    color = "#555555ff"
+                    if (seat.seatType.name == "Couple") {
+                        const block = new Block(x * 2 - 16, y, this.blockWidth * 2 + this.spacing, this.blockHeight, color);
+                        block.label = label;
+                        block.blockId = seat.seatId;
+                        block.booked = seat.booked;
+                        this.blocks.push(block);
+                        return;
+                    }
+                    
+                }
+                else if (seat.seatType.name == "Regular") color = "#4C13A8";
+                else if (seat.seatType.name == "VIP") color = "#DC030E";
+                else if (seat.seatType.name == "Couple") {
                     color = "#F005A2";
-                    const block = new Block(x, y, this.blockWidth * 2 + this.spacing, this.blockHeight, color, label);
+                    const block = new Block(x * 2 - 16, y, this.blockWidth * 2 + this.spacing, this.blockHeight, color);
+                    block.label = label;
+                    block.blockId = seat.seatId;
                     this.blocks.push(block);
                     return;
-                } else if (seat === "x") {
-                    color = "#555555ff";
                 }
-                const block = new Block(x, y, this.blockWidth, this.blockHeight, color, label);
+
+                const block = new Block(x, y, this.blockWidth, this.blockHeight, color);
+                block.label = label;
+                block.blockId = seat.seatId;
+                block.booked = seat.booked;
                 this.blocks.push(block);
-                //console.log("Đã thêm block " + `${block.x}`);
-            })
+            });
+
+            rowIndex++;
         });
-        //console.log("Load seat");
     };
 
     load_seat_type() {
@@ -143,9 +160,8 @@ class Board {
             const baseY = 40 + row * 32 + this.rowCount * (this.blockHeight + this.spacing);
 
             const blockSize = 20;
-            const block = new Block(baseX, baseY, blockSize, blockSize, color, "");
+            const block = new Block(baseX, baseY, blockSize, blockSize, color);
             block.draw(this.ctx);
-            //this.blocks.push(block);
 
             this.ctx.fillStyle = "white";
             this.ctx.font = "14px Arial";
@@ -153,8 +169,6 @@ class Board {
             this.ctx.textBaseline = "top";
             this.ctx.fillText(type, baseX + 30, baseY + 4);
         });
-
-        //console.log("Load type seat");
     };
 
     load_pan() {
@@ -169,8 +183,6 @@ class Board {
             if (this.isDragging) {
                 this.offsetX = e.clientX - this.startX;
                 this.offsetY = e.clientY - this.startY;
-                // limitPan();
-                //console.log(`${offsetX} - ${offsetY}`);
                 this.draw();
             }
         });
@@ -231,8 +243,8 @@ class Board {
 
             this.blocks.forEach(block => {
                 if (block.contains(lx, ly)) {
-                    block.selected = !block.selected;
-                    console.log(`${block.label} - ${block.selected}`);
+                    if (block.booked == false) block.selected = !block.selected;
+                    console.log(`id: ${block.blockId} - ${block.label} - ${block.selected}`);
                 }
             });
 
@@ -249,17 +261,25 @@ class Board {
         this.load_seat_type();
         this.ctx.restore();
     }
-}
 
-function indexToLetters(idx) {
-    let s = "";
-    idx = idx + 1;
-    while (idx > 0) {
-        const rem = (idx - 1) % 26;
-        s = String.fromCharCode(65 + rem) + s;
-        idx = Math.floor((idx - 1) / 26);
+    async fetchSeat(id) {
+        const response = await fetch(`/Movie/GetSeatsByShowtime?showtimeId=${id}`);
+        const result = await response.json();
+
+        //if (result)
+
+        const grouped = {};
+        result.forEach(seat => {
+            const row = seat.seatRow;
+            if (!grouped[row]) grouped[row] = [];
+            grouped[row].push(seat);
+        });
+
+        console.log(grouped);
+
+        return grouped;
     }
-    return s;
+
 }
 
 function getDeviceType() {
@@ -274,50 +294,3 @@ function getDeviceType() {
     }
 }
 
-
-// 0: ghế thường, 1: ghế VIP, 2: ghế đôi 
-const map = [
-    "00000000000000000",
-    "00000000000000000",
-    "000000x0000000000",
-    "11111111111111111",
-    "11111111111111111",
-    "  111111111111111",
-    "  111111111111111",
-    "  111111111111111",
-    "  111111111111111",
-    "  2 2 2 2 2 2 2  "
-]
-
-
-let scale = 1;
-const minScale = 0.5;   // nhỏ nhất
-const maxScale = 3;     // lớn nhất
-
-function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-}
-
-function limitPan() {
-    const scaledWidth = boardWidth * scale;
-    const scaledHeight = boardHeight * scale;
-    console.log(`${offsetX} - ${offsetY}`);
-    console.log(`${scaledWidth} - ${scaledHeight}`);
-
-    const limitX = ((Math.abs(offsetX) - scaledWidth) / scaledWidth) * 100 > -30;
-    const limitY = ((Math.abs(offsetY) - scaledHeight) / scaledHeight) * 100 > -90;
-    if (limitX) {
-        offsetX = 0;
-        console.log("Đạt giới hạn X")
-    }
-    // if (limitY) {
-    //     offsetY = 0;
-    //     console.log("Đạt giới hạn Y")
-    // }
-
-    // const minX = boardWidth - scaledWidth;
-    // const minY = boardHeight - scaledHeight;
-
-    // offsetX = clamp(offsetX, minX, 0);
-    // offsetY = clamp(offsetY, minY, 0);
-}

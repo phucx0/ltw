@@ -14,7 +14,7 @@ public partial class Seat
 
     public string? SeatRow { get; set; }
 
-    public short? SeatNumber { get; set; }
+    public int? SeatNumber { get; set; }
 
     public virtual Room Room { get; set; } = null!;
 

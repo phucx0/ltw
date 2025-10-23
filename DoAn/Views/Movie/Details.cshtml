@@ -25,8 +25,6 @@
                 @* <img class="movie-name-image" width="500" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/S4oi7EPZbv2UEPaukW54OORa0S8/AAAABQz4MR6j_-z0wc04tstAaUkTqi5jcqabP8DK-tAU4S8jiVMOD8GyyW0vpf43cCUe22_uEK9RT6ORHfr4ZNuseX9vAPeHGvR3Lg.webp?r=c40" alt=""> *@
                 <div class="movie-genres">
                     <p class="movie-genres-item">@Model.Genre</p>
-                    @* <p class="movie-genres-item">Bí ẩn</p>
-                    <p class="movie-genres-item">Bí ẩn</p> *@
                 </div>
                 <div class="d-flex gap-2">
                     <i class="bi bi-clock"></i>
@@ -83,7 +81,7 @@
             <div class="fs-3 fw-bold text-white ">Phim đang chiếu</div>
             <div class="movie-list">
                 <div class="movie">
-                    <img src="../images/100.jpg" loading="lazy" alt="">
+                    <img src="~/images/100.jpg" loading="lazy" alt="">
                     <div>
                         <div class="fw-bold">Tên phim</div>
                         <div>
@@ -100,27 +98,4 @@
 @section Scripts {
     <script src="~/js/details.js" asp-append-version="true"></script>
     <script src="~/js/seats.js" asp-append-version="true"></script>
-    <script>
-        document.querySelectorAll('.btn.day').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const movieId = this.dataset.movie;
-                const date = this.dataset.date;
-
-                // Bỏ class active cũ
-                document.querySelectorAll('.btn.day').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-
-                // Gửi request AJAX để lấy partial view
-                fetch(`/Movie/GetShowtimesPartial?id=${movieId}&date=${date}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network error');
-                        return response.text();
-                    })
-                    .then(html => {
-                        document.getElementById('showtimes-container').innerHTML = html;
-                    })
-                    .catch(err => console.error('Fetch error:', err));
-            });
-        });
-    </script>
 }

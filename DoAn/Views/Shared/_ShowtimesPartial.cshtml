@@ -2,11 +2,6 @@
 }
 @model IEnumerable<IGrouping<DoAn.Models.Cinema.Branch, DoAn.Models.Booking.Showtime>>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/movie/details.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/movie/seats.css" asp-append-version="true" />
-}
-
 <div class="text-white cinema-list">
     @if (Model != null && Model.Any())
     {
@@ -16,7 +11,7 @@
             <div class="cinema-wrapper d-flex flex-column gap-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="cinema-info d-flex gap-2">
-                        <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="Cinema">
+                        <img class="rounded cinema-logo" src="~/images/100.jpg" loading="lazy" alt="Cinema">
                         <div>
                             <div class="fw-bold cinema-name">@branch.Name</div>
                             <div class="cinema-address">Địa chỉ: @branch.Address</div>
@@ -30,7 +25,7 @@
                 <div class="showtime-list">
                     @foreach (var showtime in branchGroup.OrderBy(s => s.StartTime))
                     {
-                        <div class="showtime-item">
+                        <div class="showtime-item" data-showtime-id="@showtime.ShowtimeId">
                             @showtime.StartTime?.ToString("HH:mm") ~ @showtime.EndTime?.ToString("HH:mm")
                         </div>
                     }
@@ -40,11 +35,6 @@
     }
     else
     {
-        <p>Không có suất chiếu nào trong ngày này.</p>
+        <p class="cinema-wrapper d-flex flex-column gap-4">Không có suất chiếu nào trong ngày này.</p>
     }
 </div>
-
-@section Scripts {
-    <script src="~/js/details.js" asp-append-version="true"></script>
-    <script src="~/js/seats.js" asp-append-version="true"></script>
-}

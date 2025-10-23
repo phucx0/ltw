@@ -1,4 +1,5 @@
-﻿using DoAn.Models.Data;
+﻿using DoAn.Models.Booking;
+using DoAn.Models.Data;
 using DoAn.Models.Movies;
 using DoAn.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -78,13 +79,6 @@ namespace DoAn.Controllers
             ViewBag.GroupedShowtimes = groupedShowtimes;
 
             return View(movie);
-
-
-
-            ViewBag.ShowDates = showDates;
-            ViewBag.SelectedDate = selectedDate;
-            ViewBag.ShowtimesForDate = showtimesForDate;
-            return View(movie);
         }
 
         [HttpGet]
@@ -108,6 +102,25 @@ namespace DoAn.Controllers
             var grouped = showtimesForDate.GroupBy(s => s.Room.Branch);
             
             return PartialView("_ShowtimesPartial", grouped);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetSeatsByShowtime(int showtimeId)
+        {
+            var seats = await _context.Showtimes
+                .Where(s => s.ShowtimeId == showtimeId)
+                .SelectMany(s => s.Room.Seats)
+                .Select(s => new {
+                    s.SeatId,
+                    s.SeatType,
+                    s.SeatNumber,
+                    s.SeatRow,
+                    Booked = _context.Tickets.Any(t => t.ShowtimeId == showtimeId && t.SeatId == s.SeatId)
+                })
+                .ToListAsync();
+
+            return Ok(seats);
         }
     }
 }
