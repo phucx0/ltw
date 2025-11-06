@@ -1,0 +1,132 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model DoAn.Models.Movies.Movie
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Thêm phim mới</h2>
+    </div>
+
+
+    <form asp-action="Edit" asp-controller="Movies" method="post" class="form-wrapper">
+        @* <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a asp-action="Index" asp-controller="Movies" asp-area="Admin" class="btn btn-secondary">
+                Quay lại
+            </a>
+            <button type="submit" class="btn btn-secondary">Xác nhận thêm phim</button>
+        </div> *@
+        <div class="form-section">
+            <div class="form-section-title">Thông tin cơ bản</div>
+            <div class="form-field">
+                <label>Tên phim</label>
+                <input type="text" name="Title" value="@Model.Title" disabled />
+            </div>
+            <div class="form-field">
+                <label>Mô tả</label>
+                <input type="text" name="Description" value="@Model.Description" multiple disabled />
+            </div>
+            <div class="form-field">
+                <label>Đạo diễn</label>
+                <input type="text" name="director" value="" disabled />
+            </div>
+            <div class="form-field">
+                <label>Diễn viên</label>
+                <input type="text" name="actor" value="" placeholder="Tên diễn viên" />
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-section-title">Thể loại & định dạng</div>
+            <label>Thể loại phim</label>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" value="action">
+                    <span>Hành động</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" value="comedy">
+                    <span>Hài hước</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" value="drama">
+                    <span>Tâm lý</span>
+                </label>
+            </div>
+            <label>Định dạng chiếu</label>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" value="2D">
+                    <span>2D</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" value="3D">
+                    <span>3D</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" value="IMAX">
+                    <span>IMAX</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-section-title">Thời lượng & Lịch chiếu</div>
+            <div class="form-field">
+                <label>Thời lượng (phút)</label>
+                <input type="number" name="duration" value="@Model.Duration" disabled />
+            </div>
+            <div class="form-field">
+                <label>Ngày khởi chiếu</label>
+                <input type="datetime-local" name="release-date" value="@Model.ReleaseDate" disabled />
+            </div>
+            <div class="form-field">
+                <label>Ngày kết thúc</label>
+                <input type="datetime-local" name="name" value="" disabled />
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-section-title">Ngôn ngữ & Phân loại</div>
+            <div class="form-field">
+                <label>Ngôn ngữ</label>
+                <select class="form-select">
+                    <option value="">-- Chọn ngôn ngữ --</option>
+                    <option value="vietnamese">Tiếng Việt</option>
+                    <option value="english">Tiếng Anh</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label>Phụ đề</label>
+                <select class="form-select">
+                    <option value="">-- Chọn ngôn ngữ --</option>
+                    <option value="vietnamese">Tiếng Việt</option>
+                    <option value="english">Tiếng Anh</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label>Phân loại độ tuổi</label>
+                <select class="form-select">
+                    <option value="">-- Chọn thể loại --</option>
+                    <option value="P - Phổ biến">P - Phổ biến</option>
+                    <option value="K - Dưới 13 tuổi">K - Dưới 13 tuổi</option>
+                    <option value="T13 - 13+">T13 - 13+</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-section-title">Media</div>
+            <div class="form-field">
+                <label>URL ảnh bìa</label>
+                <input type="text" name="url-cover" value="@Model.CoverUrl" disabled />
+            </div>
+            <div class="form-field">
+                <label>URL Poster</label>
+                <input type="text" name="url-poster" value="@Model.PosterUrl" disabled />
+            </div>
+            <div class="form-field">
+                <label>URL Trailer</label>
+                <input type="text" name="url-trailer" value="@Model.TrailerUrl" disabled />
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,4 +1,5 @@
-﻿@model List<DoAn.Models.Movies.Movie>
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<DoAn.Models.Movies.Movie>
 @{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
@@ -14,11 +15,21 @@
     <div class="admin-toolbar">
         <div class="filter-group">
             <div class="filter-item">Tất cả</div>
-            <div class="filter-item">Trạng thái</div>
-            <div class="filter-item">Sắp xếp</div>
+            <select class="filter-item">
+                <option value="">Trạng thái</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <select class="filter-item">
+                <option value="">Sắp xếp</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
         </div>
         <div class="action-group">
-            <button class="btn btn--primary">Thêm mới</button>
+            <a asp-area="Admin" asp-action="Create" asp-controller="Movies" class="btn btn--primary">
+                Thêm mới
+            </a>
         </div>
     </div>
 
@@ -47,8 +58,12 @@
                     <td><p class="">@movie.Status</p></td>
                     <td>
                         <div class="actions">
-                            <button><i class="bi bi-eye-fill"></i></button>
-                            <button><i class="bi bi-pencil-square"></i></button>
+                            <a asp-area="Admin" asp-action="Details" asp-controller="Movies" asp-route-id="@movie.MovieId">
+                                <button><i class="bi bi-eye-fill"></i></button>
+                            </a>
+                            <a asp-area="Admin" asp-action="Edit" asp-controller="Movies" asp-route-id="@movie.MovieId">
+                                <button><i class="bi bi-pencil-square"></i></button>
+                            </a>
                             <button><i class="bi bi-trash3-fill"></i></button>
                         </div>
                     </td>
