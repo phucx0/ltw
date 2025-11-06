@@ -9,7 +9,7 @@ public partial class TicketCombo
 
     public int ComboId { get; set; }
 
-    public short? Quantity { get; set; }
+    public int? Quantity { get; set; }
 
     public virtual ComboItem ComboItem { get; set; } = null!;
 

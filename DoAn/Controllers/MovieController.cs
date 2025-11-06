@@ -1,4 +1,5 @@
-﻿using DoAn.Models.Data;
+﻿using DoAn.Models.Booking;
+using DoAn.Models.Data;
 using DoAn.Models.Movies;
 using DoAn.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace DoAn.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, DateTime? date)
         {
             if (string.IsNullOrEmpty(id.ToString()))
             {
@@ -41,17 +42,85 @@ namespace DoAn.Controllers
             }
             var movie = await _context.Movies
                 .Include(m => m.AgeRating)
-                //.Include(m => m.Directors)
-                //.Include(m => m.Actors)
                 .Include(m => m.MovieDirectors)
                 .Include(m => m.MovieActors)
+                .Include(m => m.Showtimes)
+                    .ThenInclude(s => s.Room)
+                        .ThenInclude(r => r.Branch)
                 .FirstOrDefaultAsync(m => m.MovieId == id);
             if (movie == null)
             {
                 return RedirectToAction("Error404", "Home");
             }
 
+            // Nếu không chọn ngày, mặc định là hôm nay
+            var selectedDate = date ?? DateTime.Now.Date;
+
+            // Lấy danh sách ngày có suất chiếu
+            var showDates = movie.Showtimes
+                .Where(s => s.StartTime.HasValue)
+                .Select(s => s.StartTime.Value.Date)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToList();
+
+            // Lấy suất chiếu theo ngày
+            var showtimesForDate = movie.Showtimes
+                .Where(s => s.StartTime.HasValue && s.StartTime.Value.Date == selectedDate.Date)
+                .ToList();
+
+            // Group theo rạp
+            var groupedShowtimes = showtimesForDate
+                .GroupBy(s => s.Room.Branch)
+                .ToList();
+
+            ViewBag.ShowDates = showDates;
+            ViewBag.SelectedDate = selectedDate;
+            ViewBag.GroupedShowtimes = groupedShowtimes;
+
             return View(movie);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetShowtimesPartial(int id, DateTime? date)
+        {
+            var movie = await _context.Movies
+                .Include(m => m.Showtimes)
+                    .ThenInclude(s => s.Room)
+                        .ThenInclude(r => r.Branch)
+                .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+                return RedirectToAction("Error404", "Home");
+
+            var selectedDate = date ?? DateTime.Now.Date;
+
+            var showtimesForDate = movie.Showtimes
+                .Where(s => s.StartTime.HasValue && s.StartTime.Value.Date == selectedDate.Date)
+                .ToList();
+
+            var grouped = showtimesForDate.GroupBy(s => s.Room.Branch);
+            
+            return PartialView("_ShowtimesPartial", grouped);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetSeatsByShowtime(int showtimeId)
+        {
+            var seats = await _context.Showtimes
+                .Where(s => s.ShowtimeId == showtimeId)
+                .SelectMany(s => s.Room.Seats)
+                .Select(s => new {
+                    s.SeatId,
+                    s.SeatType,
+                    s.SeatNumber,
+                    s.SeatRow,
+                    Booked = _context.Tickets.Any(t => t.ShowtimeId == showtimeId && t.SeatId == s.SeatId)
+                })
+                .ToListAsync();
+
+            return Ok(seats);
         }
     }
 }

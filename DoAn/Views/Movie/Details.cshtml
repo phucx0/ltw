@@ -3,6 +3,9 @@
 *@
 @{
     ViewData["Title"] = "Movie details page";
+    var showDates = ViewBag.ShowDates as List<DateTime>;
+    var selectedDate = (DateTime)ViewBag.SelectedDate;
+    var groupedShowtimes = ViewBag.GroupedShowtimes as List<IGrouping<DoAn.Models.Cinema.Branch, DoAn.Models.Booking.Showtime>>;
 }
 @model DoAn.Models.Movies.Movie
 
@@ -22,8 +25,6 @@
                 @* <img class="movie-name-image" width="500" src="https://occ-0-58-64.1.nflxso.net/dnm/api/v6/S4oi7EPZbv2UEPaukW54OORa0S8/AAAABQz4MR6j_-z0wc04tstAaUkTqi5jcqabP8DK-tAU4S8jiVMOD8GyyW0vpf43cCUe22_uEK9RT6ORHfr4ZNuseX9vAPeHGvR3Lg.webp?r=c40" alt=""> *@
                 <div class="movie-genres">
                     <p class="movie-genres-item">@Model.Genre</p>
-                    @* <p class="movie-genres-item">Bí ẩn</p>
-                    <p class="movie-genres-item">Bí ẩn</p> *@
                 </div>
                 <div class="d-flex gap-2">
                     <i class="bi bi-clock"></i>
@@ -53,95 +54,23 @@
                 </div>
             </div>
             <div class="day-list my-4">
-                <div class="day">T2 - 21/08</div>
-                <div class="day">T3 - 21/08</div>
-                <div class="day">T4 - 21/08</div>
-                <div class="day">T5 - 21/08</div>
-                <div class="day">T6 - 21/08</div>
-                <div class="day">T7 - 21/08</div>
-                <div class="day">CN - 21/08</div>
+                @foreach (var date in (List<DateTime>)ViewBag.ShowDates)
+                {
+                    var dayName = date.ToString("ddd", new System.Globalization.CultureInfo("vi-VN"));
+                    var label = $"{dayName.ToUpper()} - {date:dd/MM}";
+                    <button class="btn day @(date == selectedDate ? "active" : "")"
+                            data-date="@date.ToString("yyyy-MM-dd")"
+                            data-movie="@Model.MovieId">
+                        @label
+                    </button>
+                }
             </div>
             <div class="fs-3 fw-bold text-white">Các rạp</div>
-            <div class="text-white cinema-list">
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-                <div class="cinema-wrapper d-flex flex-column gap-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="cinema-info d-flex gap-2">
-                            <img class="rounded cinema-logo" src="../images/100.jpg" loading="lazy" alt="">
-                            <div>
-                                <div class="fw-bold cinema-name">Tên rạp</div>
-                                <div class="cinema-address">Địa chỉ: ABC, phường ABC, quận ABC</div>
-                            </div>
-                        </div>
-                        <div class="show-cinema-toggle">
-                            <i class="bi bi-chevron-up"></i>
-                        </div>
-                    </div>
-                    <div class="showtime-list">
-                        <div class="showtime-item">18:00 ~ 20:00</div>
-                        <div class="showtime-item">20:00 ~ 22:00</div>
-                        <div class="showtime-item">22:00 ~ 24:00</div>
-                    </div>
-                </div>
-
+            <div id="showtimes-container">
+                @await Html.PartialAsync("_ShowtimesPartial",
+                                ((List<IGrouping<DoAn.Models.Cinema.Branch, DoAn.Models.Booking.Showtime>>)ViewBag.GroupedShowtimes))
             </div>
-            <div>
+             <div>
                 <div class="fs-3 fw-bold text-white">Bình luận</div>
                 <div class="mt-2">
                     <input class="comment-input" type="text" placeholder="Viết nhận xét">
@@ -152,7 +81,7 @@
             <div class="fs-3 fw-bold text-white ">Phim đang chiếu</div>
             <div class="movie-list">
                 <div class="movie">
-                    <img src="../images/100.jpg" loading="lazy" alt="">
+                    <img src="~/images/100.jpg" loading="lazy" alt="">
                     <div>
                         <div class="fw-bold">Tên phim</div>
                         <div>
