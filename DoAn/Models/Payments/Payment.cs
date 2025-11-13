@@ -8,7 +8,7 @@ public partial class Payment
 {
     public int PaymentId { get; set; }
 
-    public int TicketId { get; set; }
+    public int BookingId { get; set; }
 
     public int? PromotionId { get; set; }
 
@@ -19,10 +19,10 @@ public partial class Payment
     public string? Status { get; set; }
 
     public string? TransactionId { get; set; }
+    public string TransactionContent { get; set; }
 
     public DateTime? PaymentTime { get; set; }
 
     public virtual Promotion? Promotion { get; set; }
-
-    public virtual Ticket Ticket { get; set; } = null!;
+    public virtual Booking.Booking Booking { get; set; }
 }

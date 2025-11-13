@@ -18,12 +18,12 @@ namespace DoAn.Areas.Admin.Controllers
         {
             List<Ticket> tickets = _context.Tickets
                 .Include(t => t.User)
-                .Include(t => t.Showtime)
+                .Include(t => t.Booking.Showtime)
                     .ThenInclude(s => s.Room)
                         .ThenInclude(r => r.Branch)
-                .Include(t => t.Showtime)
+                .Include(t => t.Booking.Showtime)
                     .ThenInclude(s => s.Movie)
-                .Include(t => t.Showtime)
+                .Include(t => t.Booking.Showtime)
                 .Take(15).ToList();
 
             return View(tickets);

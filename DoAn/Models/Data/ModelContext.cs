@@ -49,7 +49,8 @@ public partial class ModelContext : DbContext
     public DbSet<Membership> Memberships { get; set; }
     public DbSet<ComboItem> ComboItems { get; set; }
     public DbSet<TicketCombo> TicketCombos { get; set; }
-    
+    public DbSet<Booking.Booking> Bookings { get; set; }
+
 
 
 
@@ -381,11 +382,12 @@ public partial class ModelContext : DbContext
 
             entity.Property(t => t.TicketId).HasColumnName("ticket_id");
             entity.Property(t => t.BookingTime).HasColumnName("booking_time");
-            entity.Property(t => t.ShowtimeId).HasColumnName("showtime_id");
+            entity.Property(t => t.BookingId).HasColumnName("booking_id");
             entity.Property(t => t.SeatId).HasColumnName("seat_id");
             entity.Property(t => t.UserId).HasColumnName("user_id");
+            entity.Property(t => t.Price).HasColumnName("price");
 
-            entity.HasOne(t => t.Showtime).WithMany(s => s.Tickets).HasForeignKey(t => t.ShowtimeId);
+            entity.HasOne(t => t.Booking).WithMany(s => s.Tickets).HasForeignKey(t => t.BookingId);
             entity.HasOne(t => t.Seat).WithMany(s => s.Tickets).HasForeignKey(t => t.SeatId);
             entity.HasOne(t => t.User).WithMany(u => u.Tickets).HasForeignKey(t => t.UserId);
         });
@@ -400,9 +402,9 @@ public partial class ModelContext : DbContext
 
             entity.HasKey(tc => new { tc.TicketId, tc.ComboId });
 
-            entity.HasOne(tc => tc.Ticket)
-            .WithMany(t => t.TicketCombos)
-            .HasForeignKey(tc => tc.TicketId);
+            //entity.HasOne(tc => tc.Ticket)
+            //.WithMany(t => t.TicketCombos)
+            //.HasForeignKey(tc => tc.TicketId);
 
             entity.HasOne(tc => tc.ComboItem)
             .WithMany(ci => ci.TicketCombos)
@@ -418,21 +420,22 @@ public partial class ModelContext : DbContext
             entity.HasKey(p => p.PaymentId);
 
             entity.Property(p => p.PaymentId).HasColumnName("payment_id");
-            entity.Property(p => p.TicketId).HasColumnName("ticket_id");
+            entity.Property(p => p.BookingId).HasColumnName("booking_id");
             entity.Property(p => p.PromotionId).HasColumnName("promotion_id");
             entity.Property(p => p.Amount).HasColumnName("amount").HasColumnType("decimal(10,2)");
             entity.Property(p => p.Method).HasColumnName("method");
             entity.Property(p => p.Status).HasColumnName("status");
             entity.Property(p => p.TransactionId).HasColumnName("transaction_id");
+            entity.Property(p => p.TransactionContent).HasColumnName("transaction_content");
             entity.Property(p => p.PaymentTime).HasColumnName("payment_time");
 
-            entity.HasOne(p => p.Ticket)
-            .WithMany(t => t.Payments)
-            .HasForeignKey(p => p.TicketId);
+            entity.HasOne(p => p.Booking)
+                .WithMany(b => b.Payments)
+                .HasForeignKey(b => b.BookingId);
 
             entity.HasOne(p => p.Promotion)
-            .WithMany(p => p.Payments)
-            .HasForeignKey(p => p.PromotionId);
+                .WithMany(p => p.Payments)
+                .HasForeignKey(p => p.PromotionId);
 
         });
 
@@ -515,7 +518,22 @@ public partial class ModelContext : DbContext
 
         });
 
+        // ========================
+        // 21. Bookings (Bookings)
+        // ========================
+        modelBuilder.Entity<Booking.Booking>(entity =>
+        {
+            entity.ToTable("bookings");
+            entity.HasKey(b => b.BookingId);
+            entity.Property(b => b.BookingId).HasColumnName("booking_id");
+            entity.Property(b => b.UserId).HasColumnName("user_id");
+            entity.Property(b => b.ShowtimeId).HasColumnName("showtime_id");
+            entity.Property(b => b.TotalAmount).HasColumnName("total_amount").HasColumnType("decimal(10,2)");
+            entity.Property(b => b.Status).HasColumnName("status");
+            entity.Property(b => b.BookingTime).HasColumnName("booking_time").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
 
+            entity.HasOne(b => b.Showtime).WithMany(s => s.Bookings).HasForeignKey(b => b.ShowtimeId);
+        });
     }
 
 }

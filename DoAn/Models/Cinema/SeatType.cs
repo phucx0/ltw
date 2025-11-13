@@ -9,7 +9,7 @@ public partial class SeatType
 
     public string? Name { get; set; }
 
-    public decimal? ExtraPrice { get; set; }
+    public decimal ExtraPrice { get; set; }
 
     public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
 }

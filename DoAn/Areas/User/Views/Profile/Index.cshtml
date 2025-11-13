@@ -53,11 +53,11 @@
                         {
                             <div class="item ticket-item">
                                 <div class="icon">
-                                    <img width="100" height="100" src="@ticket.Showtime.Movie.PosterUrl" alt="Alternate Text" />
+                                    <img width="100" height="100" src="@ticket.Booking.Showtime.Movie.PosterUrl" alt="Alternate Text" />
                                 </div>
                                 <div class="info">
-                                    <div class="movie-name">@ticket.Showtime.Movie.Title</div>
-                                    <div class="detail">@ticket.BookingTime - @ticket.Showtime.StartTime tại @ticket.Seat.Room.Branch.Name</div>
+                                    <div class="movie-name">@ticket.Booking.Showtime.Movie.Title</div>
+                                    <div class="detail">@ticket.BookingTime - @ticket.Booking.Showtime.StartTime tại @ticket.Seat.Room.Branch.Name</div>
                                 </div>
                             </div>
                         }

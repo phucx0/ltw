@@ -1,5 +1,6 @@
 ﻿using DoAn.Models.Cinema;
 using DoAn.Models.Movies;
+using DoAn.Models.Payments;
 using System;
 using System.Collections.Generic;
 
@@ -23,5 +24,7 @@ public partial class Showtime
 
     public virtual Room Room { get; set; } = null!;
 
-    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    //public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
 }

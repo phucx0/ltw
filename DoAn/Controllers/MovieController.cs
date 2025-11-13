@@ -116,7 +116,8 @@ namespace DoAn.Controllers
                     s.SeatType,
                     s.SeatNumber,
                     s.SeatRow,
-                    Booked = _context.Tickets.Any(t => t.ShowtimeId == showtimeId && t.SeatId == s.SeatId)
+                    //Booked = _context.Tickets.Any(t => t.ShowtimeId == showtimeId && t.SeatId == s.SeatId)
+                    Booked = false
                 })
                 .ToListAsync();
 

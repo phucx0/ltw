@@ -1,4 +1,5 @@
-﻿class Block {
+﻿// Ô ghế
+class Block {
     constructor(x, y, width, height, color) {
         this.x = x;
         this.y = y;
@@ -30,7 +31,7 @@
     }
 }
 
-class Board {
+export class Board {
     constructor(board, showtimeId) {
         this.board = board;
         this.showtimeId = showtimeId;
@@ -58,10 +59,12 @@ class Board {
 
         this.isDragging = false;
         this.startX, this.startY;
+
+        // Danh sách ghế user đã chọn
+        this.selectedSeats = new Set();
     }
 
     
-
     configBoard() {
         const lengths = Object.entries(this.map).map(([row, seats]) => ({
             row,
@@ -237,14 +240,24 @@ class Board {
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
 
-            // 🔑 quy đổi về tọa độ logic
+            // quy đổi về tọa độ logic
             const lx = (mx - this.offsetX) / this.scale;
             const ly = (my - this.offsetY) / this.scale;
 
             this.blocks.forEach(block => {
                 if (block.contains(lx, ly)) {
                     if (block.booked == false) block.selected = !block.selected;
-                    console.log(`id: ${block.blockId} - ${block.label} - ${block.selected}`);
+
+                    const id = block.blockId
+                    if (this.selectedSeats.has(id)) {
+                        this.selectedSeats.delete(id);
+                    }
+                    else {
+                        this.selectedSeats.add(id);
+                    }
+
+
+                    console.log(`id: ${id} - ${block.label} - ${block.selected}`);
                 }
             });
 
@@ -265,8 +278,6 @@ class Board {
     async fetchSeat(id) {
         const response = await fetch(`/Movie/GetSeatsByShowtime?showtimeId=${id}`);
         const result = await response.json();
-
-        //if (result)
 
         const grouped = {};
         result.forEach(seat => {
@@ -293,4 +304,6 @@ function getDeviceType() {
         return "PC";
     }
 }
+
+
 

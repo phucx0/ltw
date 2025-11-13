@@ -29,6 +29,13 @@ namespace DoAn.Areas.User.Controllers
                 .Include(u => u.Membership)
                     .ThenInclude(m => m.MembershipTier)
                 .Include(u => u.Tickets)
+                    .ThenInclude(t => t.Booking)
+                        .ThenInclude(b => b.Showtime)
+                            .ThenInclude(s => s.Movie)
+                .Include(u => u.Tickets)
+                    .ThenInclude(t => t.Seat)
+                        .ThenInclude(s => s.Room)
+                            .ThenInclude(r => r.Branch)
                 .FirstOrDefault(u => u.UserId.ToString() == userId);
 
             if (user == null)
@@ -36,7 +43,6 @@ namespace DoAn.Areas.User.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            //_logger.LogInformation($"User loaded: {user.Membership.MembershipTier.TierName}");
             return View(user);
         }
     }

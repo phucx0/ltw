@@ -1,0 +1,166 @@
+﻿@model DoAn.ViewModels.CheckoutViewModel;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+}
+<style>
+    /* Container chính chia 2 cột: thông tin & thanh toán */
+    .checkout-container {
+        margin: 2rem auto;
+        width: 70%;
+        min-height: 80vh;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 2 cột đều nhau */
+        gap: 2rem;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    /* Cột thông tin booking */
+    .booking-info-wrapper {
+        background-color: #f8f8f8;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+        .booking-info-wrapper > div {
+            margin-bottom: 1rem;
+        }
+
+        /* Tiêu đề nhỏ cho từng section */
+        .booking-info-wrapper div > div:first-child {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+    /* Danh sách vé */
+    .tickets-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .ticket-item {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Giá vé */
+    .ticket-price {
+        margin-top: 0.5rem;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    /* Cột thanh toán / QR code */
+    .payment-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f2f2f2;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 1rem;
+    }
+
+    .payment-wrapper img {
+        max-width: 80%;
+        border-radius: 8px;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .confirm-payment-button{
+        outline: none;
+        border: none;
+        background-color: red;
+        color: white;
+        padding: 16px 16px;
+        border-radius: 16px;
+    }
+
+</style>
+
+<div class="checkout-container">
+    <div class="booking-info-wrapper">
+        <div>
+            <div>Thông tin phim</div>
+            <div class="" style="display: flex; gap: 16px;">
+                <img src=@Model.Booking.Showtime.Movie.PosterUrl alt=@Model.Booking.Showtime.Movie.Title width="70" height="100"/>
+                <div>@Model.Booking.Showtime.Movie.Title</div>
+            </div>
+            <div class="info-row">
+                <div>Thời lượng:</div>
+                <div>@Model.Booking.Showtime.Movie.Duration phút</div>
+            </div>
+            @* <div class="info-row">
+                <div>Định dạng:</div>
+                <div>@Model.Booking.Showtime.Movie.AgeRating.RatingCode</div>
+            </div> *@
+        </div>
+
+        <div>
+            <div>Thông tin rạp</div>
+            <div class="info-row">
+                <div>Rạp chiếu:</div>
+                <div>@Model.Booking.Showtime.Room.Branch.Name</div>
+            </div>
+            <div class="info-row">
+                <div>Phòng chiếu:</div>
+                <div>@Model.Booking.Showtime.Room.Name</div>
+            </div>
+            <div class="info-row">
+                <div>Ngày chiếu:</div>
+                <div>@Model.Booking.Showtime.StartTime</div>
+            </div>
+            <div class="info-row">
+                <div>Giờ chiếu:</div>
+                <div>@Model.Booking.Showtime.StartTime</div>
+            </div>
+            <div class="info-row">
+                <div>Ghế ngồi:</div>
+                <div class="tickets-list">
+                    @foreach (var ticket in Model.Booking.Tickets)
+                    {
+                        <div class="">@ticket.Seat.SeatRow@ticket.Seat.SeatNumber </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-wrapper">
+        <img src="@Model.Url" alt="QR Code thanh toán" />
+        <form asp-action="VerifyPayment"
+              asp-controller="Payment"
+              asp-area="Booking"
+              asp-route-bookingId="@Model.Booking.BookingId"
+              method="post">
+            @* <input type="hidden" name="bookingId" value="@Model.Booking.BookingId" /> *@
+            <button type="submit" class="confirm-payment-button">
+                Xác nhận đã thanh toán
+            </button>
+        </form>
+
+        @* <button 
+            asp-action="VerifyPayment" 
+            asp-controller="Payment" 
+            asp-area="Booking"
+            asp-route-bookingId="@Model.Booking.BookingId"
+            method="post"
+            class="confirm-payment-button"
+        >
+            Xác nhận đã thanh toán
+        </button> *@
+    </div>
+</div>

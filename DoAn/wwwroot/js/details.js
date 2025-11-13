@@ -1,4 +1,6 @@
-﻿document.querySelectorAll(".movie-description-wrapper").forEach(wrapper => {
+﻿import { Board } from "./seats.js";
+
+document.querySelectorAll(".movie-description-wrapper").forEach(wrapper => {
     const desc = wrapper.querySelector(".movie-description");
     const btn = wrapper.querySelector(".toggle-btn");
 
@@ -7,7 +9,6 @@
         btn.textContent = desc.classList.contains("expanded") ? "Thu gọn" : "Xem thêm";
     });
 });
-
 
 function load_showtime_item() {
     document.querySelectorAll('.showtime-item').forEach(item => {
@@ -44,7 +45,7 @@ function load_showtime_item() {
                             </div>
                         </div>
     
-                        <button class="btn-buy">Mua vé</button>
+                        <button class="btn-buy" id="book-tickets" >Mua vé</button>
                     </div>
                 </div>
             </div>
@@ -54,12 +55,29 @@ function load_showtime_item() {
             requestAnimationFrame(() => {
                 popup.classList.add("show");
             });
+            const bookButton = document.getElementById("book-tickets");
 
             let board = popup.querySelector("#board");
             let closePopup = popup.querySelector("#close-popup-btn");
             if (!board) return;
             const canvas = new Board(board, showtimeId);
             canvas.init();
+
+            bookButton.addEventListener("click", async () => {
+                const response = await fetch("/Booking/Booking/CreateBooking", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        showtimeId: Number(showtimeId),
+                        seatIds: Array.from(canvas.selectedSeats),
+                    })
+                })
+                const result = await response.json();
+
+                if (result.bookingId) {
+                    window.location.href = `/Booking/Booking/Checkout?bookingId=${result.bookingId}`;
+                }
+            })
 
             closePopup.addEventListener('click', () => {
                 popup.classList.remove("show");

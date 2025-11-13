@@ -1,4 +1,5 @@
-﻿using DoAn.Models.Data;
+﻿using DoAn.Areas.Booking.Services;
+using DoAn.Models.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
+builder.Services.AddHttpClient<PaymentService>();
+builder.Services.AddScoped<BookingService>();
 
 // Cấu hình Authentication sử dụng Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
