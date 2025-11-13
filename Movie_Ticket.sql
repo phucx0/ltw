@@ -741,3 +741,58 @@ BEGIN
     WHERE i.role_id IS NULL;
 END;
 GO
+
+
+
+-- ===========
+-- Thêm bảng bookings
+-- ===========
+CREATE TABLE bookings (
+    booking_id INT IDENTITY(1,1) NOT NULL,
+    user_id INT NOT NULL,
+    showtime_id INT NOT NULL,
+    total_amount DECIMAL(10,2),
+    status NVARCHAR(50),          -- Pending, Paid, Cancelled
+    booking_time DATETIME DEFAULT GETDATE(),
+	CONSTRAINT pk_bookings PRIMARY KEY(booking_id),
+    CONSTRAINT fk_bookings_users FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT fk_bookings_showtimes FOREIGN KEY (showtime_id) REFERENCES showtimes(showtime_id)
+);
+
+
+-- ===========
+-- Thay đổi thuộc tính trong bảng payments
+-- ===========
+ALTER TABLE payments 
+DROP CONSTRAINT fk_payments_tickets
+
+ALTER TABLE payments 
+DROP COLUMN ticket_id
+
+ALTER TABLE payments 
+ADD booking_id INT 
+
+ALTER TABLE payments 
+ADD CONSTRAINT fk_payments_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE
+
+alter table payments
+add transaction_content varchar(255)
+
+--alter table payments
+--add constraint uni_payments_transaction_content unique(transaction_content)
+
+
+-- ===========
+-- Thay đổi thuộc tính trong bảng tickets
+-- ===========
+ALTER TABLE TICKETS
+DROP CONSTRAINT fk_tickets_showtimes
+
+ALTER TABLE TICKETS
+DROP COLUMN showtime_id
+
+ALTER TABLE TICKETS
+ADD booking_id int
+
+ALTER TABLE TICKETS 
+ADD CONSTRAINT fk_tickets_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE
