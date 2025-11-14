@@ -24,7 +24,16 @@ namespace DoAn.Areas.Booking.Controllers
 
         public async Task<IActionResult> Checkout(int bookingId)
         {
+            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
             var booking = await _context.Bookings
+                .Where(b => b.BookingId == bookingId)
+                .Select(b => new { b.BookingId, b.Status })
+                .FirstOrDefaultAsync();
+
+            if (booking == null || booking.Status == "canceled" || booking.Status == "paid")
+                return RedirectToAction("Movies", "Movie", new { area = "" });
+
+            var fullBooking = await _context.Bookings
                 .Include(b => b.Showtime)
                     .ThenInclude(s => s.Movie)
                 .Include(b => b.Showtime)
@@ -34,19 +43,19 @@ namespace DoAn.Areas.Booking.Controllers
                 .Include(b => b.Tickets)
                     .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
-            if (booking == null)
+            if (fullBooking == null)
                 return NotFound();
             var payment = await _context.Payments
                 .FirstOrDefaultAsync(p => p.BookingId == bookingId);
 
             if (payment == null) return NotFound();
-            Console.WriteLine($"Total amount: {booking.TotalAmount}");
+            Console.WriteLine($"Total amount: {fullBooking.TotalAmount}");
             decimal fakeAmount = 10000;
             string bank = "Mbbank";
-            string qrLink = $"https://qr.sepay.vn/img?acc={_paymentService._accountNumber}&bank={bank}&amount={fakeAmount}&des=Booking{booking.BookingId}";
+            string qrLink = $"https://qr.sepay.vn/img?acc={_paymentService._accountNumber}&bank={bank}&amount={fakeAmount}&des=Booking{fullBooking.BookingId}";
             var viewModel = new CheckoutViewModel
             {
-                Booking = booking,
+                Booking = fullBooking,
                 Payment = payment,
                 Url = qrLink
             };
@@ -57,11 +66,9 @@ namespace DoAn.Areas.Booking.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingRequest request)
         {
+            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -108,15 +115,25 @@ namespace DoAn.Areas.Booking.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> VerifyPayment(string paymentCode, decimal expectedAmount)
+        public async Task<IActionResult> CancelBooking(int bookingId)
         {
-            PaymentResult result = await _paymentService.VerifyPaymentAsync(paymentCode, expectedAmount);
-            return Ok(
-                new
-                {
-                    status = result.Success
-                }
-            );
+            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            // Cập nhật trạng thái 'canceled'
+            await _context.Bookings
+                .Where(b => b.BookingId == bookingId)
+                .ExecuteUpdateAsync(s => s.SetProperty(b => b.Status, "canceled"));
+            await _context.Payments
+                .Where(p => p.BookingId == bookingId)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, "canceled"));
+            await _context.Tickets
+                .Where(t => t.BookingId == bookingId)
+                .ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, "canceled"));
+
+            await transaction.CommitAsync();
+            return RedirectToAction("Movies", "Movie", new { area = "" });
         }
     }
 }

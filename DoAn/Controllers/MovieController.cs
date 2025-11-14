@@ -56,17 +56,17 @@ namespace DoAn.Controllers
             // Nếu không chọn ngày, mặc định là hôm nay
             var selectedDate = date ?? DateTime.Now.Date;
 
-            // Lấy danh sách ngày có suất chiếu
+            // Lấy danh sách ngày có suất chiếu 
             var showDates = movie.Showtimes
-                .Where(s => s.StartTime.HasValue)
-                .Select(s => s.StartTime.Value.Date)
+                .Where(s => s.StartTime >= DateTime.Now)
+                .Select(s => s.StartTime.Date)
                 .Distinct()
                 .OrderBy(d => d)
                 .ToList();
 
             // Lấy suất chiếu theo ngày
             var showtimesForDate = movie.Showtimes
-                .Where(s => s.StartTime.HasValue && s.StartTime.Value.Date == selectedDate.Date)
+                .Where(s => s.StartTime.Date == selectedDate.Date)
                 .ToList();
 
             // Group theo rạp
@@ -96,7 +96,7 @@ namespace DoAn.Controllers
             var selectedDate = date ?? DateTime.Now.Date;
 
             var showtimesForDate = movie.Showtimes
-                .Where(s => s.StartTime.HasValue && s.StartTime.Value.Date == selectedDate.Date)
+                .Where(s => s.StartTime.Date == selectedDate.Date)
                 .ToList();
 
             var grouped = showtimesForDate.GroupBy(s => s.Room.Branch);
@@ -116,8 +116,11 @@ namespace DoAn.Controllers
                     s.SeatType,
                     s.SeatNumber,
                     s.SeatRow,
-                    //Booked = _context.Tickets.Any(t => t.ShowtimeId == showtimeId && t.SeatId == s.SeatId)
-                    Booked = false
+                    Booked = _context.Tickets.Any(t => 
+                        t.Booking.ShowtimeId == showtimeId && 
+                        (t.Status == "booked" || t.Status == "pending") && 
+                        t.SeatId == s.SeatId
+                    )
                 })
                 .ToListAsync();
 

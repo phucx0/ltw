@@ -76,7 +76,6 @@
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid #00000031;
-    height: 250px;
 }
 
 .card-header {
@@ -96,6 +95,8 @@
 .card-content {
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    height: 300px;
 }
 
 .card-content .item {

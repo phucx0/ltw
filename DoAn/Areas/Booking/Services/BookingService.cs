@@ -14,7 +14,7 @@ namespace DoAn.Areas.Booking.Services
         }
         public async Task<(Models.Booking.Booking booking, Payment payment)> CreateBooking(int userId, int showtimeId, decimal totalAmount)
         {
-            string status = "Pending";
+            string status = "pending";
             var booking = new Models.Booking.Booking
             {
                 UserId = userId,
@@ -54,7 +54,7 @@ namespace DoAn.Areas.Booking.Services
                     {
                         SeatId = seatId,
                         UserId = userId,
-                        Status = "booked",
+                        Status = "pending",
                         BookingId = bookingId,
                         Price = extraPrice + basePrice,
                         BookingTime = DateTime.Now

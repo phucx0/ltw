@@ -3,8 +3,272 @@
 *@
 @{
 }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-<div>
-    <h2>Payment Successful!</h2>
-    <p>Thank you for your payment. Your booking has been confirmed.</p>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(229, 9, 20, 0.3);
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+        animation: slideIn 0.6s ease-out;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+        padding: 40px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+
+    .checkmark {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+        animation: scaleIn 0.5s ease-out 0.3s both;
+    }
+
+    .checkmark svg {
+        width: 50px;
+        height: 50px;
+        stroke: #e50914;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        animation: draw 0.5s ease-out 0.6s both;
+    }
+
+    
+    .checkmark svg path {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+    }
+
+    .header h1 {
+        color: white;
+        font-size: 28px;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .content {
+        padding: 40px 30px;
+    }
+
+    .ticket-info {
+        background: #f8f8f8;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border-left: 4px solid #e50914;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px dashed #ddd;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .info-value {
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: right;
+    }
+
+    .booking-code {
+        background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .booking-code-label {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .booking-code-value {
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        font-family: 'Courier New', monospace;
+    }
+
+    .actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: #e50914;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background: #b20710;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+        }
+
+    .btn-secondary {
+        background: white;
+        color: #e50914;
+        border: 2px solid #e50914;
+    }
+
+        .btn-secondary:hover {
+            background: #e50914;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .note {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 25px;
+        font-size: 14px;
+        color: #856404;
+    }
+
+        .note strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+</style>
+<div class="container">
+    <div class="header">
+        <div class="checkmark">
+            <svg viewBox="0 0 52 52">
+                <path d="M14 27l7 7 16-16" />
+            </svg>
+        </div>
+        <h1>Thanh Toán Thành Công!</h1>
+        <p>Cảm ơn bạn đã đặt vé. Chúc bạn có trải nghiệm xem phim tuyệt vời!</p>
+    </div>
+
+    <div class="content">
+        <div class="booking-code">
+            <div class="booking-code-label">Mã đặt vé</div>
+            <div class="booking-code-value">MV2024A1B2C</div>
+        </div>
+
+        <div class="ticket-info">
+            <div class="info-row">
+                <span class="info-label">🎬 Tên phim</span>
+                <span class="info-value">Avengers: Endgame</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">📅 Ngày chiếu</span>
+                <span class="info-value">15/11/2025</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🕐 Suất chiếu</span>
+                <span class="info-value">19:30</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🎭 Rạp chiếu</span>
+                <span class="info-value">CGV Vincom Center</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">💺 Ghế ngồi</span>
+                <span class="info-value">H7, H8</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🎫 Số lượng vé</span>
+                <span class="info-value">2 vé</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">💰 Tổng tiền</span>
+                <span class="info-value" style="color: #e50914; font-size: 18px;">360.000 VNĐ</span>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>📧 Lưu ý quan trọng:</strong>
+            Vé điện tử đã được gửi đến email của bạn. Vui lòng xuất trình mã đặt vé hoặc email xác nhận tại quầy để nhận vé.
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.print()">📥 Tải vé</button>
+            <button class="btn btn-secondary" onclick="alert('Chức năng đang phát triển!')">🏠 Trang chủ</button>
+        </div>
+    </div>
 </div>

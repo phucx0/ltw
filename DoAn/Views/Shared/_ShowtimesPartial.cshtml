@@ -26,7 +26,7 @@
                     @foreach (var showtime in branchGroup.OrderBy(s => s.StartTime))
                     {
                         <div class="showtime-item" data-showtime-id="@showtime.ShowtimeId">
-                            @showtime.StartTime?.ToString("HH:mm") ~ @showtime.EndTime?.ToString("HH:mm")
+                            @showtime.StartTime.ToString("HH:mm") ~ @showtime.EndTime.ToString("HH:mm")
                         </div>
                     }
                 </div>

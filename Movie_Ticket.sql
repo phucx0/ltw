@@ -796,3 +796,13 @@ ADD booking_id int
 
 ALTER TABLE TICKETS 
 ADD CONSTRAINT fk_tickets_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE
+
+
+-- ===========
+-- Thêm trạng thái pending cho tickets
+-- ===========
+ALTER TABLE tickets
+DROP CONSTRAINT chk_tickets_status 
+
+ALTER TABLE tickets
+ADD CONSTRAINT chk_tickets_status CHECK (status IN ('booked','canceled','used', 'pending'))
