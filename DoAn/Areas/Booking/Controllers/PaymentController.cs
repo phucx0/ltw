@@ -1,9 +1,14 @@
 ﻿using DoAn.Areas.Booking.Services;
 using DoAn.Models.Accounts;
+using DoAn.Models.Booking;
 using DoAn.Models.Data;
+using DoAn.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DoAn.Areas.Booking.Controllers
 {
@@ -12,64 +17,107 @@ namespace DoAn.Areas.Booking.Controllers
     {
         private readonly PaymentService _paymentService;
         private readonly ModelContext _context;
-
-        public PaymentController(PaymentService paymentService, ModelContext context)
+        public PaymentController(PaymentService paymentService, ModelContext context, IHubContext<PaymentHub> hub)
         {
             _paymentService = paymentService;
             _context = context;
         }
 
-        public ActionResult Success()
+        public async Task<ActionResult> Success(int bookingId)
         {
+            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var booking = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+            if (booking == null)
+            {
+                return View();
+            }
+            var movie = await _context.Movies
+                .Include(m => m.Showtimes)
+                .FirstOrDefaultAsync(m => m.Showtimes.Any(s => s.ShowtimeId == booking.ShowtimeId));
+            if (movie == null)
+            {
+                return View();
+            }
+            var fullBooking = await _context.Bookings
+                .Include(b => b.Showtime)
+                    .ThenInclude(s => s.Movie)
+                .Include(b => b.Showtime)
+                    .ThenInclude(s => s.Room)
+                        .ThenInclude(r => r.Branch)
+                .Include(b => b.User)
+                .Include(b => b.Tickets)
+                    .ThenInclude(t => t.Seat)
+                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+
+            //SuccessViewModel ViewModel = new SuccessViewModel
+            //{
+            //    Booking = booking,
+            //    Movie = movie
+            //};
             return View();
         }
         public ActionResult Failed()
         {
             return View();
-
         }
-        [HttpPost]
-        public async Task<IActionResult> VerifyPayment(int bookingId)
+        
+        // Sepay sẽ gọi tới API này
+        [HttpPost] 
+        public async Task<PaymentResult> Callback()
         {
-            // Kiểm tra đăng nhập
-            if (!User.Identity.IsAuthenticated)
-                return RedirectToAction("Login", "Auth");
-            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            using var reader = new StreamReader(Request.Body);
+            var body = await reader.ReadToEndAsync();
 
-            // Kiểm tra booking 
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(b => b.BookingId == bookingId);
-            if (booking == null)
-                return NotFound("Không tìm thấy đơn đặt vé.");
-
-            // Kiểm tra payment
+            // Deserialize từ JSON string
+            var payload = JsonConvert.DeserializeObject<SepayPayload>(body);
+            if (payload == null)
+            {
+                Console.WriteLine("Payload is null!");
+                return new PaymentResult { Success = false, Message = "Payload null" };
+            }
             var payment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.BookingId == bookingId);
+                .FirstOrDefaultAsync(p => p.TransactionContent == payload.Content);
             if (payment == null)
-                return NotFound("Chưa có giao dịch thanh toán cho đơn này.");
+            {
+                Console.WriteLine("Không tìm thấy payment!");
+                return new PaymentResult { Success = false, Message = "Không tìm thấy payment!" };
+            }
+
+            var booking = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.BookingId == payment.BookingId);
+            if (booking == null)
+            {
+                Console.WriteLine("Không tìm thấy booking");
+                return new PaymentResult { Success = false, Message = "Không tìm thấy booking" };
+            }
+
+            // Đối chiếu số tiền thanh toán
             decimal fakeAmount = 10000;
-            PaymentResult result = await _paymentService.VerifyPaymentAsync(payment.TransactionContent, fakeAmount);
-            if (result.Success)
+            payment.Amount = payload.TransferAmount; // Phải cập nhật số tiền thực tế từ payload
+            payment.TransactionId = payload.Id.ToString(); 
+            if (fakeAmount == payload.TransferAmount)
             {
                 // Cập nhật trạng thái
                 payment.Status = "paid";
-                payment.Amount = result.Transaction?.AmountIn; // xác nhận lại số tiền thực tế
-                payment.TransactionId = result.Transaction?.ReferenceNumber;
                 booking.Status = "confirmed";
+
+                await _context.Tickets
+                    .Where(t => t.BookingId == booking.BookingId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, "booked"));
+
                 await _context.SaveChangesAsync();
+                await _paymentService.NotifyPaymentResult(booking.UserId, booking.BookingId, true);
 
-                // 
-                return RedirectToAction("Success", "Payment", new { area = "Booking", bookingId });
+                Console.WriteLine("Thanh toan thanh cong");
+                return new PaymentResult { Success = true };
             }
-            else
-            {
-                // Cập nhật trạng thái thất bại nếu cần
-                //payment.Status = "Failed";
-                //booking.Status = "PaymentFailed";
-                //await _context.SaveChangesAsync();
+            await _paymentService.NotifyPaymentResult(booking.UserId, booking.BookingId, false);
 
-                return RedirectToAction("Failed", "Payment", new { area = "Booking", bookingId });
-            }
+            Console.WriteLine("Thanh toan that bai");
+            return new PaymentResult { Success = false };
         }
     }
 }

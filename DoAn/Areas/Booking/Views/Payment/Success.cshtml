@@ -1,6 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@* @model DoAn.ViewModels.SuccessViewModel *@
 @{
 }
 <style>
@@ -233,7 +231,7 @@
         <div class="ticket-info">
             <div class="info-row">
                 <span class="info-label">🎬 Tên phim</span>
-                <span class="info-value">Avengers: Endgame</span>
+                @* <span class="info-value">@Model.Movie.Title</span> *@
             </div>
             <div class="info-row">
                 <span class="info-label">📅 Ngày chiếu</span>
@@ -257,7 +255,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">💰 Tổng tiền</span>
-                <span class="info-value" style="color: #e50914; font-size: 18px;">360.000 VNĐ</span>
+                @* <span class="info-value" style="color: #e50914; font-size: 18px;">@Model.Booking.TotalAmount VNĐ</span> *@
             </div>
         </div>
 

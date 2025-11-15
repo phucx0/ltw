@@ -37,7 +37,7 @@ namespace DoAn.Areas.Booking.Services
                 PaymentTime = DateTime.Now
             };
             await _context.Payments.AddAsync(payment);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             return (booking, payment);
         }
@@ -61,12 +61,7 @@ namespace DoAn.Areas.Booking.Services
                     });
                 }
                 await _context.Tickets.AddRangeAsync(tickets);
-                await _context.SaveChangesAsync();
-                //foreach (var t in tickets)
-                //{
-                //    _context.Tickets.Add(t);
-                //    await _context.SaveChangesAsync(); 
-                //}
+                //await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -80,10 +75,8 @@ namespace DoAn.Areas.Booking.Services
     }
     public class BookingRequest
     {
-        //public int UserId { get; set; }
         public int ShowtimeId { get; set; }
         public List<int> SeatIds { get; set; }
-        //public decimal Amount { get; set; }  // tổng tiền booking
     }
 
 }

@@ -9,6 +9,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
 builder.Services.AddHttpClient<PaymentService>();
 builder.Services.AddScoped<BookingService>();
+builder.Services.AddSignalR();
 
 // Cấu hình Authentication sử dụng Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -53,5 +54,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<PaymentHub>("/paymentHub");
 
 app.Run();

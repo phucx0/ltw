@@ -5,7 +5,7 @@
     ViewBag.Title = "Thanh toán";
 }
 
-<div class="checkout-container">
+<div class="checkout-container" data-user-id="@Model.Booking.UserId">
     <div class="booking-info-wrapper text-lg">
         <div class="booking-info-header text-xl font-bold">
             Thông tin đặt vé
@@ -65,7 +65,7 @@
             <img src="@Model.Url" alt="QR Code thanh toán" />
         </div>
         <div style="display: flex; align-items: center; gap:16px; width: 100%;">
-            <form
+            @* <form
                   asp-action="VerifyPayment"
                   asp-controller="Payment"
                   asp-area="Booking"
@@ -74,7 +74,7 @@
                 <button type="submit" class="confirm-payment-button text-lg">
                     Xác nhận đã thanh toán
                 </button>
-            </form>
+            </form> *@
             <form asp-action="CancelBooking"
                   asp-controller="Booking"
                   asp-area="Booking"

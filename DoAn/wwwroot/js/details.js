@@ -64,6 +64,7 @@ function load_showtime_item() {
             canvas.init();
 
             bookButton.addEventListener("click", async () => {
+                canvas.selectedSeats.forEach(t => console.log("Ghế: " + t));
                 const response = await fetch("/Booking/Booking/CreateBooking", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -72,10 +73,20 @@ function load_showtime_item() {
                         seatIds: Array.from(canvas.selectedSeats),
                     })
                 })
-                const result = await response.json();
+                // Kiểm tra status trước khi đọc JSON
+                if (response.status === 401) {
+                    window.location.href = "/User/Auth/Login";
+                    return;
+                }
 
-                if (result.bookingId) {
-                    window.location.href = `/Booking/Booking/Checkout?bookingId=${result.bookingId}`;
+                const result = await response.json();
+                console.log(result);
+                if (result.success) {
+                    setTimeout(() => {
+                        window.location.href = `/Booking/Booking/Checkout?bookingId=${result.bookingId}`;
+                    }, 300);
+                } else {
+                    alert(result.message);
                 }
             })
 
