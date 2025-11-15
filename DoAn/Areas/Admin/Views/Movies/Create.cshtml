@@ -1,4 +1,5 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@model DoAn.ViewModels.MovieViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewBag.Title = "Thêm phim mới";
@@ -6,128 +7,136 @@
 }
 
 <div class="admin-page">
-    <!-- Tiêu đề -->
+
     <div class="admin-header">
         <h2 class="admin-title">Thêm phim mới</h2>
     </div>
 
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-        <a asp-action="Index" asp-controller="Movies" asp-area="Admin" class="btn btn-secondary">
-            Quay lại
-        </a>
-        <button class="btn btn-secondary">Xác nhận thêm phim</button>
-    </div>
+    <form asp-action="Create" asp-controller="Movies" asp-area="Admin" method="post">
 
-    <div class="form-wrapper">
-        <div class="form-section">
-            <div class="form-section-title">Thông tin cơ bản</div>
-            <div class="form-field">
-                <label>Tên phim</label>
-                <input type="text" name="name" value="" placeholder="Nhập tên phim"/>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a asp-action="Index" asp-controller="Movies" asp-area="Admin" class="btn btn-secondary">
+                Quay lại
+            </a>
+            <button type="submit" class="btn btn-secondary">Xác nhận thêm phim</button>
+        </div>
+
+        <div class="form-wrapper">
+            <!-- Thông tin cơ bản -->
+            <div class="form-section">
+                <div class="form-section-title">Thông tin cơ bản</div>
+
+                <div class="form-field">
+                    <label>Tên phim</label>
+                    <input type="text" name="Title" value="@Model.Title" placeholder="Nhập tên phim" required />
+                </div>
+
+                <div class="form-field">
+                    <label>Mô tả</label>
+                    <input type="text" name="Description" value="@Model.Description" placeholder="Mô tả về phim" />
+                </div>
             </div>
-            <div class="form-field">
-                <label>Mô tả</label>
-                <input type="text" name="name" value="" placeholder="Mô tả về phim" />
+
+            <!-- Thể loại -->
+            <div class="form-section">
+                <div class="form-section-title">Thể loại phim</div>
+
+                <div class="checkbox-group">
+                    @foreach (var genre in Model.AllGenres)
+                    {
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="SelectedGenres" value="@genre" />
+                            <span>@genre</span>
+                        </label>
+                    }
+                </div>
             </div>
-            <div class="form-field">
-                <label>Đạo diễn</label>
-                <input type="text" name="name" value="" placeholder="Tên đạo diễn" />
+
+            <!-- Diễn viên -->
+            <div class="form-section">
+                <div class="form-section-title">Diễn viên</div>
+
+                @foreach (var actor in Model.AllActors)
+                {
+                    <label>
+                        <input type="checkbox" name="SelectedActorIds" value="@actor.ActorId" />
+                        @actor.ActorName
+                    </label>
+                }
             </div>
-            <div class="form-field">
-                <label>Diễn viên</label>
-                <input type="text" name="name" value="" placeholder="Tên diễn viên" />
+
+            <!-- Đạo diễn -->
+            <div class="form-section">
+                <div class="form-section-title">Đạo diễn</div>
+
+                @foreach (var dir in Model.AllDirectors)
+                {
+                    <label>
+                        <input type="checkbox" name="SelectedDirectorIds" value="@dir.DirectorId" />
+                        @dir.DirectorName
+                    </label>
+                }
+            </div>
+
+            <!-- Thời lượng & Lịch chiếu & Trạng thái -->
+            <div class="form-section">
+                <div class="form-section-title">Thời lượng & Lịch chiếu & Trạng thái</div>
+
+                <div class="form-field">
+                    <label>Thời lượng (phút)</label>
+                    <input type="number" name="Duration" value="@Model.Duration" placeholder="120" />
+                </div>
+
+                <div class="form-field">
+                    <label>Ngày khởi chiếu</label>
+                    <input type="date" name="ReleaseDate" value="@Model.ReleaseDate.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="form-field">
+                    <label>Trạng thái</label>
+                    <input type="text" name="Status" value="@Model.Status" />
+                </div>
+            </div>
+
+            <!-- Đánh giá -->
+            <div class="form-section">
+                <div class="form-section-title">Phân loại độ tuổi</div>
+
+                <div class="form-field">
+                    <select name="RatingId" class="form-select">
+                        <option value="">-- Chọn độ tuổi --</option>
+                        @foreach (var r in Model.AllRatings)
+                        {
+                            <option value="@r.RatingId">@r.RatingCode</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-field">
+                     <label>IMDB Rating</label>
+                     <input type="number" step="0.1" name="ImdbRating" value="@Model.ImdbRating" />
+                </div>
+            </div>
+
+            <!-- Media -->
+            <div class="form-section">
+                <div class="form-section-title">Media</div>
+
+                <div class="form-field">
+                    <label>URL ảnh bìa</label>
+                    <input type="text" name="CoverUrl" value="@Model.CoverUrl" />
+                </div>
+
+                <div class="form-field">
+                    <label>URL Poster</label>
+                    <input type="text" name="PosterUrl" value="@Model.PosterUrl" />
+                </div>
+
+                <div class="form-field">
+                    <label>URL Trailer</label>
+                    <input type="text" name="TrailerUrl" value="@Model.TrailerUrl" />
+                </div>
             </div>
         </div>
-        <div class="form-section">
-            <div class="form-section-title">Thể loại & định dạng</div>
-            <label>Thể loại phim</label>
-            <div class="checkbox-group">
-                <label class="checkbox-item">
-                    <input type="checkbox" value="action">
-                    <span>Hành động</span>
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" value="comedy">
-                    <span>Hài hước</span>
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" value="drama">
-                    <span>Tâm lý</span>
-                </label>
-            </div>
-            <label>Định dạng chiếu</label>
-            <div class="checkbox-group">
-                <label class="checkbox-item">
-                    <input type="checkbox" value="2D">
-                    <span>2D</span>
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" value="3D">
-                    <span>3D</span>
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" value="IMAX">
-                    <span>IMAX</span>
-                </label>
-            </div>
-        </div>
-        <div class="form-section">
-            <div class="form-section-title">Thời lượng & Lịch chiếu</div>
-            <div class="form-field">
-                <label>Thời lượng (phút)</label>
-                <input type="number" name="name" value="" placeholder="Nhập tên phim" />
-            </div>
-            <div class="form-field">
-                <label>Ngày khởi chiếu</label>
-                <input type="datetime-local" name="name" value="" placeholder="Mô tả về phim" />
-            </div>
-            <div class="form-field">
-                <label>Ngày kết thúc</label>
-                <input type="datetime-local" name="name" value="" placeholder="Mô tả về phim" />
-            </div>
-        </div>
-        <div class="form-section">
-            <div class="form-section-title">Ngôn ngữ & Phân loại</div>
-            <div class="form-field">
-                <label>Ngôn ngữ</label>
-                <select class="form-select">
-                    <option value="">-- Chọn ngôn ngữ --</option>
-                    <option value="vietnamese">Tiếng Việt</option>
-                    <option value="english">Tiếng Anh</option>
-                </select>
-            </div>
-            <div class="form-field">
-                <label>Phụ đề</label>
-                <select class="form-select">
-                    <option value="">-- Chọn ngôn ngữ --</option>
-                    <option value="vietnamese">Tiếng Việt</option>
-                    <option value="english">Tiếng Anh</option>
-                </select>
-            </div>
-            <div class="form-field">
-                <label>Phân loại độ tuổi</label>
-                <select class="form-select">
-                    <option value="">-- Chọn thể loại --</option>
-                    <option value="P - Phổ biến">P - Phổ biến</option>
-                    <option value="K - Dưới 13 tuổi">K - Dưới 13 tuổi</option>
-                    <option value="T13 - 13+">T13 - 13+</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-section">
-            <div class="form-section-title">Media</div>
-            <div class="form-field">
-                <label>URL ảnh bìa</label>
-                <input type="text" name="url-cover" value="" placeholder="https://example.com/poster.jpg" />
-            </div>
-            <div class="form-field">
-                <label>URL Poster</label>
-                <input type="text" name="url-poster" value="" placeholder="https://example.com/poster.jpg" />
-            </div>
-            <div class="form-field">
-                <label>URL Trailer</label>
-                <input type="text" name="url-trailer" value="" placeholder="https://www.youtube.com/watch?v=..." />
-            </div>
-        </div>
-    </div>
+    </form>
 </div>
