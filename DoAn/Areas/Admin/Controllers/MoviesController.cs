@@ -164,5 +164,40 @@ namespace DoAn.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var movie = await _context.Movies
+                .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+                return NotFound();
+
+            return View(movie);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+            if (movie == null)
+                return NotFound();
+
+            // Delete MovieActors
+            var movieActors = _context.MovieActors.Where(ma => ma.MovieId == id);
+            _context.MovieActors.RemoveRange(movieActors);
+
+            // Delete MovieDirectors
+            var movieDirectors = _context.MovieDirectors.Where(md => md.MovieId == id);
+            _context.MovieDirectors.RemoveRange(movieDirectors);
+
+            // Delete Movie
+            _context.Movies.Remove(movie);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
     }
 }

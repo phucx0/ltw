@@ -1,0 +1,89 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "Xóa phim";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model DoAn.Models.Movies.Movie
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="admin-page">
+
+    <!-- Header -->
+    <div class="admin-header">
+        <h2 class="admin-title">Xóa phim</h2>
+    </div>
+
+    <div class="form-wrapper">
+
+        <!-- Section thông tin -->
+        <div class="form-section">
+            <div class="form-section-title">Thông tin phim</div>
+
+            <p>
+                Bạn có chắc muốn xóa phim:
+                <strong style="color: #d9534f">@Model.Title</strong>?
+            </p>
+
+            <div class="form-field">
+                <label>Mô tả</label>
+                <input type="text" value="@Model.Description" disabled />
+            </div>
+
+            <div class="form-field">
+                <label>Thể loại</label>
+                <input type="text" value="@Model.Genre" disabled />
+            </div>
+
+            <div class="form-field">
+                <label>Thời lượng</label>
+                <input type="text" value="@Model.Duration phút" disabled />
+            </div>
+
+            <div class="form-field">
+                <label>Ngày khởi chiếu</label>
+                <input type="text" value="@Model.ReleaseDate.ToString("yyyy-MM-dd")" disabled />
+            </div>
+
+            <div class="form-field">
+                <label>Trạng thái</label>
+                <input type="text" value="@Model.Status" disabled />
+            </div>
+        </div>
+
+        <!-- Media preview -->
+        <div class="form-section">
+            <div class="form-section-title">Media</div>
+
+            <div class="form-field">
+                <label>Poster</label>
+                <img src="@Model.PosterUrl" style="width: 200px; border-radius: 10px;" />
+            </div>
+
+            <div class="form-field">
+                <label>Cover</label>
+                <img src="@Model.CoverUrl" style="width: 300px; border-radius: 10px;" />
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+
+            <a asp-action="Index" asp-controller="Movies" asp-area="Admin"
+               class="btn btn-secondary">
+                Quay lại
+            </a>
+
+            <form asp-action="DeleteConfirmed" asp-route-id="@Model.MovieId" method="post">
+                <button type="submit" class="btn btn-danger">
+                    Xóa phim
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+
