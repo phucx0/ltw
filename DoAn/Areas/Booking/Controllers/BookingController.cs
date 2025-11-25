@@ -1,5 +1,7 @@
 ﻿using DoAn.Areas.Booking.Services;
+using DoAn.Models.Accounts;
 using DoAn.Models.Booking;
+using DoAn.Models.Cinema;
 using DoAn.Models.Data;
 using DoAn.Models.Payments;
 using DoAn.ViewModels;
@@ -25,12 +27,14 @@ namespace DoAn.Areas.Booking.Controllers
         public async Task<IActionResult> Checkout(int bookingId)
         {
             if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             var booking = await _context.Bookings
-                .Where(b => b.BookingId == bookingId)
+                .Where(b => b.BookingId == bookingId && b.UserId == userId && b.Status == "pending")
                 .Select(b => new { b.BookingId, b.Status })
                 .FirstOrDefaultAsync();
 
-            if (booking == null || booking.Status == "canceled" || booking.Status == "paid")
+            if (booking == null)
                 return RedirectToAction("Movies", "Movie", new { area = "" });
 
             var fullBooking = await _context.Bookings
@@ -66,8 +70,28 @@ namespace DoAn.Areas.Booking.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBooking([FromBody] BookingRequest request)
         {
-            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
+            if (!User.Identity.IsAuthenticated)
+            {
+                Console.WriteLine("Nguoi dung chua xac thuc");
+                return Unauthorized(new { message = "Chưa đăng nhập" });
+            }
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var takenSeats = await _context.Tickets
+                .Where(t => request.SeatIds.Contains(t.SeatId)
+                         && (t.Status == "booked" || t.Status == "pending"))
+                .Select(t => t.Seat)
+                .ToListAsync();
+            if(takenSeats.Count > 0)
+            {
+                string seatCodes = string.Join(", ", takenSeats.Select(s => $"{s.SeatRow}{s.SeatNumber}"));
+                return Ok(
+                    new { 
+                        success = false,
+                        message = $"Ghế {seatCodes} đã có khách hàng khác đặt!"
+                    }
+                );
+            }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -88,12 +112,6 @@ namespace DoAn.Areas.Booking.Controllers
 
 
                 // Insert tickets
-                foreach (var seatId in request.SeatIds)
-                {
-                    Console.WriteLine("seat id: " + seatId);
-                }
-                Console.WriteLine("Booking id: " + booking.BookingId);
-                Console.WriteLine("user id: " + userId);
                 bool ticketResult = await _bookingService.InsertTickets(request.SeatIds, booking.BookingId, userId, extraPrice, basePrice);
                 if (!ticketResult)
                 {
@@ -101,11 +119,18 @@ namespace DoAn.Areas.Booking.Controllers
                     return StatusCode(500, "Không thể thêm vé");
                 }
 
-                // 3. Lưu thay đổi và commit transaction
+                // Lưu thay đổi và commit transaction
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return Ok(new { BookingId = booking.BookingId });
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = $"Tạo booking thành công!",
+                        BookingId = booking.BookingId
+                    }
+                );
             }
             catch (Exception ex)
             {
