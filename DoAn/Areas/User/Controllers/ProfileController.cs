@@ -28,11 +28,11 @@ namespace DoAn.Areas.User.Controllers
             var user = _context.Users
                 .Include(u => u.Membership)
                     .ThenInclude(m => m.MembershipTier)
-                .Include(u => u.Tickets)
+                .Include(u => u.Tickets.Where(t => t.Booking.Status == "confirmed"))
                     .ThenInclude(t => t.Booking)
                         .ThenInclude(b => b.Showtime)
                             .ThenInclude(s => s.Movie)
-                .Include(u => u.Tickets)
+                .Include(u => u.Tickets.Where(t => t.Booking.Status == "confirmed"))
                     .ThenInclude(t => t.Seat)
                         .ThenInclude(s => s.Room)
                             .ThenInclude(r => r.Branch)
