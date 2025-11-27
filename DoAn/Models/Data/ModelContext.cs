@@ -9,8 +9,8 @@ namespace DoAn.Models.Data;
 
 public partial class ModelContext : DbContext
 {
-    //private readonly static string server = "localhost";
-    private readonly static string server = "LAPTOP-8QIUBP6K\\SQLEXPRESS";
+    private readonly static string server = "localhost";
+    //private readonly static string server = "LAPTOP-8QIUBP6K\\SQLEXPRESS";
     private readonly static string database = "MOVIE_TICKET";
     private readonly static string user_id = "sa";
     private readonly static string password = "123";

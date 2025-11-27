@@ -13,17 +13,18 @@
     <link rel="stylesheet" href="~/DoAn.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/landing_page.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/movie/movies.css" asp-append-version="true" />
 
     @RenderSection("Styles", required: false)
 </head>
 <body>
     <partial name="Components/_Header" />
     
-    <div class="">
+    <main class="main-layout">
         <div role="main" class="">
             @RenderBody()
         </div>
-    </div>
+    </main>
     <footer>
         <div class="logo text-white fw-bold fs-3">
             CINEMA

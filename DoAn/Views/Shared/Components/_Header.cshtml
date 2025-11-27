@@ -10,7 +10,8 @@
     var fullName = User.Identity.Name;
 }
 
-<header class="@(isUserPage ? "" : "header-fixed")">
+@* <header class="@(isUserPage ? "" : "header-fixed")"> *@
+<header>
     <div class="header-content @(isUserPage ? "" : "_header-fixed")">
         <div class="d-flex align-items-center justify-content-center gap-4">
             <a href="@Url.Action("Index", "Home", new { area = "" })" class="text-decoration-none">
@@ -18,17 +19,17 @@
                     CINEMA
                 </div>
             </a>
-            <div class="link-group">
+            <nav class="link-group">
                 <a href="#">Đang chiếu</a>
                 <a href="#">Sắp chiếu</a>
                 <a href="#">Mô tả</a>
                 <a href="#">Mô tả</a>
-            </div>
+            </nav>
         </div>
 
          <!-- Search + User -->
-        <div class="navbar-container d-flex align-items-center gap-3">
-            <form asp-controller="Search" asp-action="Index" method="get" class="search-ctn">
+        <div class="navbar-container">
+            <form asp-controller="Search" asp-action="Index" asp-area="" method="get" class="search-ctn">
                 <input type="text" name="query" placeholder="Tìm kiếm" spellcheck="false"/>
                 <button type="submit">
                     <i class="bi bi-search"></i>

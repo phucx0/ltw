@@ -67,27 +67,19 @@ body {
     /*    padding: 140px 200px;*/
 }
 
-.carousel {
+.featured-movies {
     margin-top: 16px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 24px;
 }
 
-.poster-film {
-    width: 100%
-}
-
-    .poster-film img {
-        width: 100%
-    }
-
 /* Feature section */
 .feature-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
 }
 
 .feature-circle {
@@ -119,7 +111,7 @@ body {
     height: 100%;
     background: linear-gradient(#1B2149, #1A0F1C);
     padding: 24px;
-    border-radius: 16px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -213,35 +205,37 @@ body {
 
 @media (max-width: 768px) {
     .hero-section {
-        height: 100%;
+/*        height: 100%;*/
     }
 
     .hero-section-content {
         width: 95%;
+        text-align: center;
     }
 
     .slogan {
-        font-size: 24px;
+        font-size: 32px;
     }
 
     .buy-btn {
-        font-size: 14px;
-        padding: 8px 24px;
+        font-size: 16px;
+        padding: 12px 20px;
     }
     /* Trending section */
-    .carousel {
+    .featured-movies {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 24px;
     }
     /* Feature section */
     .feature-wrapper {
+        gap: 40px;
         flex-direction: column;
     }
 
     /*  */
     .reason-card-wrapper {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(1, 1fr);
         gap: 16px;
     }
 
@@ -250,7 +244,7 @@ body {
     }
 
     .reason-card-title {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .reason-card-content {

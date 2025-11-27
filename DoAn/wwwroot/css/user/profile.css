@@ -1,12 +1,14 @@
 ﻿main {
     width: 100%;
     background: #fff;
+/*    padding-top: 80px;*/
 }
 
 .profile-container {
+    background: #fff;
     width: 65%;
     margin: 0 auto;
-    padding: 32px 0;
+    padding: 104px 0 32px 0;
 }
 
 .profile-header {

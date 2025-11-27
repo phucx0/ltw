@@ -5,7 +5,10 @@
 @model List<DoAn.Models.Movies.Movie>
 <section class="hero-section">
     <div class="hero-section-content">
-        <p class="fw-bold text-white slogan">“Trải nghiệm điện ảnh <br />đỉnh cao ngay hôm nay”</p>
+        <p class="fw-bold text-white slogan"> 
+            <span>Trải nghiệm điện ảnh</span><br/>
+            <span>đỉnh cao ngay hôm nay</span>
+        </p>
         <p class="text-white">Xem trailer, chọn ghế, thanh toán nhanh chóng.</p>
         <a href="@Url.Action("Movies", "Movie")">
             <button class="buy-btn">Đặt vé ngay</button>
@@ -17,12 +20,10 @@
         <p class="text-white fs-2 fw-bold">Hiện đang thịnh hành</p>
         <p class="text-white">Xem thêm</p>
     </div>
-    <div class="carousel">
+    <div class="featured-movies">
         @foreach (var movie in Model)
         {
-            <div class="poster-film">
-                <img src="@movie.PosterUrl" alt="@movie.Title" />
-            </div>
+            @await Html.PartialAsync("Components/_MovieCard", movie)
         }
     </div>
 </section>
@@ -55,7 +56,7 @@
     <p class="text-white fs-2 fw-bold mb-4">Lý do nên đặt vé online</p>
     <div class="reason-card-wrapper">
         <div class="reason-card">
-            <p class="reason-card-title">Tiện lợi đặt vé mọi lúc, mọi nơi</p>
+            <p class="reason-card-title">Đặt vé mọi lúc, mọi nơi</p>
             <p class="reason-card-content">Đặt vé dễ dàng chỉ với vài cú nhấp chuột, không cần xếp hàng chờ đợi.</p>
         </div>
         <div class="reason-card">
