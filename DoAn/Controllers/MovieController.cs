@@ -1,6 +1,8 @@
-﻿using DoAn.Models.Booking;
+﻿using DoAn.Controllers.Api;
+using DoAn.Models.Booking;
 using DoAn.Models.Data;
 using DoAn.Models.Movies;
+using DoAn.Services;
 using DoAn.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +13,11 @@ namespace DoAn.Controllers
     public class MovieController : Controller
     {
         private readonly ModelContext _context;
-
-        public MovieController(ModelContext context)
+        private readonly MovieService _service;
+        public MovieController(ModelContext context, MovieService service)
         {
             _context = context;
+            _service = service;
         }
 
         public IActionResult Movies()
@@ -40,14 +43,15 @@ namespace DoAn.Controllers
             {
                 return RedirectToAction("Error404", "Home");
             }
-            var movie = await _context.Movies
-                .Include(m => m.AgeRating)
-                .Include(m => m.MovieDirectors)
-                .Include(m => m.MovieActors)
-                .Include(m => m.Showtimes)
-                    .ThenInclude(s => s.Room)
-                        .ThenInclude(r => r.Branch)
-                .FirstOrDefaultAsync(m => m.MovieId == id);
+            var movie = await _service.GetMovieById(id);
+            //var movie = await _context.Movies
+            //    .Include(m => m.AgeRating)
+            //    .Include(m => m.MovieDirectors)
+            //    .Include(m => m.MovieActors)
+            //    .Include(m => m.Showtimes)
+            //        .ThenInclude(s => s.Room)
+            //            .ThenInclude(r => r.Branch)
+            //    .FirstOrDefaultAsync(m => m.MovieId == id);
             if (movie == null)
             {
                 return RedirectToAction("Error404", "Home");

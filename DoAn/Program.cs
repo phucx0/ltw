@@ -1,5 +1,6 @@
 ﻿using DoAn.Areas.Booking.Services;
 using DoAn.Models.Data;
+using DoAn.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
 builder.Services.AddHttpClient<PaymentService>();
+builder.Services.AddScoped<MovieService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddSignalR();
 
@@ -51,10 +53,14 @@ app.MapControllerRoute(
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}",
     defaults: new { action = "Index" });
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<PaymentHub>("/paymentHub");
+
+app.MapControllers();
+app.MapDefaultControllerRoute();
 
 app.Run();
