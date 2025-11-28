@@ -1,0 +1,124 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model DoAn.Areas.Admin.ViewModels.ShowtimeCreateViewModel;
+@{
+    ViewBag.Title = "Thêm suất chiếu mới";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var movies = ViewBag.Movies;
+    var branchs = ViewBag.Branchs;
+    var rooms = ViewBag.Rooms;
+}
+
+<div class="admin-page">
+
+    <div class="admin-header">
+        <h2 class="admin-title">Thêm suất chiếu mới</h2>
+    </div>
+
+    <form asp-action="Create" asp-controller="Showtimes" asp-area="Admin" method="post">
+
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <a asp-action="Index" asp-controller="Showtimes" asp-area="Admin" class="btn btn-secondary">
+                Quay lại
+            </a>
+            <button type="submit" class="btn btn-secondary">Xác nhận thêm phim</button>
+        </div>
+
+        <div class="form-wrapper">
+            
+
+            <!-- Thời lượng & Lịch chiếu & Trạng thái -->
+            <div class="form-section">
+                <div class="form-section-title">Thời lượng & Lịch chiếu & Trạng thái</div>
+
+                <div class="form-field">
+                    <select name="BranchId" class="form-select" onchange="location.href='?BranchId=' + this.value">
+                        @foreach (var branch in Model.Branches)
+                        {
+                            <option value="@branch.BranchId"
+                                    selected="@(ViewBag.SelectedBranchId == branch.BranchId ? "selected" : null)">
+                                @branch.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <select id="MovieId" name="MovieId" class="form-select">
+                        <option value="">-- Chọn phim --</option>
+                        @foreach (var movie in Model.Movies)
+                        {
+                            <option value="@movie.MovieId" data-duration="@movie.Duration">@movie.Title</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <select name="RoomId" class="form-select">
+                        <option value="">-- Chọn phòng --</option>
+                        @foreach (var room in Model.Rooms)
+                        {
+                            <option value="@room.RoomId">@room.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Đánh giá -->
+            <div class="form-section">
+                <div class="form-section-title">Ngày & Giờ bắt đầu chiếu</div>
+                <div class="form-field">
+                    <label>Thời gian bắt đầu chiếu</label>
+                    <input type="datetime-local" id="StartTime" name="StartTime" required />
+                </div>
+
+                <div class="form-field">
+                    <label>Thời gian kết thúc (tự tính)</label>
+                    <input type="datetime-local" id="EndTime" name="EndTime" readonly />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var movies = @Html.Raw(Json.Serialize(Model.Movies.Select(m => new { m.MovieId, m.Duration })));
+    var movieSelect = document.getElementById("MovieId");
+    var startInput = document.querySelector('#StartTime');
+    var endInput = document.querySelector('#EndTime');
+
+        function updateEndTime() {
+        var selectedOption = movieSelect.options[movieSelect.selectedIndex];
+        var duration = parseInt(selectedOption.dataset.duration); // phút
+        if (!duration) return;
+
+        // Lấy giá trị start
+        var startValue = startInput.value;
+        if (!startValue) return;
+
+        // parse datetime-local: "YYYY-MM-DDTHH:MM"
+        var [date, time] = startValue.split("T");
+        var [year, month, day] = date.split("-").map(Number);
+        var [hour, minute] = time.split(":").map(Number);
+
+        // tạo Date object
+        var startDate = new Date(year, month - 1, day, hour, minute);
+
+        // cộng duration phút
+        var endDate = new Date(startDate.getTime() + duration * 60000);
+
+        // chuyển về "YYYY-MM-DDTHH:MM" để gán vào datetime-local
+        var yyyy = endDate.getFullYear();
+        var mm = String(endDate.getMonth() + 1).padStart(2, '0');
+        var dd = String(endDate.getDate()).padStart(2, '0');
+        var hh = String(endDate.getHours()).padStart(2, '0');
+        var min = String(endDate.getMinutes()).padStart(2, '0');
+
+        endInput.value = `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+    }
+
+    // Cập nhật khi chọn phim
+    movieSelect.addEventListener("change", updateEndTime);
+
+    // Cập nhật khi thay đổi StartTime
+    startInput.addEventListener("change", updateEndTime);
+</script>

@@ -196,7 +196,6 @@ namespace DoAn.Areas.Admin.Controllers
             _context.Movies.Remove(movie);
 
             await _context.SaveChangesAsync();
-
             return RedirectToAction("Index");
         }
     }
