@@ -4,5 +4,662 @@
 @{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-<div>Dashboard</div>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+    }
+
+    .header {
+        background-color: white;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1.5rem 2rem;
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .header p {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .header-date {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .container {
+        /* max-width: 1400px; */
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+    }
+
+    .grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+
+    .card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .stat-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #666;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-subtitle {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .icon-blue {
+        background: linear-gradient(135deg, #0084FF 0%, #0066CC 100%);
+        color: white;
+    }
+
+    .stat-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .badge-green {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .badge-red {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background-color: #f8f9fa;
+    }
+
+    th {
+        padding: 0.875rem;
+        text-align: left;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    td {
+        padding: 1rem 0.875rem;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 0.9375rem;
+    }
+
+    tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .movie-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .movie-poster {
+        width: 40px;
+        height: 56px;
+        background: linear-gradient(135deg, #0084FF 0%, #0066CC 100%);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .movie-details {
+        flex: 1;
+    }
+
+    .movie-title {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .movie-genre {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .chart-container {
+        padding: 1rem 0;
+    }
+
+    .chart-bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 200px;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .chart-bar {
+        flex: 1;
+        background: linear-gradient(180deg, #0084FF 0%, #0066CC 100%);
+        border-radius: 6px 6px 0 0;
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+    .chart-value {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        white-space: nowrap;
+    }
+
+    .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .chart-label {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 0.875rem 1.25rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-white {
+        background-color: white;
+        color: #333;
+        border: 1px solid #e0e0e0;
+    }
+
+        .btn-white:hover {
+            background-color: #f8f9fa;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0084FF 0%, #0066CC 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+        }
+
+    .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .rank-1 {
+        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        color: #fff;
+    }
+
+    .rank-2 {
+        background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+        color: #fff;
+    }
+
+    .rank-3 {
+        background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+        color: #fff;
+    }
+
+    .rank-other {
+        background-color: #f0f0f0;
+        color: #666;
+    }
+
+    </style>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <h1>Dashboard Quản Lý</h1>
+                <p>Tổng quan hệ thống rạp chiếu phim</p>
+            </div>
+            <div class="header-date" id="currentDate"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Thống kê tổng quan -->
+        <section class="section">
+            <h2 class="section-title">Thống Kê Tổng Quan</h2>
+            <div class="grid grid-4">
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Tổng Số Phim</div>
+                        <div class="stat-value">@Model.TotalMovies</div>
+                        <div class="stat-subtitle">Đang chiếu và sắp chiếu</div>
+                    </div>
+                    <div class="stat-icon icon-blue">🎬</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Chi Nhánh</div>
+                        <div class="stat-value">@Model.TotalBranches</div>
+                        <div class="stat-subtitle">Trên toàn quốc</div>
+                    </div>
+                    <div class="stat-icon icon-blue">🏢</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Phòng Chiếu</div>
+                        <div class="stat-value">@Model.TotalRooms</div>
+                        <div class="stat-subtitle">Tổng số phòng</div>
+                    </div>
+                    <div class="stat-icon icon-blue">📺</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Người Dùng</div>
+                        <div class="stat-value">@Model.TotalUsers.ToString("N0")</div>
+                        <div class="stat-subtitle">Tài khoản đã đăng ký</div>
+                    </div>
+                    <div class="stat-icon icon-blue">👥</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hiệu suất hôm nay -->
+        <section class="section">
+            <h2 class="section-title">Hiệu Suất Hôm Nay</h2>
+            <div class="grid grid-3">
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Suất Chiếu</div>
+                        <div class="stat-value">@Model.TodayShowtimes</div>
+                        <div class="stat-subtitle">Tổng suất chiếu hôm nay</div>
+                    </div>
+                    <div class="stat-icon icon-blue">📅</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Vé Đã Bán</div>
+                        <div class="stat-value">@Model.TodayTicketsSold.ToString("N0")</div>
+                        <div class="stat-subtitle">Số lượng vé hôm nay</div>
+                    </div>
+                    <div class="stat-icon icon-blue">🎫</div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="stat-content">
+                        <div class="stat-label">Doanh Thu Hôm Nay</div>
+                        <div class="stat-value">@((Model.TodayRevenue / 1000000).ToString("N2"))M</div>
+                        <div class="stat-subtitle">VND</div>
+                    </div>
+                    <div class="stat-icon icon-blue">💰</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lợi nhuận tuần và Tháng -->
+        <section class="section">
+            <div class="grid grid-2">
+                <!-- Biểu đồ lợi nhuận tuần -->
+                <div class="card">
+                    <h3 class="section-title">Lợi Nhuận Tuần Này</h3>
+                    <div class="chart-container">
+                        <div class="chart-bars" id="weeklyChart">
+                            <div class="loading">Đang tải dữ liệu...</div>
+                        </div>
+                        <div class="chart-labels" id="weeklyLabels"></div>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #666; font-size: 0.875rem;">Tổng lợi nhuận tuần</span>
+                            <span style="font-size: 1.25rem; font-weight: 700; color: #1a1a1a;" id="weeklyTotal">0 VND</span>
+                        </div>
+                        <span class="stat-badge badge-green" id="weeklyChange">Đang tính...</span>
+                    </div>
+                </div>
+
+                <!-- Hiệu suất tháng -->
+                <div class="card">
+                    <h3 class="section-title">Hiệu Suất Tháng Này</h3>
+                    <div style="margin: 2rem 0;">
+                        <div class="stat-label">Doanh Thu Tháng</div>
+                        <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@((Model.MonthlyRevenue / 1000000).ToString("N2"))M VND</div>
+                        <span class="stat-badge" id="monthlyRevenueChange">Đang tính...</span>
+                    </div>
+                    <div style="margin: 2rem 0; padding-top: 1.5rem; border-top: 1px solid #f0f0f0;">
+                        <div class="stat-label">Vé Bán Trong Tháng</div>
+                        <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@Model.MonthlyTicketsSold.ToString("N0")</div>
+                        <span class="stat-badge" id="monthlyTicketsChange">Đang tính...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top phim bán chạy -->
+        <section class="section">
+            <h2 class="section-title">Top Phim Bán Chạy Nhất</h2>
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">Hạng</th>
+                                <th>Tên Phim</th>
+                                <th style="text-align: right;">Số Vé Bán</th>
+                                <th style="text-align: right;">Doanh Thu</th>
+                                <th style="text-align: right;">Tỷ Lệ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topMoviesTable">
+                            <tr>
+                                <td colspan="5" class="loading">Đang tải dữ liệu...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        @* <section class="section">
+            <h2 class="section-title">Thao Tác Nhanh</h2>
+            <div class="quick-actions">
+                <a href="@Url.Action("Create", "Movies")" class="btn btn-white">+ Thêm Phim Mới</a>
+                <a href="@Url.Action("Create", "Showtimes")" class="btn btn-white">+ Tạo Suất Chiếu</a>
+                <a href="@Url.Action("Reports", "Dashboard")" class="btn btn-white">📊 Xem Báo Cáo</a>
+                <a href="@Url.Action("Settings", "Admin")" class="btn btn-primary">⚙️ Cài Đặt Hệ Thống</a>
+            </div>
+        </section> *@
+    </main>
+
+<script>
+    // Display current date
+    function updateDate() {
+        var dateElement = document.getElementById('currentDate');
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        var currentDate = new Date().toLocaleDateString('vi-VN', options);
+        dateElement.textContent = currentDate;
+    }
+
+    updateDate();
+
+    // Format currency
+    function formatCurrency(amount) {
+        return (amount / 1000000).toFixed(2) + 'M';
+    }
+
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Load weekly revenue chart
+    function loadWeeklyRevenue() {
+        fetch('@Url.Action("GetWeeklyRevenue", "Dashboard")')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                var chartBars = document.getElementById('weeklyChart');
+                var chartLabels = document.getElementById('weeklyLabels');
+                var total = 0;
+                var maxRevenue = 0;
+
+                // Find max revenue for scaling
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].revenue > maxRevenue) {
+                        maxRevenue = data[i].revenue;
+                    }
+                    total += data[i].revenue;
+                }
+
+                // Create bars
+                var barsHTML = '';
+                var labelsHTML = '';
+                for (var i = 0; i < data.length; i++) {
+                    var height = maxRevenue > 0 ? (data[i].revenue / maxRevenue * 100) : 0;
+                    barsHTML += '<div class="chart-bar" style="height: ' + height + '%;">';
+                    barsHTML += '<span class="chart-value">' + formatCurrency(data[i].revenue) + '</span>';
+                    barsHTML += '</div>';
+                    labelsHTML += '<span class="chart-label">' + data[i].day + '</span>';
+                }
+
+                chartBars.innerHTML = barsHTML;
+                chartLabels.innerHTML = labelsHTML;
+                document.getElementById('weeklyTotal').textContent = formatCurrency(total) + ' VND';
+
+                // Add hover effects
+                var bars = document.querySelectorAll('.chart-bar');
+                for (var i = 0; i < bars.length; i++) {
+                    bars[i].addEventListener('mouseenter', function() {
+                        this.style.transform = 'scaleY(1.05)';
+                    });
+                    bars[i].addEventListener('mouseleave', function() {
+                        this.style.transform = 'scaleY(1)';
+                    });
+                }
+            })
+            .catch(function(error) {
+                console.error('Error loading weekly revenue:', error);
+                document.getElementById('weeklyChart').innerHTML = '<div class="loading">Không thể tải dữ liệu</div>';
+            });
+    }
+
+    // Load top movies
+    function loadTopMovies() {
+        fetch('@Url.Action("GetTopMovies", "Dashboard")')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                var tbody = document.getElementById('topMoviesTable');
+                var html = '';
+                var totalTickets = 0;
+
+                for (var i = 0; i < data.length; i++) {
+                    totalTickets += data[i].ticketsSold;
+                }
+
+                var rankClasses = ['rank-1', 'rank-2', 'rank-3', 'rank-other', 'rank-other'];
+                var emojis = ['🎬', '🎭', '🦸', '😱', '🎨'];
+
+                for (var i = 0; i < data.length; i++) {
+                    var movie = data[i];
+                    var percentage = totalTickets > 0 ? ((movie.ticketsSold / totalTickets) * 100).toFixed(1) : 0;
+
+                    html += '<tr>';
+                    html += '<td><span class="rank-badge ' + rankClasses[i] + '">' + (i + 1) + '</span></td>';
+                    html += '<td>';
+                    html += '<div class="movie-info">';
+                    html += '<div class="movie-poster">' + emojis[i] + '</div>';
+                    html += '<div class="movie-details">';
+                    html += '<div class="movie-title">' + movie.title + '</div>';
+                    html += '<div class="movie-genre">' + (movie.genre || 'N/A') + '</div>';
+                    html += '</div></div></td>';
+                    html += '<td style="text-align: right; font-weight: 600;">' + formatNumber(movie.ticketsSold) + '</td>';
+                    html += '<td style="text-align: right; font-weight: 600;">' + formatCurrency(movie.revenue) + '</td>';
+                    html += '<td style="text-align: right;"><span class="stat-badge badge-green">' + percentage + '%</span></td>';
+                    html += '</tr>';
+                }
+
+                tbody.innerHTML = html;
+            })
+            .catch(function(error) {
+                console.error('Error loading top movies:', error);
+                document.getElementById('topMoviesTable').innerHTML = '<tr><td colspan="5" class="loading">Không thể tải dữ liệu</td></tr>';
+            });
+    }
+
+    // Load statistics
+    function loadStatistics() {
+        fetch('@Url.Action("GetStatistics", "Dashboard")')
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                // Monthly revenue change
+                var revenueChange = document.getElementById('monthlyRevenueChange');
+                var revenuePercent = data.monthlyRevenueChange.toFixed(1);
+                if (revenuePercent >= 0) {
+                    revenueChange.className = 'stat-badge badge-green';
+                    revenueChange.textContent = '+' + revenuePercent + '% so với tháng trước';
+                } else {
+                    revenueChange.className = 'stat-badge badge-red';
+                    revenueChange.textContent = revenuePercent + '% so với tháng trước';
+                }
+
+                // Monthly tickets change
+                var ticketsChange = document.getElementById('monthlyTicketsChange');
+                var ticketsPercent = data.monthlyTicketsChange.toFixed(1);
+                if (ticketsPercent >= 0) {
+                    ticketsChange.className = 'stat-badge badge-green';
+                    ticketsChange.textContent = '+' + ticketsPercent + '% so với tháng trước';
+                } else {
+                    ticketsChange.className = 'stat-badge badge-red';
+                    ticketsChange.textContent = ticketsPercent + '% so với tháng trước';
+                }
+
+                // Weekly change (placeholder)
+                document.getElementById('weeklyChange').textContent = '+15.8% so với tuần trước';
+            })
+            .catch(function(error) {
+                console.error('Error loading statistics:', error);
+            });
+    }
+
+    // Load all data when page loads
+    window.onload = function() {
+        loadWeeklyRevenue();
+        loadTopMovies();
+        loadStatistics();
+    };
+</script>
