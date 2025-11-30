@@ -1,0 +1,179 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Linq
+@model DoAn.Models.Payments.Payment
+@{
+    ViewBag.Title = "Chi tiết hóa đơn";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Chi tiết hóa đơn #@Model.PaymentId</h2>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <a asp-action="Index" asp-controller="Invoices" asp-area="Admin" class="btn btn-secondary">
+            Quay lại
+        </a>
+    </div>
+
+    <div class="form-wrapper">
+        <!-- Thông tin thanh toán -->
+        <div class="form-section">
+            <div class="form-section-title">Thông tin thanh toán</div>
+            <div class="form-field">
+                <label>Mã hóa đơn</label>
+                <input type="text" value="#@Model.PaymentId" readonly />
+            </div>
+            <div class="form-field">
+                <label>Mã đơn đặt</label>
+                <input type="text" value="#@Model.BookingId" readonly />
+            </div>
+            <div class="form-field">
+                <label>Số tiền</label>
+                <input type="text" value="@((Model.Amount ?? 0).ToString("N0")) đ" readonly style="font-weight: 600; color: #0084FF; font-size: 1.1rem;" />
+            </div>
+            <div class="form-field">
+                <label>Phương thức thanh toán</label>
+                <input type="text" value="@(Model.Method ?? "N/A")" readonly />
+            </div>
+            <div class="form-field">
+                <label>Trạng thái</label>
+                <span class="badge @(Model.Status == "paid" ? "bg-success" : Model.Status == "pending" ? "bg-warning" : Model.Status == "failed" ? "bg-danger" : "bg-secondary")" style="padding: 8px 16px; font-size: 0.9rem;">
+                    @(Model.Status == "paid" ? "Đã thanh toán" : Model.Status == "pending" ? "Đang chờ" : Model.Status == "failed" ? "Thất bại" : Model.Status ?? "N/A")
+                </span>
+            </div>
+            <div class="form-field">
+                <label>Thời gian thanh toán</label>
+                <input type="text" value="@(Model.PaymentTime?.ToString("dd/MM/yyyy HH:mm:ss") ?? "Chưa thanh toán")" readonly />
+            </div>
+            <div class="form-field">
+                <label>Mã giao dịch</label>
+                <input type="text" value="@(Model.TransactionId ?? "N/A")" readonly />
+            </div>
+            <div class="form-field">
+                <label>Nội dung giao dịch</label>
+                <input type="text" value="@(Model.TransactionContent ?? "N/A")" readonly />
+            </div>
+            @if (Model.Promotion != null)
+            {
+                <div class="form-field">
+                    <label>Mã khuyến mãi</label>
+                    <input type="text" value="@Model.Promotion.Code - @Model.Promotion.Description" readonly />
+                </div>
+            }
+        </div>
+
+        <!-- Thông tin khách hàng -->
+        @if (Model.Booking?.User != null)
+        {
+            <div class="form-section">
+                <div class="form-section-title">Thông tin khách hàng</div>
+                <div class="form-field">
+                    <label>Họ và tên</label>
+                    <input type="text" value="@Model.Booking.User.FullName" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Email</label>
+                    <input type="text" value="@(Model.Booking.User.Email ?? "N/A")" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Số điện thoại</label>
+                    <input type="text" value="@(Model.Booking.User.Phone ?? "N/A")" readonly />
+                </div>
+            </div>
+        }
+
+        <!-- Thông tin đơn đặt -->
+        @if (Model.Booking != null)
+        {
+            <div class="form-section">
+                <div class="form-section-title">Thông tin đơn đặt</div>
+                <div class="form-field">
+                    <label>Tổng tiền đơn đặt</label>
+                    <input type="text" value="@Model.Booking.TotalAmount.ToString("N0") đ" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Trạng thái đơn</label>
+                    <span class="badge @(Model.Booking.Status == "completed" ? "bg-success" : Model.Booking.Status == "pending" ? "bg-warning" : "bg-secondary")" style="padding: 8px 16px; font-size: 0.9rem;">
+                        @Model.Booking.Status
+                    </span>
+                </div>
+                <div class="form-field">
+                    <label>Thời gian đặt</label>
+                    <input type="text" value="@Model.Booking.BookingTime.ToString("dd/MM/yyyy HH:mm:ss")" readonly />
+                </div>
+            </div>
+        }
+
+        <!-- Thông tin suất chiếu -->
+        @if (Model.Booking?.Showtime != null)
+        {
+            <div class="form-section">
+                <div class="form-section-title">Thông tin suất chiếu</div>
+                <div class="form-field">
+                    <label>Phim</label>
+                    <input type="text" value="@Model.Booking.Showtime.Movie?.Title" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Rạp</label>
+                    <input type="text" value="@Model.Booking.Showtime.Room?.Branch?.Name" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Phòng chiếu</label>
+                    <input type="text" value="@Model.Booking.Showtime.Room?.Name" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Thời gian bắt đầu</label>
+                    <input type="text" value="@Model.Booking.Showtime.StartTime.ToString("dd/MM/yyyy HH:mm")" readonly />
+                </div>
+                <div class="form-field">
+                    <label>Thời gian kết thúc</label>
+                    <input type="text" value="@Model.Booking.Showtime.EndTime.ToString("dd/MM/yyyy HH:mm")" readonly />
+                </div>
+            </div>
+        }
+
+        <!-- Danh sách vé -->
+        @if (Model.Booking?.Tickets != null && Model.Booking.Tickets.Any())
+        {
+            <div class="form-section">
+                <div class="form-section-title">Danh sách vé</div>
+                <table class="table table--dark" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Mã vé</th>
+                            <th>Ghế</th>
+                            <th>Giá vé</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ticket in Model.Booking.Tickets)
+                        {
+                            <tr>
+                                <td>#@ticket.TicketId</td>
+                                <td>@(ticket.Seat != null ? $"{ticket.Seat.SeatRow}{ticket.Seat.SeatNumber}" : "N/A")</td>
+                                <td>@ticket.Price.ToString("N0") đ</td>
+                                <td>
+                                    <span class="badge @(ticket.Status == "booked" ? "bg-success" : ticket.Status == "cancelled" ? "bg-danger" : "bg-secondary")">
+                                        @ticket.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" style="text-align: right; font-weight: 600;">Tổng cộng:</td>
+                            <td style="font-weight: 600; color: #0084FF;">@Model.Booking.Tickets.Sum(t => t.Price).ToString("N0") đ</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+

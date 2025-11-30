@@ -1,0 +1,134 @@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model List<DoAn.Models.Payments.Payment>
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Quản lý hóa đơn</h2>
+    </div>
+
+    <!-- Thanh công cụ -->
+    <div class="admin-toolbar">
+        <div class="filter-group">
+            <form method="get" style="display: flex; gap: 10px;">
+                <select class="filter-item" name="status" onchange="this.form.submit()" style="appearance: auto; -webkit-appearance: menulist;">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="paid" selected=@(ViewBag.SelectedStatus == "paid")>Đã thanh toán</option>
+                    <option value="pending" selected=@(ViewBag.SelectedStatus == "pending")>Đang chờ</option>
+                    <option value="failed" selected=@(ViewBag.SelectedStatus == "failed")>Thất bại</option>
+                    <option value="cancelled" selected=@(ViewBag.SelectedStatus == "cancelled")>Đã hủy</option>
+                </select>
+                <select class="filter-item" name="method" onchange="this.form.submit()" style="appearance: auto; -webkit-appearance: menulist;">
+                    <option value="">Tất cả phương thức</option>
+                    <option value="Sepay_QR" selected=@(ViewBag.SelectedMethod == "Sepay_QR")>Sepay QR</option>
+                    <option value="Cash" selected=@(ViewBag.SelectedMethod == "Cash")>Tiền mặt</option>
+                    <option value="Card" selected=@(ViewBag.SelectedMethod == "Card")>Thẻ</option>
+                </select>
+            </form>
+        </div>
+        <div class="action-group">
+            <span style="color: var(--color-black-600); font-weight: 600;">Tổng: @Model.Count hóa đơn</span>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <table class="table table--dark">
+        <thead>
+            <tr>
+                <th><input type="checkbox" name="name" value="false" /></th>
+                <th>Mã hóa đơn</th>
+                <th>Mã đơn đặt</th>
+                <th>Khách hàng</th>
+                <th>Phim</th>
+                <th>Rạp</th>
+                <th>Số tiền</th>
+                <th>Phương thức</th>
+                <th>Trạng thái</th>
+                <th>Thời gian thanh toán</th>
+                <th>Mã giao dịch</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var payment in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="name" value="false" /></td>
+                        <td><p class="movie-title">#@payment.PaymentId</p></td>
+                        <td><p class="movie-description">#@payment.BookingId</p></td>
+                        <td><p class="movie-description">@(payment.Booking?.User?.FullName ?? "N/A")</p></td>
+                        <td><p class="movie-description">@payment.Booking?.Showtime?.Movie?.Title</p></td>
+                        <td><p class="">@payment.Booking?.Showtime?.Room?.Branch?.Name</p></td>
+                        <td><p class="" style="font-weight: 600; color: #0084FF;">@((payment.Amount ?? 0).ToString("N0")) đ</p></td>
+                        <td><p class="">@(payment.Method ?? "N/A")</p></td>
+                        <td>
+                            <span class="badge @(payment.Status == "paid" ? "bg-success" : payment.Status == "pending" ? "bg-warning" : payment.Status == "failed" ? "bg-danger" : "bg-secondary")">
+                                @(payment.Status == "paid" ? "Đã thanh toán" : payment.Status == "pending" ? "Đang chờ" : payment.Status == "failed" ? "Thất bại" : payment.Status ?? "N/A")
+                            </span>
+                        </td>
+                        <td>
+                            <p class="">
+                                @if (payment.PaymentTime.HasValue)
+                                {
+                                    @payment.PaymentTime.Value.ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span style="color: #999;">Chưa thanh toán</span>
+                                }
+                            </p>
+                        </td>
+                        <td><p class="" style="font-size: 0.85rem;">@(payment.TransactionId ?? "N/A")</p></td>
+                        <td>
+                            <div class="actions">
+                                <a href="@Url.Action("Details", "Invoices", new { id = payment.PaymentId })" title="Xem chi tiết">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="12" style="text-align: center; padding: 20px;">Không có dữ liệu</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="12">
+                    <div class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage - 1)&status=@ViewBag.SelectedStatus&method=@ViewBag.SelectedMethod">« Prev</a>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            if (i == ViewBag.CurrentPage)
+                            {
+                                <span style="font-weight:bold">@i</span>
+                            }
+                            else
+                            {
+                                <a href="?page=@i&status=@ViewBag.SelectedStatus&method=@ViewBag.SelectedMethod">@i</a>
+                            }
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage + 1)&status=@ViewBag.SelectedStatus&method=@ViewBag.SelectedMethod">Next »</a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

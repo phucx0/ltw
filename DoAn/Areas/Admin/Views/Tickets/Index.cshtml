@@ -1,22 +1,28 @@
-﻿@{
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 @model List<DoAn.Models.Booking.Ticket>
 <div class="admin-page">
     <!-- Tiêu đề -->
     <div class="admin-header">
-        <h2 class="admin-title">Quản lý vé</h2>
+        <h2 class="admin-title">Quản lý vé & đơn đặt vé</h2>
     </div>
 
     <!-- Thanh công cụ -->
     <div class="admin-toolbar">
         <div class="filter-group">
-            <div class="filter-item">Tất cả</div>
-            <div class="filter-item">Trạng thái</div>
-            <div class="filter-item">Sắp xếp</div>
+            <form method="get">
+                <select class="filter-item" name="status" onchange="this.form.submit()" style="appearance: auto; -webkit-appearance: menulist;">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="booked" selected=@(ViewBag.SelectedStatus == "booked")>Đã đặt</option>
+                    <option value="cancelled" selected=@(ViewBag.SelectedStatus == "cancelled")>Đã hủy</option>
+                    <option value="completed" selected=@(ViewBag.SelectedStatus == "completed")>Hoàn thành</option>
+                </select>
+            </form>
         </div>
         <div class="action-group">
-            <button class="btn btn--primary">Thêm mới</button>
+            <span style="color: var(--color-black-600); font-weight: 600;">Tổng: @Model.Count vé</span>
         </div>
     </div>
 
@@ -25,40 +31,91 @@
         <thead>
             <tr>
                 <th><input type="checkbox" name="name" value="false" /></th>
-                <th>Họ và tên khách hàng</th>
-                <th>Tên phim</th>
-                <th>Tên phòng</th>
-                <th>Tên rạp</th>
-                <th>Bắt đầu lúc</th>
-                <th>Kết thúc lúc</th>
+                <th>Mã vé</th>
+                <th>Khách hàng</th>
+                <th>Phim</th>
+                <th>Rạp</th>
+                <th>Phòng</th>
+                <th>Ghế</th>
+                <th>Suất chiếu</th>
+                <th>Giá</th>
+                <th>Trạng thái</th>
+                <th>Thời gian đặt</th>
                 <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var ticket in Model)
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" name="name" value="false" /></td>
+                        <td><p class="movie-title">#@ticket.TicketId</p></td>
+                        <td><p class="movie-description">@(ticket.User?.FullName ?? "N/A")</p></td>
+                        <td><p class="movie-description">@ticket.Booking?.Showtime?.Movie?.Title</p></td>
+                        <td><p class="">@ticket.Booking?.Showtime?.Room?.Branch?.Name</p></td>
+                        <td><p class="">@ticket.Booking?.Showtime?.Room?.Name</p></td>
+                        <td><p class="">@(ticket.Seat != null ? $"{ticket.Seat.SeatRow}{ticket.Seat.SeatNumber}" : "N/A")</p></td>
+                        <td>
+                            <p class="movie-description">
+                                @if (ticket.Booking?.Showtime != null)
+                                {
+                                    @ticket.Booking.Showtime.StartTime.ToString("HH:mm - dd/MM/yyyy")
+                                }
+                            </p>
+                        </td>
+                        <td><p class="">@ticket.Price.ToString("N0") đ</p></td>
+                        <td>
+                            <span class="badge @(ticket.Status == "booked" ? "bg-success" : ticket.Status == "cancelled" ? "bg-danger" : "bg-secondary")">
+                                @ticket.Status
+                            </span>
+                        </td>
+                        <td><p class="">@ticket.BookingTime.ToString("dd/MM/yyyy HH:mm")</p></td>
+                        <td>
+                            <div class="actions">
+                                <button title="Xem chi tiết"><i class="bi bi-eye-fill"></i></button>
+                                <button title="Chỉnh sửa"><i class="bi bi-pencil-square"></i></button>
+                                <button title="Xóa"><i class="bi bi-trash3-fill"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td><input type="checkbox" name="name" value="false" /></td>
-                    <td><p class="movie-title">@ticket.User.FullName</p></td>
-                    <td><p class="movie-description">@ticket.Booking.Showtime.Movie.Title</p></td>
-                    <td><p class="movie-description">@ticket.Booking.Showtime.Room.Name</p></td>
-                    <td><p class="movie-description">@ticket.Booking.Showtime.Room.Branch.Name</p></td>
-                    <td><p class="movie-description">@ticket.Booking.Showtime.StartTime</p></td>
-                    <td><p class="movie-description">@ticket.Booking.Showtime.EndTime</p></td>
-                    <td><p class="">@ticket.Status</p></td>
-                    <td>
-                        <div class="actions">
-                            <button><i class="bi bi-eye-fill"></i></button>
-                            <button><i class="bi bi-pencil-square"></i></button>
-                            <button><i class="bi bi-trash3-fill"></i></button>
-                        </div>
-                    </td>
+                    <td colspan="12" style="text-align: center; padding: 20px;">Không có dữ liệu</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7">Tổng kết</td>
+                <td colspan="12">
+                    <div class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage - 1)&status=@ViewBag.SelectedStatus">« Prev</a>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            if (i == ViewBag.CurrentPage)
+                            {
+                                <span style="font-weight:bold">@i</span>
+                            }
+                            else
+                            {
+                                <a href="?page=@i&status=@ViewBag.SelectedStatus">@i</a>
+                            }
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage + 1)&status=@ViewBag.SelectedStatus">Next »</a>
+                        }
+                    </div>
+                </td>
             </tr>
         </tfoot>
     </table>
