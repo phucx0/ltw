@@ -32,7 +32,9 @@ header {
     height: 80px;
     position: fixed;
 }
-
+#tabbar_button {
+    display: none;
+}
 .header-fixed {
     position: fixed;
 }
@@ -48,7 +50,7 @@ header {
 .navbar-container {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 24px;
     border-radius: 100px;
 }
 
@@ -80,6 +82,15 @@ header {
     font-weight: bold;
 }
 
+.navbar-container .account-btn {
+    width: 30px;
+    height: 30px;
+    background-color: #E50914;
+/*    padding: 12px 24px;*/
+    border-radius: 60px;
+    font-weight: bold;
+}
+
 .navbar-container .logout-btn {
     background-color: #f0f0f0;
     padding: 12px 24px;
@@ -92,18 +103,24 @@ header {
 .search-ctn {
     border: 1px solid white;
     border-radius: 24px;
-    overflow: hidden;
+    background-clip: padding-box;
     color: var(--text-primary);
-    padding: 8px 16px;
+    display: flex;
+    align-items: center;
 }
+
 .search-ctn input {
+    width: 180px;
     outline: none;
     border: none;
     background-color: transparent;
     color: var(--text-primary);
     text-decoration: none;
+    padding: 0px 24px;
 }
 .search-ctn button {
+    width: 46px;
+    height: 46px;
     outline: none;
     border: none;
     color: var(--text-primary);
@@ -122,6 +139,11 @@ header {
     transition: background-color 9999s ease-in-out 0s;
 }
 
+/*.search-ctn:hover > input {
+    width: 200px;
+    opacity: 1;
+    padding: 0px 24px;
+}*/
 
 /* Footer */
 footer {
@@ -146,6 +168,17 @@ footer {
     color: var(--text-secondary);
 }
 
+@media (max-width: 1024px) {
+    .navbar-container, .link-group {
+        display: none;
+    }
+    #tabbar_button {
+        display: block;
+    }
+}
+
+
+
 @media (max-width: 768px) {
     section, .section-padding {
         width: 95%;
@@ -160,7 +193,7 @@ footer {
     }
 
     .navbar-container, .link-group {
-        display: none;
+/*        display: none;*/
     }
 
     /* footer - mobile */

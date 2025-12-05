@@ -10,6 +10,7 @@ builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(buil
 builder.Services.AddHttpClient<PaymentService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddSignalR();
+builder.Services.AddControllers();
 
 // Cấu hình Authentication sử dụng Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

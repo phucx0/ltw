@@ -79,7 +79,7 @@ namespace DoAn.Areas.Booking.Controllers
                 return new PaymentResult { Success = false, Message = "Payload null" };
             }
             var payment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.TransactionContent == payload.Content);
+                .FirstOrDefaultAsync(p => payload.Content.Contains(p.TransactionContent));
             if (payment == null)
             {
                 Console.WriteLine("Không tìm thấy payment!");

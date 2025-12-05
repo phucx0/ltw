@@ -1,6 +1,4 @@
 ﻿@{
-    // var userEmail = Context.Request.Cookies["UserEmail"];
-    // bool isGuest = String.IsNullOrEmpty(userEmail);
     bool isGuest = !User.Identity.IsAuthenticated;
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
@@ -10,9 +8,8 @@
     var fullName = User.Identity.Name;
 }
 
-@* <header class="@(isUserPage ? "" : "header-fixed")"> *@
 <header>
-    <div class="header-content @(isUserPage ? "" : "_header-fixed")">
+    <div class="header-content ">
         <div class="d-flex align-items-center justify-content-center gap-4">
             <a href="@Url.Action("Index", "Home", new { area = "" })" class="text-decoration-none">
                 <div class="logo text-white fw-bold fs-3">
@@ -39,7 +36,7 @@
             @if (isGuest)
             {
                 <a href="@Url.Action("Login", "Auth", new { area = "User" })" class="login-btn">
-                    Tài khoản
+                    Đăng nhập
                 </a>
             }
             else
@@ -50,6 +47,9 @@
                     </a>
                 </div>
             }
+        </div>
+        <div id="tabbar_button">
+            <i class="bi bi-list fs-4"></i>
         </div>
     </div>
 </header>

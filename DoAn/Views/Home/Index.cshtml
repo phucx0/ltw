@@ -4,15 +4,21 @@
 }
 @model List<DoAn.Models.Movies.Movie>
 <section class="hero-section">
+    <div class="overlay"></div>
     <div class="hero-section-content">
-        <p class="fw-bold text-white slogan"> 
-            <span>Trải nghiệm điện ảnh</span><br/>
-            <span>đỉnh cao ngay hôm nay</span>
-        </p>
-        <p class="text-white">Xem trailer, chọn ghế, thanh toán nhanh chóng.</p>
-        <a href="@Url.Action("Movies", "Movie")">
-            <button class="buy-btn">Đặt vé ngay</button>
-        </a>
+        <div>
+            <p class="fw-bold text-white slogan"> 
+                <span>Trải nghiệm điện ảnh</span><br/>
+                <span>đỉnh cao ngay hôm nay</span>
+            </p>
+            <p class="text-white">Xem trailer, chọn ghế, thanh toán nhanh chóng.</p>
+            <a href="@Url.Action("Movies", "Movie")">
+                <button class="buy-btn">Đặt vé ngay</button>
+            </a>
+        </div>
+        <div class="hero-image">
+            <img src="~/images/couple.jpg" />
+        </div>
     </div>
 </section>
 <section class="trending-section">
