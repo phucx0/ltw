@@ -129,10 +129,10 @@ namespace DoAn.Controllers
                     s.SeatNumber,
                     s.SeatRow,
                     Booked = soldSeatIds.Contains(s.SeatId)
-                        ? "sold"         // đã bán
+                        ? true         // đã bán
                         : heldSeatIds.Contains(s.SeatId)
-                            ? "held"     // đang giữ tạm
-                            : "available" // trống
+                            ? true     // đang giữ tạm
+                            : false // trống
                 })
                 .ToListAsync();
 
