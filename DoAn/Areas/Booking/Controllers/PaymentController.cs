@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DoAn.Areas.Booking.Controllers
 {
@@ -16,11 +16,17 @@ namespace DoAn.Areas.Booking.Controllers
     public class PaymentController : Controller
     {
         private readonly PaymentService _paymentService;
+        private readonly BookingService _bookingService;
         private readonly ModelContext _context;
-        public PaymentController(PaymentService paymentService, ModelContext context, IHubContext<PaymentHub> hub)
+        private readonly IHubContext<PaymentHub> _hub;
+
+        [ActivatorUtilitiesConstructor]
+        public PaymentController(PaymentService paymentService, BookingService bookingService, ModelContext context, IHubContext<PaymentHub> hub)
         {
             _paymentService = paymentService;
+            _bookingService = bookingService;
             _context = context;
+            _hub = hub;
         }
 
         public async Task<ActionResult> Success(int bookingId)
@@ -51,12 +57,6 @@ namespace DoAn.Areas.Booking.Controllers
                 .Include(b => b.Tickets)
                     .ThenInclude(t => t.Seat)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
-
-            //SuccessViewModel ViewModel = new SuccessViewModel
-            //{
-            //    Booking = booking,
-            //    Movie = movie
-            //};
             return View();
         }
         public ActionResult Failed()
@@ -78,36 +78,55 @@ namespace DoAn.Areas.Booking.Controllers
                 Console.WriteLine("Payload is null!");
                 return new PaymentResult { Success = false, Message = "Payload null" };
             }
-            var payment = await _context.Payments
-                .FirstOrDefaultAsync(p => payload.Content.Contains(p.TransactionContent));
+
+            int bookingId = 0;
+            if (payload.Content.StartsWith("Booking") &&
+                int.TryParse(payload.Content.Substring("Booking".Length), out var id))
+            {
+                bookingId = id;
+            }
+            else
+            {
+                return new PaymentResult { Success = false, Message = "Invalid booking content" };
+            }
+            Console.WriteLine(bookingId);
+            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.BookingId == bookingId);
+
             if (payment == null)
             {
-                Console.WriteLine("Không tìm thấy payment!");
+                Console.WriteLine("Khong tim thay payment!");
                 return new PaymentResult { Success = false, Message = "Không tìm thấy payment!" };
             }
 
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(b => b.BookingId == payment.BookingId);
+            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.BookingId == bookingId);
             if (booking == null)
             {
                 Console.WriteLine("Không tìm thấy booking");
                 return new PaymentResult { Success = false, Message = "Không tìm thấy booking" };
             }
 
+            decimal amountIn = 0;
+            var transactionDetails = _paymentService.GetTransactionDetailsAsync(payload.Id);
+            if (transactionDetails == null || transactionDetails.Result == null)
+            {
+                Console.WriteLine("Khong tim thay chi tiet giao dich!");
+                return new PaymentResult { Success = false, Message = "Khong tim thay chi tiet giao dich!" };
+            }
+            amountIn = transactionDetails.Result.AmountIn;
+            payment.Amount = transactionDetails.Result.AmountIn;
+            payment.TransactionId = payload.Id.ToString();
+            
             // Đối chiếu số tiền thanh toán
             decimal fakeAmount = 10000;
-            payment.Amount = payload.TransferAmount; // Phải cập nhật số tiền thực tế từ payload
-            payment.TransactionId = payload.Id.ToString(); 
+
+            //if (payment.Amount == amountIn) 
             if (fakeAmount == payload.TransferAmount)
             {
                 // Cập nhật trạng thái
                 payment.Status = "paid";
                 booking.Status = "confirmed";
 
-                await _context.Tickets
-                    .Where(t => t.BookingId == booking.BookingId)
-                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, "booked"));
-
+                await _bookingService.InsertTickets(booking.BookingId, booking.UserId);
                 await _context.SaveChangesAsync();
                 await _paymentService.NotifyPaymentResult(booking.UserId, booking.BookingId, true);
 

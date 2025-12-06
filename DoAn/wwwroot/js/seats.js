@@ -13,7 +13,7 @@ class Block {
     }
 
     draw(ctx) {
-        ctx.fillStyle = this.selected ? "#f09205ff" : this.color;
+        ctx.fillStyle = this.booked ? "#555555ff" : (this.selected ? "#f09205ff" : this.color);
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
         ctx.fillStyle = "#fff";
@@ -235,7 +235,7 @@ export class Board {
             this.draw();
         });
 
-        this.board.addEventListener("click", e => {
+        this.board.addEventListener("click", async e => {
             const rect = this.board.getBoundingClientRect();
             const mx = e.clientX - rect.left;
             const my = e.clientY - rect.top;
@@ -244,23 +244,50 @@ export class Board {
             const lx = (mx - this.offsetX) / this.scale;
             const ly = (my - this.offsetY) / this.scale;
 
-            this.blocks.forEach(block => {
-                if (block.contains(lx, ly)) {
-                    if (block.booked == false) block.selected = !block.selected;
+            for (const block of this.blocks) {
+                if (!block.contains(lx, ly)) continue;
 
-                    const id = block.blockId
-                    if (this.selectedSeats.has(id)) {
-                        this.selectedSeats.delete(id);
+                const id = block.blockId;
+
+                if (this.selectedSeats.has(id)) {
+                    const response = await fetch(`/SeatHold/Release?seatId=${id}&showtimeId=${this.showtimeId}`, {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (response.status === 401) {
+                        window.location.href = "/User/Auth/Login";
                     }
-                    else {
+                    const result = await response.json();
+                    if (result.success) {
+                        block.selected = false;
+                    }
+                    this.selectedSeats.delete(id);
+                } else {
+                    const response = await fetch(`/SeatHold/Hold?seatId=${id}&showtimeId=${this.showtimeId}`, {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (response.status === 401) {
+                        window.location.href = "/User/Auth/Login";
+                    }
+                    if (!response.ok) {
+                        console.error("Error:", response.status, response.statusText);
+                        return;
+                    }
+                    const result = await response.json();
+
+                    if (result.success) {
+                        block.selected = true;
                         this.selectedSeats.add(id);
+                    } else {
+                        block.booked = true;
+                        block.selected = false;
+                        alert(result.message);
                     }
-
-
-                    console.log(`id: ${id} - ${block.label} - ${block.selected}`);
                 }
-            });
 
+                console.log(`id: ${id} - ${block.label} - ${block.selected} - ${block.booked}`);
+            }
             this.draw();
         });
     }

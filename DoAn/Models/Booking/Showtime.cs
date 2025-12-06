@@ -26,5 +26,6 @@ public partial class Showtime
 
     //public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public ICollection<BookingSeat> BookingSeats { get; set; } = new List<BookingSeat>();
 
 }

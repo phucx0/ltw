@@ -50,6 +50,8 @@ public partial class ModelContext : DbContext
     public DbSet<ComboItem> ComboItems { get; set; }
     public DbSet<TicketCombo> TicketCombos { get; set; }
     public DbSet<Booking.Booking> Bookings { get; set; }
+    public DbSet<SeatHold> SeatHold { get; set; }
+    public DbSet<BookingSeat> BookingSeat { get; set; }
 
 
 
@@ -533,6 +535,66 @@ public partial class ModelContext : DbContext
             entity.Property(b => b.BookingTime).HasColumnName("booking_time").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(b => b.Showtime).WithMany(s => s.Bookings).HasForeignKey(b => b.ShowtimeId);
+            entity.HasOne(b => b.User)
+              .WithMany(u => u.Bookings)
+              .HasForeignKey(b => b.UserId);
+
+        });
+
+
+        modelBuilder.Entity<SeatHold>(entity =>
+        {
+            entity.ToTable("seat_hold");
+            entity.HasKey(sh => sh.HoldId);
+            entity.Property(sh => sh.HoldId).HasColumnName("hold_id");
+            entity.Property(sh => sh.UserId).HasColumnName("user_id");
+            entity.Property(sh => sh.SeatId).HasColumnName("seat_id");
+            entity.Property(sh => sh.ShowtimeId).HasColumnName("showtime_id");
+            entity.Property(sh => sh.ExpireAt).HasColumnName("expire_at").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            entity.Property(sh => sh.CreatedAt).HasColumnName("created_at").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+        });
+
+        modelBuilder.Entity<BookingSeat>(entity =>
+        {
+            entity.ToTable("booking_seats");
+
+            entity.HasKey(bs => bs.BookingSeatId);
+
+            entity.Property(bs => bs.BookingSeatId)
+                .HasColumnName("booking_seat_id");
+
+            entity.Property(bs => bs.BookingId)
+                .HasColumnName("booking_id")
+                .IsRequired();
+
+            entity.Property(bs => bs.ShowtimeId)
+                .HasColumnName("showtime_id")
+                .IsRequired();
+
+            entity.Property(bs => bs.SeatId)
+                .HasColumnName("seat_id")
+                .IsRequired();
+
+            entity.Property(bs => bs.Price)
+                .HasColumnName("price")
+                .HasColumnType("decimal(10,2)")
+                .IsRequired();
+
+            // FOREIGN KEYS
+            entity.HasOne(bs => bs.Booking)
+                .WithMany(b => b.BookingSeats)
+                .HasForeignKey(bs => bs.BookingId)
+                .HasConstraintName("fk_bs_booking");
+
+            entity.HasOne(bs => bs.Showtime)
+                .WithMany(st => st.BookingSeats)
+                .HasForeignKey(bs => bs.ShowtimeId)
+                .HasConstraintName("fk_bs_showtime");
+
+            entity.HasOne(bs => bs.Seat)
+                .WithMany(s => s.BookingSeats)
+                .HasForeignKey(bs => bs.SeatId)
+                .HasConstraintName("fk_bs_seat");
         });
     }
 

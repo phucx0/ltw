@@ -12,7 +12,7 @@ public partial class Payment
 
     public int? PromotionId { get; set; }
 
-    public decimal? Amount { get; set; }
+    public decimal Amount { get; set; }
 
     public string? Method { get; set; }
 

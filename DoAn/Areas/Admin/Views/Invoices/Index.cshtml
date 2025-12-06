@@ -63,7 +63,7 @@
                         <td><p class="movie-description">@(payment.Booking?.User?.FullName ?? "N/A")</p></td>
                         <td><p class="movie-description">@payment.Booking?.Showtime?.Movie?.Title</p></td>
                         <td><p class="">@payment.Booking?.Showtime?.Room?.Branch?.Name</p></td>
-                        <td><p class="" style="font-weight: 600; color: #0084FF;">@((payment.Amount ?? 0).ToString("N0")) đ</p></td>
+                        <td><p class="" style="font-weight: 600; color: #0084FF;">@((payment.Amount).ToString("N0")) đ</p></td>
                         <td><p class="">@(payment.Method ?? "N/A")</p></td>
                         <td>
                             <span class="badge @(payment.Status == "paid" ? "bg-success" : payment.Status == "pending" ? "bg-warning" : payment.Status == "failed" ? "bg-danger" : "bg-secondary")">

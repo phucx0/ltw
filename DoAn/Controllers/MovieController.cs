@@ -108,6 +108,12 @@ namespace DoAn.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSeatsByShowtime(int showtimeId)
         {
+            var heldSeatIds = await _context.SeatHold
+                .Where(sh => sh.ShowtimeId == showtimeId)
+                .Select(sh => sh.SeatId)
+                .ToListAsync();
+
+            
             var seats = await _context.Showtimes
                 .Where(s => s.ShowtimeId == showtimeId)
                 .SelectMany(s => s.Room.Seats)
@@ -116,11 +122,7 @@ namespace DoAn.Controllers
                     s.SeatType,
                     s.SeatNumber,
                     s.SeatRow,
-                    Booked = _context.Tickets.Any(t => 
-                        t.Booking.ShowtimeId == showtimeId && 
-                        (t.Status == "booked" || t.Status == "pending") && 
-                        t.SeatId == s.SeatId
-                    )
+                    Booked = heldSeatIds.Contains(s.SeatId)
                 })
                 .ToListAsync();
 

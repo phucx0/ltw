@@ -1,5 +1,6 @@
 ﻿using DoAn.Areas.Booking.Services;
 using DoAn.Models.Data;
+using DoAn.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(buil
 builder.Services.AddHttpClient<PaymentService>();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddSignalR();
-builder.Services.AddControllers();
+builder.Services.AddHostedService<HoldCleanupService>();
 
 // Cấu hình Authentication sử dụng Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -27,11 +28,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -40,21 +39,19 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Kích hoạt middleware Authentication
-// - Middleware này sẽ kiểm tra request có cookie/token hợp lệ hay không
-// - Phải đặt trước UseAuthorization() để hệ thống xác định danh tính user trước khi kiểm tra quyền
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Thêm route cho Areas
+// API route — PHẢI nằm sau UseRouting và trước MapDefaultControllerRoute
+app.MapControllers();
+
+// Route MVC thường
+app.MapDefaultControllerRoute();
+
+// Route Areas
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}",
-    defaults: new { action = "Index" });
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<PaymentHub>("/paymentHub");
 

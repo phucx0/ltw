@@ -65,20 +65,7 @@
             <img src="@Model.Url" alt="QR Code thanh toán" />
         </div>
         <div style="display: flex; align-items: center; gap:16px; width: 100%;">
-            @* <form
-                  asp-action="VerifyPayment"
-                  asp-controller="Payment"
-                  asp-area="Booking"
-                  asp-route-bookingId="@Model.Booking.BookingId"
-                  method="post">
-                <button type="submit" class="confirm-payment-button text-lg">
-                    Xác nhận đã thanh toán
-                </button>
-            </form> *@
-            <form asp-area="Reservation"
-                  asp-controller="Booking"
-                  asp-action="CancelBooking"
-                  asp-route-bookingId="@Model.Booking.BookingId"
+            <form action="/Booking/Reservation/CancelBooking?bookingId=@Model.Booking.BookingId"
                   method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="cancel-payment-button text-lg">Hủy</button>

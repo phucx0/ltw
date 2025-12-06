@@ -42,10 +42,16 @@ namespace DoAn.Areas.Booking.Services
             return (booking, payment);
         }
 
-        public async Task<bool> InsertTickets(List<int> seatIds, int bookingId, int userId, decimal extraPrice, decimal basePrice)
+        public async Task<bool> InsertTickets(int bookingId, int userId)
         {
             try
             {
+                var bookingSeats = _context.BookingSeat
+                    .Where(b => b.BookingId == bookingId)
+                    .ToList();
+
+                var seatIds = bookingSeats.Select(b => b.SeatId).ToList();
+                var price = bookingSeats[0].Price;
                 //decimal basePrice = _context.
                 List<Ticket> tickets = new List<Ticket>();
                 foreach (int seatId in seatIds)
@@ -54,9 +60,9 @@ namespace DoAn.Areas.Booking.Services
                     {
                         SeatId = seatId,
                         UserId = userId,
-                        Status = "pending",
+                        Status = "booked",
                         BookingId = bookingId,
-                        Price = extraPrice + basePrice,
+                        Price = price,
                         BookingTime = DateTime.Now
                     });
                 }

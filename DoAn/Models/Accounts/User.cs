@@ -23,4 +23,5 @@ public partial class User
     public UserRole Role { get; set; }
     public virtual Membership Membership { get; set; }
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public ICollection<Booking.Booking> Bookings { get; set; } = new List<Booking.Booking>();
 }
