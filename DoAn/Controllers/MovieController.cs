@@ -109,11 +109,17 @@ namespace DoAn.Controllers
         public async Task<IActionResult> GetSeatsByShowtime(int showtimeId)
         {
             var heldSeatIds = await _context.SeatHold
-                .Where(sh => sh.ShowtimeId == showtimeId)
+                .Where(sh => sh.ShowtimeId == showtimeId && sh.ExpireAt > DateTime.Now)
                 .Select(sh => sh.SeatId)
                 .ToListAsync();
 
-            
+            var soldSeatIds = await _context.BookingSeat
+                .Where(bs => bs.ShowtimeId == showtimeId &&
+                             bs.Booking.Status == "confirmed")
+                .Select(bs => bs.SeatId)
+                .ToListAsync();
+
+
             var seats = await _context.Showtimes
                 .Where(s => s.ShowtimeId == showtimeId)
                 .SelectMany(s => s.Room.Seats)
@@ -122,7 +128,11 @@ namespace DoAn.Controllers
                     s.SeatType,
                     s.SeatNumber,
                     s.SeatRow,
-                    Booked = heldSeatIds.Contains(s.SeatId)
+                    Booked = soldSeatIds.Contains(s.SeatId)
+                        ? "sold"         // đã bán
+                        : heldSeatIds.Contains(s.SeatId)
+                            ? "held"     // đang giữ tạm
+                            : "available" // trống
                 })
                 .ToListAsync();
 

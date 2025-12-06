@@ -247,6 +247,7 @@ export class Board {
             for (const block of this.blocks) {
                 if (!block.contains(lx, ly)) continue;
 
+                if (block.booked) return;
                 const id = block.blockId;
 
                 if (this.selectedSeats.has(id)) {
