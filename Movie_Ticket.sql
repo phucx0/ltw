@@ -806,3 +806,149 @@ DROP CONSTRAINT chk_tickets_status
 
 ALTER TABLE tickets
 ADD CONSTRAINT chk_tickets_status CHECK (status IN ('booked','canceled','used', 'pending'))
+
+
+
+CREATE TABLE booking_seats (
+    booking_seat_id INT IDENTITY(1,1) PRIMARY KEY,
+    booking_id INT NOT NULL,
+    showtime_id INT NOT NULL,
+    seat_id INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    CONSTRAINT fk_bs_booking FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
+    CONSTRAINT fk_bs_showtime FOREIGN KEY (showtime_id) REFERENCES showtimes(showtime_id),
+    CONSTRAINT fk_bs_seat FOREIGN KEY (seat_id) REFERENCES seats(seat_id),
+	CONSTRAINT uni_bs UNIQUE(showtime_id, seat_id)
+);
+
+
+CREATE TABLE seat_hold (
+    hold_id INT IDENTITY PRIMARY KEY,
+    user_id INT NOT NULL,
+    showtime_id INT NOT NULL,
+    seat_id INT NOT NULL,
+    expire_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+	constraint fk_sh_user foreign key (user_id) references users(user_id),
+	CONSTRAINT fk_sh_showtime FOREIGN KEY (showtime_id) REFERENCES showtimes(showtime_id),
+	constraint fk_sh_seat foreign key (seat_id) references seats(seat_id)
+);
+
+
+CREATE PROCEDURE sp_FinalizeBooking
+(
+    @UserId INT,
+    @ShowtimeId INT,
+    @Amount DECIMAL(18,2),
+	@BookingId INT OUTPUT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -------------------------------------------------------
+        -- 1. Lấy ghế hold + khóa hàng (UPDLOCK, HOLDLOCK)
+        -------------------------------------------------------
+
+
+        SELECT seat_id
+        INTO #TempSeats
+        FROM seat_hold WITH (UPDLOCK, HOLDLOCK)
+        WHERE user_id = @UserId
+          AND showtime_id = @ShowtimeId
+          AND expire_at > GETDATE();
+
+        IF (SELECT COUNT(*) FROM #TempSeats) = 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+            RAISERROR('Seat hold expired or not found', 16, 1);
+            RETURN;
+        END
+
+        -------------------------------------------------------
+        -- 2. Tạo Booking
+        -------------------------------------------------------
+        INSERT INTO bookings(user_id, showtime_id, status, total_amount)
+        VALUES (@UserId, @ShowtimeId, 'pending', @Amount);
+
+		SET @BookingId = SCOPE_IDENTITY();
+        -------------------------------------------------------
+        -- 3. Tạo Payment (pending)
+        -------------------------------------------------------
+        INSERT INTO payments(booking_id, amount, status, method, transaction_content)
+        VALUES (@BookingId, @Amount, 'pending', 'Sepay_QR', 'Booking' + CAST(@ShowtimeId AS NVARCHAR(10)));
+
+        -------------------------------------------------------
+        -- 4. Gán ghế vào Booking (sẽ fail nếu trùng ghế)
+        -------------------------------------------------------
+        INSERT INTO booking_seats (booking_id, showtime_id, seat_id, price)
+		SELECT 
+			@BookingId,
+			@ShowtimeId,
+			s.seat_id,
+			(seatType.extra_price + rt.base_price) AS final_price
+		FROM #TempSeats t
+		JOIN seats s ON s.seat_id = t.seat_id
+		JOIN seat_types seatType on seatType.type_id = s.type_id
+		JOIN showtimes st ON st.showtime_id = @ShowtimeId
+		JOIN rooms r on r.room_id = (select room_id from showtimes where showtime_id = @ShowtimeId)
+		JOIN room_types rt ON rt.room_type_id = r.room_type_id;
+
+        -------------------------------------------------------
+        -- 5. Xóa ghế hold
+        -------------------------------------------------------
+        DELETE FROM seat_hold
+        WHERE user_id = @UserId
+          AND showtime_id = @ShowtimeId;
+
+        COMMIT TRANSACTION;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        THROW;
+    END CATCH
+END
+GO
+
+
+-- PROCEDURE GIỮ GHẾ 
+CREATE PROCEDURE HoldSeat
+    @SeatId INT,
+    @ShowtimeId INT,
+    @UserId INT,
+    @ExpireMinutes INT,
+    @Result BIT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRAN
+    -- Kiểm tra ghế có đang hold hoặc đã book chưa
+    IF EXISTS (
+		SELECT 1 
+		FROM seat_hold 
+		WHERE seat_id = @SeatId AND showtime_id = @ShowtimeId AND expire_at > GETDATE()
+	)
+    OR EXISTS (
+		SELECT 1 
+		FROM booking_seats 
+		WHERE seat_id = @SeatId AND showtime_id = @ShowtimeId
+	)
+    BEGIN
+        SET @Result = 0 -- Không thể hold
+        ROLLBACK TRAN
+        RETURN
+    END
+
+    INSERT INTO seat_hold(seat_id, showtime_id, user_id, expire_at, created_at)
+    VALUES (@SeatId, @ShowtimeId, @UserId, DATEADD(MINUTE, @ExpireMinutes, GETDATE()), GETDATE())
+
+    COMMIT TRAN
+    SET @Result = 1 -- Hold thành công
+END
