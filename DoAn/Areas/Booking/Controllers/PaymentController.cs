@@ -112,8 +112,7 @@ namespace DoAn.Areas.Booking.Controllers
                 Console.WriteLine("Khong tim thay chi tiet giao dich!");
                 return new PaymentResult { Success = false, Message = "Khong tim thay chi tiet giao dich!" };
             }
-            amountIn = transactionDetails.Result.AmountIn;
-            payment.Amount = transactionDetails.Result.AmountIn;
+            payment.Amount = amountIn = decimal.Parse(transactionDetails.Result.AmountIn);
             payment.TransactionId = payload.Id.ToString();
             
             // Đối chiếu số tiền thanh toán

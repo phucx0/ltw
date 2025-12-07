@@ -48,7 +48,9 @@ namespace DoAn.Areas.Booking.Controllers
                 .Where(st => st.Seats.Any(s => s.SeatId == heldSeats[0].SeatId))
                 .Select(st => st.ExtraPrice)
                 .FirstOrDefaultAsync();
-
+            Console.WriteLine("Base price: " + basePrice);
+            Console.WriteLine("extra price: " + extraPrice);
+            Console.WriteLine("Held seat: " + heldSeats.Count());
             decimal totalAmount = (basePrice + extraPrice) * heldSeats.Count();
             try
             {

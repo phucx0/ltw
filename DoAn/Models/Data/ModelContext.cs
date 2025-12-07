@@ -9,11 +9,6 @@ namespace DoAn.Models.Data;
 
 public partial class ModelContext : DbContext
 {
-    //public ModelContext(string SERVER, string DATABASE, string USER_ID, string PASSWORD)
-    //{
-    //    connectionString = $"Server={SERVER};Database={DATABASE};User Id={USER_ID};Password={PASSWORD};TrustServerCertificate={trustServerCertificate};";
-    //}
-
     public ModelContext(DbContextOptions<ModelContext> options) : base(options)
     {
     }

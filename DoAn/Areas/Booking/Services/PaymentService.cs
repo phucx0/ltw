@@ -48,18 +48,15 @@ namespace DoAn.Areas.Booking.Services
                     PropertyNameCaseInsensitive = true,
                     Converters = { new SepayDateTimeConverter() }
                 });
-
-                if (result != null && result.Messages.Success)
-                {
-                    return result.Transaction;
-                }
+                if (result == null || result.Transaction == null) return null;
+                return result.Transaction;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Deserialization Error: {ex.Message}");
                 Console.WriteLine($"Raw content: {content}");
+                return null;
             }
-            return null;
         }
 
 
@@ -124,16 +121,16 @@ namespace DoAn.Areas.Booking.Services
         public string SubAccount { get; set; } = null!;
 
         [JsonPropertyName("amount_in")]
-        public decimal AmountIn { get; set; }
+        public string AmountIn { get; set; }
 
         [JsonPropertyName("amount_out")]
-        public decimal AmountOut { get; set; }
+        public string AmountOut { get; set; }
 
         [JsonPropertyName("accumulated")]
-        public decimal Accumulated { get; set; }
+        public string Accumulated { get; set; }
 
         [JsonPropertyName("code")]
-        public string? Code { get; set; }
+        public string Code { get; set; }
 
         [JsonPropertyName("transaction_content")]
         public string TransactionContent { get; set; } = null!;
@@ -151,7 +148,7 @@ namespace DoAn.Areas.Booking.Services
     public class PaymentResult
     {
         public bool Success { get; set; }
-        public string ?Message { get; set; }
+        public string? Message { get; set; }
     }
 
     public class SepayPayload

@@ -71,7 +71,7 @@ namespace DoAn.Areas.Booking.Services
                     });
                 }
                 await db.Tickets.AddRangeAsync(tickets);
-                //await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
