@@ -7,10 +7,12 @@ namespace DoAn.Areas.Booking.Services
 {
     public class BookingService
     {
-        private readonly ModelContext _context;
-        public BookingService (ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+
+        public BookingService (IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
+
         }
         public async Task<(Models.Booking.Booking booking, Payment payment)> CreateBooking(int userId, int showtimeId, decimal totalAmount)
         {
@@ -22,9 +24,10 @@ namespace DoAn.Areas.Booking.Services
                 Status = status,
                 TotalAmount = totalAmount
             };
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
-            await _context.Bookings.AddAsync(booking);
-            await _context.SaveChangesAsync();
+            await db.Bookings.AddAsync(booking);
+            await db.SaveChangesAsync();
 
             // Tạo payment record
             var payment = new Payment
@@ -36,7 +39,7 @@ namespace DoAn.Areas.Booking.Services
                 TransactionContent = $"Booking{booking.BookingId}",
                 PaymentTime = DateTime.Now
             };
-            await _context.Payments.AddAsync(payment);
+            await db.Payments.AddAsync(payment);
             //await _context.SaveChangesAsync();
 
             return (booking, payment);
@@ -46,7 +49,8 @@ namespace DoAn.Areas.Booking.Services
         {
             try
             {
-                var bookingSeats = _context.BookingSeat
+                var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+                var bookingSeats = db.BookingSeat
                     .Where(b => b.BookingId == bookingId)
                     .ToList();
 
@@ -66,7 +70,7 @@ namespace DoAn.Areas.Booking.Services
                         BookingTime = DateTime.Now
                     });
                 }
-                await _context.Tickets.AddRangeAsync(tickets);
+                await db.Tickets.AddRangeAsync(tickets);
                 //await _context.SaveChangesAsync();
                 return true;
             }
@@ -76,8 +80,6 @@ namespace DoAn.Areas.Booking.Services
                 return false;
             }
         }
-
-
     }
     public class BookingRequest
     {

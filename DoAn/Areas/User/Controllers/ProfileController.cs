@@ -9,23 +9,21 @@ namespace DoAn.Areas.User.Controllers
     [Area("User")]
     public class ProfileController : Controller
     {
-        private readonly ModelContext _context;
-        private readonly ILogger<ProfileController> _logger;
-
-        public ProfileController(ModelContext context, ILogger<ProfileController> logger)
+        private readonly IDbContextFactory _dbFactory;
+        public ProfileController(IDbContextFactory dbFactory)
         {
-            _context = context;
-            _logger = logger;
+            _dbFactory = dbFactory;
         }
 
         public IActionResult Index()
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("Login", "Auth");
             }
-            var user = _context.Users
+            var user = db.Users
                 .Include(u => u.Membership)
                     .ThenInclude(m => m.MembershipTier)
                 .Include(u => u.Tickets.Where(t => t.Booking.Status == "confirmed"))

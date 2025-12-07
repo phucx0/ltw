@@ -1,9 +1,7 @@
-﻿using DoAn.Models.Cinema;
-using DoAn.Models.Data;
+﻿using DoAn.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Data;
 using System.Security.Claims;
 
@@ -11,21 +9,21 @@ namespace DoAn.Controllers
 {
     public class SeatHoldController : Controller
     {
-        private readonly ModelContext _context;
+        private readonly IDbContextFactory _dbFactory;
         private readonly int _holdMinutes = 5;
-        public SeatHoldController(ModelContext context)
+        public SeatHoldController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
 
         public async Task<bool> HoldSeatAsync(int seatId, int showtimeId, int userId)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             var outputParam = new SqlParameter("@Result", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
             };
-
-            await _context.Database.ExecuteSqlRawAsync(
+            await db.Database.ExecuteSqlRawAsync(
                 "EXEC HoldSeat @SeatId, @ShowtimeId, @UserId, @ExpireMinutes, @Result OUTPUT",
                 new SqlParameter("@SeatId", seatId),
                 new SqlParameter("@ShowtimeId", showtimeId),
@@ -64,7 +62,7 @@ namespace DoAn.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized(new { success = false, message = "Not logged in" });
 
-            using (var db = new ModelContext())
+            using (var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123"))
             {
                 var hold = db.SeatHold.FirstOrDefault(x =>
                     x.SeatId == seatId &&

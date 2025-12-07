@@ -2,16 +2,19 @@
 using DoAn.Models.Data;
 using DoAn.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ModelContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer")));
-builder.Services.AddHttpClient<PaymentService>();
-builder.Services.AddScoped<BookingService>();
+builder.Services.AddSingleton<IDbContextFactory, DbContextFactory>();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<HoldCleanupService>();
+builder.Services.AddHttpClient<PaymentService>();
+builder.Services.AddScoped<BookingService>();
+
+// Giảm log EF Core
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Connection", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
 
 // Cấu hình Authentication sử dụng Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -43,15 +46,20 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // API route — PHẢI nằm sau UseRouting và trước MapDefaultControllerRoute
-app.MapControllers();
+//app.MapControllers();
 
 // Route MVC thường
-app.MapDefaultControllerRoute();
+//app.MapDefaultControllerRoute();
 
 // Route Areas
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { action = "Index" });
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<PaymentHub>("/paymentHub");
 

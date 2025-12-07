@@ -8,14 +8,15 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class BranchesController : Controller
     {
-        private ModelContext _context;
-        public BranchesController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public BranchesController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index()
         {
-            var branches = _context.Branches
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var branches = db.Branches
                 .Take(10)
                 .ToList();
             return View(branches);

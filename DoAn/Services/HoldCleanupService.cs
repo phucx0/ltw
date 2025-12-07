@@ -5,37 +5,77 @@ namespace DoAn.Services
 {
     public class HoldCleanupService : BackgroundService
     {
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // chạy mỗi phút
+        private readonly IDbContextFactory _dbFactory;
+        private readonly ILogger<HoldCleanupService> _logger;
+        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+        private readonly TimeSpan _errorRetryInterval = TimeSpan.FromMinutes(5);
 
-        public HoldCleanupService(IServiceScopeFactory scopeFactory)
+        public HoldCleanupService(
+            IDbContextFactory dbFactory,
+            ILogger<HoldCleanupService> logger)
         {
-            _scopeFactory = scopeFactory;
+            _dbFactory = dbFactory;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("HoldCleanupService started");
+
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                await CleanupExpiredHolds();
-                await Task.Delay(_interval, stoppingToken);
+                try
+                {
+                    await CleanupExpiredHolds();
+                    await Task.Delay(_interval, stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // App đang shutdown, thoát gracefully
+                    _logger.LogInformation("HoldCleanupService is stopping");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    //_logger.LogError(ex, "Error in HoldCleanupService. Retrying in {RetryInterval} minutes",
+                    //    _errorRetryInterval.TotalMinutes);
+                    try
+                    {
+                        await Task.Delay(_errorRetryInterval, stoppingToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+                }
             }
+
+            _logger.LogInformation("HoldCleanupService stopped");
         }
 
         private async Task CleanupExpiredHolds()
         {
-            using var scope = _scopeFactory.CreateScope();
-            var _context = scope.ServiceProvider.GetRequiredService<ModelContext>();
-
-            var expiredHolds = await _context.SeatHold
-                .Where(sh => sh.ExpireAt <= DateTime.Now)
-                .ToListAsync();
-
-            if (expiredHolds.Any())
+            try
             {
-                _context.SeatHold.RemoveRange(expiredHolds);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Removed {expiredHolds.Count} expired seat holds at {DateTime.Now}");
+                using var db = _dbFactory.Create("MOVIE_TICKET_db", "app_user", "app123");
+
+                var now = DateTime.Now;
+                var expiredHolds = await db.SeatHold
+                    .Where(sh => sh.ExpireAt <= now)
+                    .ToListAsync();
+
+                if (expiredHolds.Any())
+                {
+                    db.SeatHold.RemoveRange(expiredHolds);
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "Failed to cleanup expired holds");
+                throw; // Ném lên để ExecuteAsync bắt và retry
             }
         }
     }

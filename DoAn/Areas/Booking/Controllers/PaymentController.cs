@@ -15,39 +15,38 @@ namespace DoAn.Areas.Booking.Controllers
     [Area("Booking")]
     public class PaymentController : Controller
     {
+        private readonly IDbContextFactory _dbFactory;
         private readonly PaymentService _paymentService;
         private readonly BookingService _bookingService;
-        private readonly ModelContext _context;
-        private readonly IHubContext<PaymentHub> _hub;
 
         [ActivatorUtilitiesConstructor]
-        public PaymentController(PaymentService paymentService, BookingService bookingService, ModelContext context, IHubContext<PaymentHub> hub)
+        public PaymentController( PaymentService paymentService, BookingService bookingService, IDbContextFactory dbFactory)
         {
             _paymentService = paymentService;
             _bookingService = bookingService;
-            _context = context;
-            _hub = hub;
+            _dbFactory = dbFactory;
         }
 
         public async Task<ActionResult> Success(int bookingId)
         {
             if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
-            var booking = await _context.Bookings
+            var booking = await db.Bookings
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
             if (booking == null)
             {
                 return View();
             }
-            var movie = await _context.Movies
+            var movie = await db.Movies
                 .Include(m => m.Showtimes)
                 .FirstOrDefaultAsync(m => m.Showtimes.Any(s => s.ShowtimeId == booking.ShowtimeId));
             if (movie == null)
             {
                 return View();
             }
-            var fullBooking = await _context.Bookings
+            var fullBooking = await db.Bookings
                 .Include(b => b.Showtime)
                     .ThenInclude(s => s.Movie)
                 .Include(b => b.Showtime)
@@ -68,6 +67,7 @@ namespace DoAn.Areas.Booking.Controllers
         [HttpPost] 
         public async Task<PaymentResult> Callback()
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             using var reader = new StreamReader(Request.Body);
             var body = await reader.ReadToEndAsync();
 
@@ -90,7 +90,7 @@ namespace DoAn.Areas.Booking.Controllers
                 return new PaymentResult { Success = false, Message = "Invalid booking content" };
             }
             Console.WriteLine(bookingId);
-            var payment = await _context.Payments.FirstOrDefaultAsync(p => p.BookingId == bookingId);
+            var payment = await db.Payments.FirstOrDefaultAsync(p => p.BookingId == bookingId);
 
             if (payment == null)
             {
@@ -98,7 +98,7 @@ namespace DoAn.Areas.Booking.Controllers
                 return new PaymentResult { Success = false, Message = "Không tìm thấy payment!" };
             }
 
-            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.BookingId == bookingId);
+            var booking = await db.Bookings.FirstOrDefaultAsync(b => b.BookingId == bookingId);
             if (booking == null)
             {
                 Console.WriteLine("Không tìm thấy booking");
@@ -127,7 +127,7 @@ namespace DoAn.Areas.Booking.Controllers
                 booking.Status = "confirmed";
 
                 await _bookingService.InsertTickets(booking.BookingId, booking.UserId);
-                await _context.SaveChangesAsync();
+                await db.SaveChangesAsync();
                 await _paymentService.NotifyPaymentResult(booking.UserId, booking.BookingId, true);
 
                 Console.WriteLine("Thanh toan thanh cong");

@@ -10,10 +10,10 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class DashboardController : Controller
     {
-        private ModelContext _context;
-        public DashboardController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public DashboardController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public async Task<IActionResult> Index()
         {
@@ -21,40 +21,41 @@ namespace DoAn.Areas.Admin.Controllers
             var today = DateTime.Today;
             var startOfMonth = new DateTime(today.Year, today.Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
             // Thống kê tổng quan
-            viewModel.TotalMovies = await _context.Movies.CountAsync();
-            viewModel.TotalBranches = await _context.Branches.CountAsync();
-            viewModel.TotalRooms = await _context.Rooms.CountAsync();
-            viewModel.TotalUsers = await _context.Users
+            viewModel.TotalMovies = await db.Movies.CountAsync();
+            viewModel.TotalBranches = await db.Branches.CountAsync();
+            viewModel.TotalRooms = await db.Rooms.CountAsync();
+            viewModel.TotalUsers = await db.Users
                 .Include(u => u.Role)
                 .Where(u => u.Role.RoleName == "user")
                 .CountAsync();
 
             // Thống kê hôm nay
-            viewModel.TodayShowtimes = await _context.Showtimes
+            viewModel.TodayShowtimes = await db.Showtimes
                 .Where(s => s.StartTime.Date == today)
                 .CountAsync();
 
-            viewModel.TodayTicketsSold = await _context.Tickets
+            viewModel.TodayTicketsSold = await db.Tickets
                 .Where(t => t.BookingTime.Date == today && t.Status == "booked")
                 .CountAsync();
 
-            viewModel.TodayRevenue = await _context.Payments
+            viewModel.TodayRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value.Date == today &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
             // Thống kê tháng này
-            viewModel.MonthlyRevenue = await _context.Payments
+            viewModel.MonthlyRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value >= startOfMonth &&
                            p.PaymentTime.Value <= endOfMonth &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
-            viewModel.MonthlyTicketsSold = await _context.Tickets
+            viewModel.MonthlyTicketsSold = await db.Tickets
                 .Where(t => t.BookingTime >= startOfMonth &&
                            t.BookingTime <= endOfMonth &&
                            t.Status == "booked")
@@ -68,8 +69,9 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> GetTopMovies()
         {
             var startOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
-            var topMovies = await _context.Tickets
+            var topMovies = await db.Tickets
                 .Include(t => t.Booking)
                     .ThenInclude(b => b.Showtime)
                         .ThenInclude(s => s.Movie)
@@ -98,6 +100,7 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetWeeklyRevenue()
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             var today = DateTime.Today;
             var startOfWeek = today.AddDays(-(int)today.DayOfWeek + 1); // Thứ 2
 
@@ -106,7 +109,7 @@ namespace DoAn.Areas.Admin.Controllers
             for (int i = 0; i < 7; i++)
             {
                 var date = startOfWeek.AddDays(i);
-                var revenue = await _context.Payments
+                var revenue = await db.Payments
                     .Where(p => p.PaymentTime.HasValue &&
                                p.PaymentTime.Value.Date == date &&
                                p.Status == "paid")
@@ -125,6 +128,7 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStatistics()
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             var today = DateTime.Today;
             var yesterday = today.AddDays(-1);
             var startOfMonth = new DateTime(today.Year, today.Month, 1);
@@ -132,39 +136,39 @@ namespace DoAn.Areas.Admin.Controllers
             var endOfLastMonth = startOfMonth.AddDays(-1);
 
             // Tính % thay đổi so với hôm qua
-            var yesterdayRevenue = await _context.Payments
+            var yesterdayRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value.Date == yesterday &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
-            var todayRevenue = await _context.Payments
+            var todayRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value.Date == today &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
             // Tính % thay đổi so với tháng trước
-            var lastMonthRevenue = await _context.Payments
+            var lastMonthRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value >= startOfLastMonth &&
                            p.PaymentTime.Value <= endOfLastMonth &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
-            var thisMonthRevenue = await _context.Payments
+            var thisMonthRevenue = await db.Payments
                 .Where(p => p.PaymentTime.HasValue &&
                            p.PaymentTime.Value >= startOfMonth &&
                            p.Status == "paid")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
 
-            var lastMonthTickets = await _context.Tickets
+            var lastMonthTickets = await db.Tickets
                 .Where(t => t.BookingTime >= startOfLastMonth &&
                            t.BookingTime <= endOfLastMonth &&
                            t.Status == "booked")
                 .CountAsync();
 
-            var thisMonthTickets = await _context.Tickets
+            var thisMonthTickets = await db.Tickets
                 .Where(t => t.BookingTime >= startOfMonth &&
                            t.Status == "booked")
                 .CountAsync();

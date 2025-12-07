@@ -9,11 +9,10 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class InvoicesController : Controller
     {
-        private ModelContext _context;
-        
-        public InvoicesController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public InvoicesController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
 
         public async Task<IActionResult> Index(string? status, string? method, int page = 1)
@@ -22,7 +21,8 @@ namespace DoAn.Areas.Admin.Controllers
             ViewBag.SelectedStatus = status;
             ViewBag.SelectedMethod = method;
 
-            var query = _context.Payments
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var query = db.Payments
                 .Include(p => p.Booking)
                     .ThenInclude(b => b.User)
                 .Include(p => p.Booking)
@@ -63,7 +63,8 @@ namespace DoAn.Areas.Admin.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var payment = await _context.Payments
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var payment = await db.Payments
                 .Include(p => p.Booking)
                     .ThenInclude(b => b.User)
                 .Include(p => p.Booking)

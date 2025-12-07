@@ -8,15 +8,16 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class UserController : Controller
     {
-        private ModelContext _context;
-        public UserController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public UserController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
 
         public IActionResult Index()
         {
-            var users = _context.Users.Take(15).ToList();
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var users = db.Users.Take(15).ToList();
             return View(users);
         }
     }

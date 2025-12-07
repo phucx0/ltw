@@ -11,24 +11,26 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class MoviesController : Controller
     {
-        private ModelContext _context;
-        public MoviesController (ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public MoviesController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index()
         {
-            var list = _context.Movies.Take(10).ToList();
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var list = db.Movies.Take(10).ToList();
             return View(list);
         }
 
         public IActionResult Create()
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             var vm = new MovieViewModel
             {
-                AllActors = _context.Actors.ToList(),
-                AllDirectors = _context.Directors.ToList(),
-                AllRatings = _context.AgeRatings.ToList(),
+                AllActors = db.Actors.ToList(),
+                AllDirectors = db.Directors.ToList(),
+                AllRatings = db.AgeRatings.ToList(),
                 AllGenres = new List<string> { "Action", "Comedy", "Crime", "Drama", "Fantasy", "Horror", "Sci-Fi" }
             };
 
@@ -38,11 +40,12 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(MovieViewModel vm)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             if (!ModelState.IsValid)
             {
-                vm.AllActors = _context.Actors.ToList();
-                vm.AllDirectors = _context.Directors.ToList();
-                vm.AllRatings = _context.AgeRatings.ToList();
+                vm.AllActors = db.Actors.ToList();
+                vm.AllDirectors = db.Directors.ToList();
+                vm.AllRatings = db.AgeRatings.ToList();
                 vm.AllGenres = new List<string> { "Action", "Comedy", "Crime", "Drama", "Fantasy", "Horror", "Sci-Fi" };
                 return View(vm);
             }
@@ -62,18 +65,18 @@ namespace DoAn.Areas.Admin.Controllers
                 ImdbRating = vm.ImdbRating
             };
 
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
+            db.Movies.Add(movie);
+            await db.SaveChangesAsync();
 
             // Add Actors
             foreach (var actorId in vm.SelectedActorIds)
-                _context.MovieActors.Add(new MovieActor { MovieId = movie.MovieId, ActorId = actorId });
+                db.MovieActors.Add(new MovieActor { MovieId = movie.MovieId, ActorId = actorId });
 
             // Add Directors
             foreach (var directorId in vm.SelectedDirectorIds)
-                _context.MovieDirectors.Add(new MovieDirector { MovieId = movie.MovieId, DirectorId = directorId });
+                db.MovieDirectors.Add(new MovieDirector { MovieId = movie.MovieId, DirectorId = directorId });
 
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
@@ -82,7 +85,9 @@ namespace DoAn.Areas.Admin.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var movie = await _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
+            var movie = await db.Movies
                 .Include(m => m.AgeRating)
                 .Include(m => m.MovieActors)
                     .ThenInclude(ma => ma.Actor)
@@ -94,7 +99,9 @@ namespace DoAn.Areas.Admin.Controllers
 
         public IActionResult Edit(int id)
         {
-            var movie = _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
+            var movie = db.Movies
                 .Include(m => m.MovieActors)
                 .Include(m => m.MovieDirectors)
                 .FirstOrDefault(m => m.MovieId == id);
@@ -119,9 +126,9 @@ namespace DoAn.Areas.Admin.Controllers
                 SelectedActorIds = movie.MovieActors.Select(x => x.ActorId).ToList(),
                 SelectedDirectorIds = movie.MovieDirectors.Select(x => x.DirectorId).ToList(),
 
-                AllActors = _context.Actors.ToList(),
-                AllDirectors = _context.Directors.ToList(),
-                AllRatings = _context.AgeRatings.ToList()
+                AllActors = db.Actors.ToList(),
+                AllDirectors = db.Directors.ToList(),
+                AllRatings = db.AgeRatings.ToList()
             };
 
             return View(vm);
@@ -131,7 +138,9 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(MovieViewModel vm)
         {
-            var movie = await _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
+            var movie = await db.Movies
                 .Include(m => m.MovieActors)
                 .Include(m => m.MovieDirectors)
                 .FirstOrDefaultAsync(m => m.MovieId == vm.MovieId);
@@ -151,23 +160,25 @@ namespace DoAn.Areas.Admin.Controllers
             movie.ImdbRating = vm.ImdbRating;
 
             // Update MovieActors
-            _context.MovieActors.RemoveRange(movie.MovieActors);
+            db.MovieActors.RemoveRange(movie.MovieActors);
             foreach (var id in vm.SelectedActorIds)
-                _context.MovieActors.Add(new MovieActor { MovieId = movie.MovieId, ActorId = id });
+                db.MovieActors.Add(new MovieActor { MovieId = movie.MovieId, ActorId = id });
 
             // Update MovieDirectors
-            _context.MovieDirectors.RemoveRange(movie.MovieDirectors);
+            db.MovieDirectors.RemoveRange(movie.MovieDirectors);
             foreach (var id in vm.SelectedDirectorIds)
-                _context.MovieDirectors.Add(new MovieDirector { MovieId = movie.MovieId, DirectorId = id });
+                db.MovieDirectors.Add(new MovieDirector { MovieId = movie.MovieId, DirectorId = id });
 
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            var movie = await _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
+            var movie = await db.Movies
                 .FirstOrDefaultAsync(m => m.MovieId == id);
 
             if (movie == null)
@@ -180,22 +191,24 @@ namespace DoAn.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
+            var movie = await db.Movies.FindAsync(id);
             if (movie == null)
                 return NotFound();
 
             // Delete MovieActors
-            var movieActors = _context.MovieActors.Where(ma => ma.MovieId == id);
-            _context.MovieActors.RemoveRange(movieActors);
+            var movieActors = db.MovieActors.Where(ma => ma.MovieId == id);
+            db.MovieActors.RemoveRange(movieActors);
 
             // Delete MovieDirectors
-            var movieDirectors = _context.MovieDirectors.Where(md => md.MovieId == id);
-            _context.MovieDirectors.RemoveRange(movieDirectors);
+            var movieDirectors = db.MovieDirectors.Where(md => md.MovieId == id);
+            db.MovieDirectors.RemoveRange(movieDirectors);
 
             // Delete Movie
-            _context.Movies.Remove(movie);
+            db.Movies.Remove(movie);
 
-            await _context.SaveChangesAsync();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
     }

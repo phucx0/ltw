@@ -9,17 +9,10 @@ namespace DoAn.Models.Data;
 
 public partial class ModelContext : DbContext
 {
-    private readonly static string server = "localhost";
-    //private readonly static string server = "DESKTOP-ELEHUN4";
-    private readonly static string database = "MOVIE_TICKET";
-    private readonly static string user_id = "sa";
-    private readonly static string password = "123";
-    private readonly static string trustServerCertificate = "True";
-    private static string connectionString = $"Server={server};Database={database};User Id={user_id};Password={password};TrustServerCertificate={trustServerCertificate};";
-    public ModelContext()
-    {
-
-    }
+    //public ModelContext(string SERVER, string DATABASE, string USER_ID, string PASSWORD)
+    //{
+    //    connectionString = $"Server={SERVER};Database={DATABASE};User Id={USER_ID};Password={PASSWORD};TrustServerCertificate={trustServerCertificate};";
+    //}
 
     public ModelContext(DbContextOptions<ModelContext> options) : base(options)
     {
@@ -55,11 +48,8 @@ public partial class ModelContext : DbContext
 
 
 
-
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(connectionString);
-
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer(connectionString);
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

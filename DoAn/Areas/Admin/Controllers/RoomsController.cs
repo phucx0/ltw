@@ -9,14 +9,16 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class RoomsController : Controller
     {
+        private readonly IDbContextFactory _dbFactory;
         private ModelContext _context;
-        public RoomsController(ModelContext context)
+        public RoomsController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index()
         {
-            var rooms = _context.Rooms
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var rooms = db.Rooms
                 .Include(r => r.Branch)
                 .Include(r => r.RoomType)
                 .Take(10)

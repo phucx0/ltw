@@ -10,17 +10,18 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class TicketsController : Controller
     {
-        private ModelContext _context;
-        public TicketsController (ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public TicketsController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index(string? status, int page = 1)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             int pageSize = 10;
             ViewBag.SelectedStatus = status;
 
-            var query = _context.Tickets
+            var query = db.Tickets
                 .Include(t => t.User)
                 .Include(t => t.Seat)
                 .Include(t => t.Booking)

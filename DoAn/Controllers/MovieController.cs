@@ -10,19 +10,18 @@ namespace DoAn.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly ModelContext _context;
+        private readonly IDbContextFactory _dbFactory;
 
-        public MovieController(ModelContext context)
+        public MovieController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
-
         public IActionResult Movies()
         {
-            List<Movie> list = _context.Movies.ToList();
-            List<Movie> treding_movies = list.Where(m => m.Status.ToLower() == "now showing").ToList();
-            List<Movie> now_showing_movies = list.Where(m => m.Status.ToLower() == "now showing").ToList();
-            List<Movie> coming_soon_movies = list.Where(m => m.Status.ToLower() == "coming soon").ToList();
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            List<Movie> treding_movies = db.Movies.Where(m => m.Status.ToLower() == "now showing").ToList();
+            List<Movie> now_showing_movies = db.Movies.Where(m => m.Status.ToLower() == "now showing").ToList();
+            List<Movie> coming_soon_movies = db.Movies.Where(m => m.Status.ToLower() == "coming soon").ToList();
 
             MoviesPageViewModel model = new MoviesPageViewModel
             {
@@ -40,7 +39,8 @@ namespace DoAn.Controllers
             {
                 return RedirectToAction("Error404", "Home");
             }
-            var movie = await _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var movie = await db.Movies
                 .Include(m => m.AgeRating)
                 .Include(m => m.MovieDirectors)
                 .Include(m => m.MovieActors)
@@ -84,7 +84,8 @@ namespace DoAn.Controllers
         [HttpGet]
         public async Task<IActionResult> GetShowtimesPartial(int id, DateTime? date)
         {
-            var movie = await _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var movie = await db.Movies
                 .Include(m => m.Showtimes)
                     .ThenInclude(s => s.Room)
                         .ThenInclude(r => r.Branch)
@@ -108,19 +109,20 @@ namespace DoAn.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSeatsByShowtime(int showtimeId)
         {
-            var heldSeatIds = await _context.SeatHold
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var heldSeatIds = await db.SeatHold
                 .Where(sh => sh.ShowtimeId == showtimeId && sh.ExpireAt > DateTime.Now)
                 .Select(sh => sh.SeatId)
                 .ToListAsync();
 
-            var soldSeatIds = await _context.BookingSeat
+            var soldSeatIds = await db.BookingSeat
                 .Where(bs => bs.ShowtimeId == showtimeId &&
                              bs.Booking.Status == "confirmed")
                 .Select(bs => bs.SeatId)
                 .ToListAsync();
 
 
-            var seats = await _context.Showtimes
+            var seats = await db.Showtimes
                 .Where(s => s.ShowtimeId == showtimeId)
                 .SelectMany(s => s.Room.Seats)
                 .Select(s => new {

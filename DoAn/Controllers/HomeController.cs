@@ -1,28 +1,27 @@
 ﻿    using DoAn.Models.Data;
+using DoAn.Models.Movies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DoAn.Models.Movies;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DoAn.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ModelContext _context;
-
-        public HomeController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public HomeController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
-
         public IActionResult Index()
         {
-            var trendingMovies = _context.Movies
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var trendingMovies = db.Movies
                              .OrderByDescending(m => m.ImdbRating)
                              .Take(5)
                              .ToList();
 
-
-            return View(trendingMovies); // Gửi qua View
+            return View(trendingMovies);
         }
 
         public IActionResult Error404() => View();

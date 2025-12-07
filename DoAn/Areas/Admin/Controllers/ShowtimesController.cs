@@ -10,19 +10,20 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class ShowtimesController : Controller
     {
-        private ModelContext _context;
-        public ShowtimesController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public ShowtimesController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index(int? branchId, int page = 1)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             int pageSize = 10;
-            var branches = _context.Branches.ToList();
+            var branches = db.Branches.ToList();
             ViewBag.Branches = branches;
             ViewBag.SelectedBranchId = branchId;
 
-            var query = _context.Showtimes
+            var query = db.Showtimes
                 .Include(s => s.Movie)
                 .Include(s => s.Room)
                     .ThenInclude(r => r.Branch)
@@ -48,12 +49,10 @@ namespace DoAn.Areas.Admin.Controllers
 
         public async Task<IActionResult> Create(int? branchId) 
         {
-            //var branchs = await _context.Branches.ToListAsync();
-            //ViewBag.Branchs = branchs;
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             ViewBag.SelectedBranchId = branchId;
 
-
-            var query = _context.Rooms.AsQueryable();
+            var query = db.Rooms.AsQueryable();
             if (branchId != null)
             {
                 query = query.Where(r => r.BranchId == branchId);
@@ -61,8 +60,8 @@ namespace DoAn.Areas.Admin.Controllers
             var vm = new ShowtimeCreateViewModel()
             {
                 Showtime = new Models.Booking.Showtime(),
-                Movies = await _context.Movies.ToListAsync(),
-                Branches = await _context.Branches.ToListAsync(),
+                Movies = await db.Movies.ToListAsync(),
+                Branches = await db.Branches.ToListAsync(),
                 Rooms = query.ToList()
             };
 
@@ -83,13 +82,15 @@ namespace DoAn.Areas.Admin.Controllers
             ModelState.Remove("Rooms");
             ModelState.Remove("Showtime");
 
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
             if (!ModelState.IsValid)
             {
                 Console.WriteLine("Làm mới");
                 // load lại dropdown nếu có lỗi
-                model.Movies = _context.Movies.ToList();
-                model.Branches = _context.Branches.ToList();
-                model.Rooms = _context.Rooms.Where(r => r.BranchId == model.BranchId).ToList();
+                model.Movies = db.Movies.ToList();
+                model.Branches = db.Branches.ToList();
+                model.Rooms = db.Rooms.Where(r => r.BranchId == model.BranchId).ToList();
                 return View(model);
             }
 
@@ -102,8 +103,8 @@ namespace DoAn.Areas.Admin.Controllers
             };
 
 
-            _context.Showtimes.Add(showtime);
-            _context.SaveChanges();
+            db.Showtimes.Add(showtime);
+            db.SaveChanges();
             Console.WriteLine("Thêm suất chiếu thành công!");
             Console.ResetColor();
             TempData["success"] = "Thêm suất chiếu thành công!";

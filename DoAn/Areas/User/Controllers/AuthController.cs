@@ -10,12 +10,12 @@ namespace DoAn.Areas.User.Controllers
     [Area("User")]
     public class AuthController : Controller
     {
-        private readonly ModelContext _context;
+        private readonly IDbContextFactory _dbFactory;
         private readonly PasswordHasher<Models.Accounts.User> _passwordHasher;
         private readonly ILogger<AuthController> _logger;
-        public AuthController(ModelContext context, ILogger<AuthController> logger)
+        public AuthController(IDbContextFactory dbFactory, ILogger<AuthController> logger)
         {
-            _context = context;
+            _dbFactory = dbFactory;
             _passwordHasher = new PasswordHasher<Models.Accounts.User>();
             _logger = logger;
         }
@@ -28,8 +28,9 @@ namespace DoAn.Areas.User.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             // Kiểm tra email tồn tại trong DB
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            var user = db.Users.FirstOrDefault(u => u.Email == email);
 
             if (user == null)
             {
@@ -87,13 +88,14 @@ namespace DoAn.Areas.User.Controllers
         [HttpPost]
         public IActionResult Register(string fullname, string phone, string email, DateTime birthdate, string password, string confirmPassword)
         {
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             // Kiểm tra trùng email
-            if (_context.Users.Count(u => u.Email == email) > 0)
+            if (db.Users.Count(u => u.Email == email) > 0)
             {
                 ViewBag.Error = "Email đã tồn tại!";
                 return View();
             }
-            if (_context.Users.Count(u => u.Phone == phone) > 0)
+            if (db.Users.Count(u => u.Phone == phone) > 0)
             {
                 ViewBag.Error = "Số điện thoại đã tồn tại!";
                 return View();
@@ -122,8 +124,8 @@ namespace DoAn.Areas.User.Controllers
             user.PasswordHash = _passwordHasher.HashPassword(user, password);
 
             // Lưu DB
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            db.Users.Add(user);
+            db.SaveChanges();
 
             TempData["Message"] = "Đăng ký thành công!";
             return RedirectToAction("Login", "Auth");

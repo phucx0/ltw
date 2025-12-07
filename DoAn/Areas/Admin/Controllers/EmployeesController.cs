@@ -9,14 +9,15 @@ namespace DoAn.Areas.Admin.Controllers
     [Authorize(Roles = "admin,manager")]
     public class EmployeesController : Controller
     {
-        private ModelContext _context;
-        public EmployeesController(ModelContext context)
+        private readonly IDbContextFactory _dbFactory;
+        public EmployeesController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public IActionResult Index()
         {
-            var employees = _context.Users
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var employees = db.Users
                 .Include(u => u.Role)
                 .Where(u => u.Role.RoleName == "staff")
                 .Take(10)

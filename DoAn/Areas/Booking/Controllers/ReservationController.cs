@@ -16,14 +16,14 @@ namespace DoAn.Areas.Booking.Controllers
     [Area("Booking")]
     public class ReservationController : Controller
     {
-        private readonly ModelContext _context;
+        private readonly IDbContextFactory _dbFactory;
         private readonly BookingService _bookingService;
         private readonly PaymentService _paymentService;
-        public ReservationController(BookingService bookingService, PaymentService paymentService,ModelContext context)
+        public ReservationController(BookingService bookingService, PaymentService paymentService, IDbContextFactory dbFactory)
         {
             _bookingService = bookingService;
             _paymentService = paymentService;
-            _context = context;
+            _dbFactory = dbFactory;
         }
 
         public async Task<IActionResult> TestCreateBooking(int showtimeId)
@@ -31,19 +31,20 @@ namespace DoAn.Areas.Booking.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized(new { success = false, message = "Not logged in" });
             // ds ghế đang giữ
-            var heldSeats = _context.SeatHold
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var heldSeats = db.SeatHold
                 .Where(sh => sh.ShowtimeId == showtimeId && sh.UserId == int.Parse(userId))
                 .ToList();
 
             if (heldSeats.Count() == 0) return BadRequest(new { success = false, message = "No seats held" });
 
             // giá của phòng
-            decimal basePrice = await _context.RoomTypes
+            decimal basePrice = await db.RoomTypes
                     .Where(rt => rt.Rooms.Any(r => r.Showtimes.Any(s => s.ShowtimeId == showtimeId)))
                     .Select(rt => rt.BasePrice)
                     .FirstOrDefaultAsync();
             // giá phụ thu theo loại ghế
-            decimal extraPrice = await _context.SeatTypes
+            decimal extraPrice = await db.SeatTypes
                 .Where(st => st.Seats.Any(s => s.SeatId == heldSeats[0].SeatId))
                 .Select(st => st.ExtraPrice)
                 .FirstOrDefaultAsync();
@@ -59,7 +60,7 @@ namespace DoAn.Areas.Booking.Controllers
                 };
 
 
-                await _context.Database.ExecuteSqlRawAsync(
+                await db.Database.ExecuteSqlRawAsync(
                     "EXEC sp_FinalizeBooking @UserId={0}, @ShowtimeId={1}, @Amount={2}, @BookingId=@BookingId OUTPUT",
                     userId, showtimeId, totalAmount, bookingIdParam
                 );
@@ -85,8 +86,9 @@ namespace DoAn.Areas.Booking.Controllers
         {
             if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
-            var booking = await _context.Bookings
+            var booking = await db.Bookings
                 .Where(b => b.BookingId == bookingId && b.UserId == userId && b.Status == "pending")
                 .Select(b => new { b.BookingId, b.Status })
                 .FirstOrDefaultAsync();
@@ -97,7 +99,7 @@ namespace DoAn.Areas.Booking.Controllers
             Console.WriteLine(booking.BookingId);
             Console.ResetColor();
 
-            var fullBooking = await _context.Bookings
+            var fullBooking = await db.Bookings
                 .Include(b => b.Showtime).ThenInclude(s => s.Movie)
                 .Include(b => b.Showtime).ThenInclude(s => s.Room).ThenInclude(r => r.Branch)
                 //.Include(b => b.Showtime).ThenInclude(s => s.).ThenInclude(r => r.Branch)
@@ -107,7 +109,7 @@ namespace DoAn.Areas.Booking.Controllers
 
             if (fullBooking == null)
                 return NotFound();
-            var payment = await _context.Payments
+            var payment = await db.Payments
                 .FirstOrDefaultAsync(p => p.BookingId == bookingId);
             if (payment == null) return NotFound();
 
@@ -136,20 +138,22 @@ namespace DoAn.Areas.Booking.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized(new { success = false, message = "Not logged in" });
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+
             // ds ghế đang giữ
-            var heldSeats = _context.SeatHold
+            var heldSeats = db.SeatHold
                 .Where(sh => sh.ShowtimeId == showtimeId && sh.UserId == int.Parse(userId))
                 .ToList();
 
             if (heldSeats.Count() == 0) return BadRequest(new { success = false, message = "No seats held" });
 
             // giá của phòng
-            decimal basePrice = await _context.RoomTypes
+            decimal basePrice = await db.RoomTypes
                     .Where(rt => rt.Rooms.Any(r => r.Showtimes.Any(s => s.ShowtimeId == showtimeId)))
                     .Select(rt => rt.BasePrice)
                     .FirstOrDefaultAsync();
             // giá phụ thu theo loại ghế
-            decimal extraPrice = await _context.SeatTypes
+            decimal extraPrice = await db.SeatTypes
                 .Where(st => st.Seats.Any(s => s.SeatId == heldSeats[0].SeatId))
                 .Select(st => st.ExtraPrice)
                 .FirstOrDefaultAsync();
@@ -165,7 +169,7 @@ namespace DoAn.Areas.Booking.Controllers
                 };
 
 
-                await _context.Database.ExecuteSqlRawAsync(
+                await db.Database.ExecuteSqlRawAsync(
                     "EXEC sp_FinalizeBooking @UserId={0}, @ShowtimeId={1}, @Amount={2}, @BookingId=@BookingId OUTPUT",
                     userId, showtimeId, totalAmount, bookingIdParam
                 );
@@ -193,8 +197,9 @@ namespace DoAn.Areas.Booking.Controllers
         {
             if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Auth");
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
 
-            var booking = await _context.Bookings
+            var booking = await db.Bookings
                 .Include(b => b.BookingSeats)
                 .Include(b => b.Payments)
                 .FirstOrDefaultAsync(b => b.BookingId == bookingId && b.UserId == userId);
@@ -202,14 +207,13 @@ namespace DoAn.Areas.Booking.Controllers
             {
                 Console.WriteLine(booking.BookingId);
                 // Xóa booking_seats
-                _context.BookingSeat.RemoveRange(booking.BookingSeats);
+                db.BookingSeat.RemoveRange(booking.BookingSeats);
                 // Xóa Payments
-                _context.Payments.RemoveRange(booking.Payments);
+                db.Payments.RemoveRange(booking.Payments);
                 // Xóa booking
-                _context.Bookings.Remove(booking);
-                await _context.SaveChangesAsync();
+                db.Bookings.Remove(booking);
+                await db.SaveChangesAsync();
             }
-
             return RedirectToAction("Movies", "Movie", new { area = "" });
         }
     }

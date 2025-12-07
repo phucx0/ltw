@@ -12,12 +12,12 @@ namespace DoAn.Areas.Admin.Controllers
     [Area("Admin")]
     public class AuthController : Controller
     {
-        private readonly ModelContext _context;
+        private readonly IDbContextFactory _dbFactory;
         private readonly PasswordHasher<Models.Accounts.User> _passwordHasher = new PasswordHasher<Models.Accounts.User>();
 
-        public AuthController(ModelContext context)
+        public AuthController(IDbContextFactory dbFactory)
         {
-            _context = context;
+            _dbFactory = dbFactory;
         }
         public string HashPassword(Models.Accounts.User user, string password)
         {
@@ -48,8 +48,8 @@ namespace DoAn.Areas.Admin.Controllers
             //    ViewBag.Error = "Mật khẩu phải có ít nhất 8 ký tự";
             //    return View();
             //}
-
-            var user = _context.Users
+            var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+            var user = db.Users
                 .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == email && u.Role.RoleName == "admin");
             //&& u.PasswordHash == HashPassword(password)
