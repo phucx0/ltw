@@ -9,10 +9,6 @@ namespace DoAn.Models.Data;
 
 public partial class ModelContext : DbContext
 {
-    public ModelContext(DbContextOptions<ModelContext> options) : base(options)
-    {
-    }
-
     public DbSet<Branch> Branches { get; set; }
     public DbSet<RoomType> RoomTypes { get; set; }
     public DbSet<Room> Rooms { get; set; }
@@ -41,10 +37,10 @@ public partial class ModelContext : DbContext
     public DbSet<SeatHold> SeatHold { get; set; }
     public DbSet<BookingSeat> BookingSeat { get; set; }
 
+    public ModelContext(DbContextOptions<ModelContext> options) : base(options)
+    {
+    }
 
-
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseSqlServer(connectionString);
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -180,7 +176,7 @@ public partial class ModelContext : DbContext
                 .HasForeignKey(m => m.RatingId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
- 
+
 
         // =========================
         // 8. Actor (Diễn viên)
@@ -255,7 +251,11 @@ public partial class ModelContext : DbContext
         // ========================
         modelBuilder.Entity<Showtime>(entity =>
         {
-            entity.ToTable("showtimes");
+            entity.ToTable("showtimes", tb =>
+            {
+                tb.HasTrigger("trg_check_showtime_overlap");
+                tb.UseSqlOutputClause(false);
+            });
             entity.HasKey(s => s.ShowtimeId);
 
             entity.Property(s => s.ShowtimeId).HasColumnName("showtime_id");
@@ -275,31 +275,55 @@ public partial class ModelContext : DbContext
             .WithMany(r => r.Showtimes)
             .HasForeignKey(s => s.RoomId);
         });
-            
+
 
         // ========================
         // 11. Permissions (Vai trò người dùng)
         // ========================
-        modelBuilder.Entity<Permission>()
-            .HasKey(p => p.PermissionId);
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.ToTable("permissions");
+
+            entity.HasKey(p => p.PermissionId);
+
+            entity.Property(p => p.PermissionId)
+                  .HasColumnName("permission_id");
+
+            entity.Property(p => p.PermissionName)
+                  .HasColumnName("permission_name");
+
+            entity.Property(p => p.PermissionDescription)
+                  .HasColumnName("permission_description");
+        });
+
 
         // ========================
         // 12. UserRolePermissions (Vai trò người dùng)
         // ========================
+
         modelBuilder.Entity<UserRolePermission>(entity =>
         {
+            entity.ToTable("user_role_permissions");
+
+            // khoá chính
             entity.HasKey(urp => new { urp.RoleId, urp.PermissionId });
-            entity.HasOne<UserRole>(urp => urp.Role)
+
+            // map tên cột
+            entity.Property(urp => urp.RoleId).HasColumnName("role_id");
+            entity.Property(urp => urp.PermissionId).HasColumnName("permission_id");
+
+            entity.HasOne(urp => urp.Role)
                   .WithMany(ur => ur.RolePermissions)
                   .HasForeignKey(urp => urp.RoleId)
                   .HasConstraintName("fk_user_role_permissions_roles");
 
-            entity.HasOne<Permission>(urp => urp.Permission)
-                  .WithMany(ur => ur.RolePermissions)
+            entity.HasOne(urp => urp.Permission)
+                  .WithMany(p => p.RolePermissions)
                   .HasForeignKey(urp => urp.PermissionId)
                   .HasConstraintName("fk_user_role_permissions_permissions");
         });
-            
+
+
 
         // ========================
         // 13. UserRoles (Vai trò người dùng)
@@ -364,7 +388,11 @@ public partial class ModelContext : DbContext
         // ========================
         modelBuilder.Entity<Ticket>(entity =>
         {
-            entity.ToTable("tickets");
+            entity.ToTable("tickets", tb =>
+            {
+                tb.HasTrigger("trg_update_membership_points");
+                tb.UseSqlOutputClause(false);
+            });
             entity.HasKey(t => t.TicketId);
 
             entity.Property(t => t.TicketId).HasColumnName("ticket_id");
@@ -584,3 +612,4 @@ public partial class ModelContext : DbContext
     }
 
 }
+

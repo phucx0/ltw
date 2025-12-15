@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -9,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
     @RenderSection("Styles", required: false)
     <title>@ViewBag.Title</title>
 </head>
@@ -19,7 +20,7 @@
         <div class="layout">
             <header>
                 <div class="header-right">
-                    <div class="header-search search-wrapper">
+                    @* <div class="header-search search-wrapper">
                         <input type="type" name="name" placeholder="Tìm kiếm" value="" />
                         <button class="search-btn">
                             <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,12 +34,33 @@
                                 </defs>
                             </svg>
                         </button>
-                    </div>
+                    </div> *@
                     <div class="header-user">
                         <img src="~/images/user.png" alt="" />
                         <div class="details">
                             <div class="fullname">@User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</div>
                             <div class="user-role">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</div>
+                        </div>
+                        <i class="bi bi-chevron-down"></i>
+
+                        <!-- Dropdown Menu -->
+                        <div class="user-dropdown">
+                            <a href="/#" class="dropdown-item">
+                                <i class="bi bi-person"></i>
+                                <span>Thông tin cá nhân</span>
+                            </a>
+                            <a href="/#" class="dropdown-item">
+                                <i class="bi bi-gear"></i>
+                                <span>Cài đặt</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form class="dropdown-item logout" asp-area="Admin" asp-controller="Auth" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Đăng xuất</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -48,7 +70,7 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @RenderSection("Scripts", required: false)
     <script>
         $(document).on("click", ".sidebar-item", function (e) {
             e.preventDefault();
@@ -64,6 +86,10 @@
                 $("#main-content").css("opacity", 1);
                 window.history.pushState({}, '', url); // cập nhật URL
             });
+        });
+
+        document.querySelector('.header-user').addEventListener('click', function() {
+            this.classList.toggle('active');
         });
     </script>
 </body>

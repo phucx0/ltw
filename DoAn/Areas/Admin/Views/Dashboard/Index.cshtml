@@ -5,14 +5,14 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    /* * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } */
 
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; */
         background-color: #f8f9fa;
         color: #333;
     }
@@ -49,8 +49,8 @@
 
     .container {
         /* max-width: 1400px; */
-        margin: 0 auto;
-        padding: 2rem;
+        /* margin: 0 auto;
+            padding: 2rem; */
     }
 
     .section {
@@ -343,161 +343,160 @@
         background-color: #f0f0f0;
         color: #666;
     }
-
-    </style>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div>
-                <h1>Dashboard Quản Lý</h1>
-                <p>Tổng quan hệ thống rạp chiếu phim</p>
-            </div>
-            <div class="header-date" id="currentDate"></div>
+</style>
+<!-- Header -->
+<header class="header">
+    <div class="w-full flex align-center justify-between">
+        <div>
+            <h1 class="font-bold">Dashboard Quản Lý</h1>
+            <p>Tổng quan hệ thống rạp chiếu phim</p>
         </div>
-    </header>
+        <div class="header-date" id="currentDate"></div>
+    </div>
+</header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Thống kê tổng quan -->
-        <section class="section">
-            <h2 class="section-title">Thống Kê Tổng Quan</h2>
-            <div class="grid grid-4">
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Tổng Số Phim</div>
-                        <div class="stat-value">@Model.TotalMovies</div>
-                        <div class="stat-subtitle">Đang chiếu và sắp chiếu</div>
-                    </div>
-                    <div class="stat-icon icon-blue">🎬</div>
+<!-- Main Content -->
+<main class="p-4">
+    <!-- Thống kê tổng quan -->
+    <section class="section">
+        <h2 class="section-title">Thống Kê Tổng Quan</h2>
+        <div class="grid grid-4">
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Tổng Số Phim</div>
+                    <div class="stat-value">@Model.TotalMovies</div>
+                    <div class="stat-subtitle">Đang chiếu và sắp chiếu</div>
                 </div>
-
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Chi Nhánh</div>
-                        <div class="stat-value">@Model.TotalBranches</div>
-                        <div class="stat-subtitle">Trên toàn quốc</div>
-                    </div>
-                    <div class="stat-icon icon-blue">🏢</div>
-                </div>
-
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Phòng Chiếu</div>
-                        <div class="stat-value">@Model.TotalRooms</div>
-                        <div class="stat-subtitle">Tổng số phòng</div>
-                    </div>
-                    <div class="stat-icon icon-blue">📺</div>
-                </div>
-
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Người Dùng</div>
-                        <div class="stat-value">@Model.TotalUsers.ToString("N0")</div>
-                        <div class="stat-subtitle">Tài khoản đã đăng ký</div>
-                    </div>
-                    <div class="stat-icon icon-blue">👥</div>
-                </div>
+                <div class="stat-icon icon-blue">🎬</div>
             </div>
-        </section>
 
-        <!-- Hiệu suất hôm nay -->
-        <section class="section">
-            <h2 class="section-title">Hiệu Suất Hôm Nay</h2>
-            <div class="grid grid-3">
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Suất Chiếu</div>
-                        <div class="stat-value">@Model.TodayShowtimes</div>
-                        <div class="stat-subtitle">Tổng suất chiếu hôm nay</div>
-                    </div>
-                    <div class="stat-icon icon-blue">📅</div>
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Chi Nhánh</div>
+                    <div class="stat-value">@Model.TotalBranches</div>
+                    <div class="stat-subtitle">Trên toàn quốc</div>
                 </div>
-
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Vé Đã Bán</div>
-                        <div class="stat-value">@Model.TodayTicketsSold.ToString("N0")</div>
-                        <div class="stat-subtitle">Số lượng vé hôm nay</div>
-                    </div>
-                    <div class="stat-icon icon-blue">🎫</div>
-                </div>
-
-                <div class="card stat-card">
-                    <div class="stat-content">
-                        <div class="stat-label">Doanh Thu Hôm Nay</div>
-                        <div class="stat-value">@((Model.TodayRevenue / 1000000).ToString("N2"))M</div>
-                        <div class="stat-subtitle">VND</div>
-                    </div>
-                    <div class="stat-icon icon-blue">💰</div>
-                </div>
+                <div class="stat-icon icon-blue">🏢</div>
             </div>
-        </section>
 
-        <!-- Lợi nhuận tuần và Tháng -->
-        <section class="section">
-            <div class="grid grid-2">
-                <!-- Biểu đồ lợi nhuận tuần -->
-                <div class="card">
-                    <h3 class="section-title">Lợi Nhuận Tuần Này</h3>
-                    <div class="chart-container">
-                        <div class="chart-bars" id="weeklyChart">
-                            <div class="loading">Đang tải dữ liệu...</div>
-                        </div>
-                        <div class="chart-labels" id="weeklyLabels"></div>
-                    </div>
-                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #666; font-size: 0.875rem;">Tổng lợi nhuận tuần</span>
-                            <span style="font-size: 1.25rem; font-weight: 700; color: #1a1a1a;" id="weeklyTotal">0 VND</span>
-                        </div>
-                        <span class="stat-badge badge-green" id="weeklyChange">Đang tính...</span>
-                    </div>
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Phòng Chiếu</div>
+                    <div class="stat-value">@Model.TotalRooms</div>
+                    <div class="stat-subtitle">Tổng số phòng</div>
                 </div>
-
-                <!-- Hiệu suất tháng -->
-                <div class="card">
-                    <h3 class="section-title">Hiệu Suất Tháng Này</h3>
-                    <div style="margin: 2rem 0;">
-                        <div class="stat-label">Doanh Thu Tháng</div>
-                        <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@((Model.MonthlyRevenue / 1000000).ToString("N2"))M VND</div>
-                        <span class="stat-badge" id="monthlyRevenueChange">Đang tính...</span>
-                    </div>
-                    <div style="margin: 2rem 0; padding-top: 1.5rem; border-top: 1px solid #f0f0f0;">
-                        <div class="stat-label">Vé Bán Trong Tháng</div>
-                        <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@Model.MonthlyTicketsSold.ToString("N0")</div>
-                        <span class="stat-badge" id="monthlyTicketsChange">Đang tính...</span>
-                    </div>
-                </div>
+                <div class="stat-icon icon-blue">📺</div>
             </div>
-        </section>
 
-        <!-- Top phim bán chạy -->
-        <section class="section">
-            <h2 class="section-title">Top Phim Bán Chạy Nhất</h2>
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Người Dùng</div>
+                    <div class="stat-value">@Model.TotalUsers.ToString("N0")</div>
+                    <div class="stat-subtitle">Tài khoản đã đăng ký</div>
+                </div>
+                <div class="stat-icon icon-blue">👥</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hiệu suất hôm nay -->
+    <section class="section">
+        <h2 class="section-title">Hiệu Suất Hôm Nay</h2>
+        <div class="grid grid-3">
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Suất Chiếu</div>
+                    <div class="stat-value">@Model.TodayShowtimes</div>
+                    <div class="stat-subtitle">Tổng suất chiếu hôm nay</div>
+                </div>
+                <div class="stat-icon icon-blue">📅</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Vé Đã Bán</div>
+                    <div class="stat-value">@Model.TodayTicketsSold.ToString("N0")</div>
+                    <div class="stat-subtitle">Số lượng vé hôm nay</div>
+                </div>
+                <div class="stat-icon icon-blue">🎫</div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-content">
+                    <div class="stat-label">Doanh Thu Hôm Nay</div>
+                    <div class="stat-value">@((Model.TodayRevenue / 1000000).ToString("N2"))M</div>
+                    <div class="stat-subtitle">VND</div>
+                </div>
+                <div class="stat-icon icon-blue">💰</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lợi nhuận tuần và Tháng -->
+    <section class="section">
+        <div class="grid grid-2">
+            <!-- Biểu đồ lợi nhuận tuần -->
             <div class="card">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">Hạng</th>
-                                <th>Tên Phim</th>
-                                <th style="text-align: right;">Số Vé Bán</th>
-                                <th style="text-align: right;">Doanh Thu</th>
-                                <th style="text-align: right;">Tỷ Lệ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="topMoviesTable">
-                            <tr>
-                                <td colspan="5" class="loading">Đang tải dữ liệu...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <h3 class="section-title">Lợi Nhuận Tuần Này</h3>
+                <div class="chart-container">
+                    <div class="chart-bars" id="weeklyChart">
+                        <div class="loading">Đang tải dữ liệu...</div>
+                    </div>
+                    <div class="chart-labels" id="weeklyLabels"></div>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #666; font-size: 0.875rem;">Tổng lợi nhuận tuần</span>
+                        <span style="font-size: 1.25rem; font-weight: 700; color: #1a1a1a;" id="weeklyTotal">0 VND</span>
+                    </div>
+                    <span class="stat-badge badge-green" id="weeklyChange">Đang tính...</span>
                 </div>
             </div>
-        </section>
 
-        <!-- Quick Actions -->
-        @* <section class="section">
+            <!-- Hiệu suất tháng -->
+            <div class="card">
+                <h3 class="section-title">Hiệu Suất Tháng Này</h3>
+                <div style="margin: 2rem 0;">
+                    <div class="stat-label">Doanh Thu Tháng</div>
+                    <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@((Model.MonthlyRevenue / 1000000).ToString("N2"))M VND</div>
+                    <span class="stat-badge" id="monthlyRevenueChange">Đang tính...</span>
+                </div>
+                <div style="margin: 2rem 0; padding-top: 1.5rem; border-top: 1px solid #f0f0f0;">
+                    <div class="stat-label">Vé Bán Trong Tháng</div>
+                    <div class="stat-value" style="font-size: 2.25rem; margin: 0.5rem 0;">@Model.MonthlyTicketsSold.ToString("N0")</div>
+                    <span class="stat-badge" id="monthlyTicketsChange">Đang tính...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top phim bán chạy -->
+    <section class="section">
+        <h2 class="section-title">Top Phim Bán Chạy Nhất</h2>
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">Hạng</th>
+                            <th>Tên Phim</th>
+                            <th style="text-align: right;">Số Vé Bán</th>
+                            <th style="text-align: right;">Doanh Thu</th>
+                            <th style="text-align: right;">Tỷ Lệ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topMoviesTable">
+                        <tr>
+                            <td colspan="5" class="loading">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    @* <section class="section">
             <h2 class="section-title">Thao Tác Nhanh</h2>
             <div class="quick-actions">
                 <a href="@Url.Action("Create", "Movies")" class="btn btn-white">+ Thêm Phim Mới</a>
@@ -506,7 +505,7 @@
                 <a href="@Url.Action("Settings", "Admin")" class="btn btn-primary">⚙️ Cài Đặt Hệ Thống</a>
             </div>
         </section> *@
-    </main>
+</main>
 
 <script>
     // Display current date

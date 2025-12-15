@@ -125,7 +125,7 @@ namespace DoAn.Areas.Booking.Controllers
                 payment.Status = "paid";
                 booking.Status = "confirmed";
 
-                await _bookingService.InsertTickets(booking.BookingId, booking.UserId);
+                await _bookingService.InsertTickets( db, booking.BookingId, booking.UserId);
                 await db.SaveChangesAsync();
                 await _paymentService.NotifyPaymentResult(booking.UserId, booking.BookingId, true);
 

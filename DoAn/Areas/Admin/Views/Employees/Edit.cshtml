@@ -1,0 +1,277 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var permString = User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value;
+    var perms = permString?.Split(",") ?? new string[] { };
+}
+@model DoAn.Areas.Admin.ViewModels.EmployeeEditViewModel
+
+@if (!perms.Contains("UPDATE_STAFF"))
+{
+    <div class="alert alert-danger mt-3">
+        ❌ Bạn không có quyền chỉnh sửa thông tin nhân viên.
+    </div>
+    return;
+}
+
+<div class="admin-page">
+    <!-- Tiêu đề -->
+    <div class="admin-header">
+        <h2 class="admin-title">Chỉnh sửa nhân viên</h2>
+        <p class="admin-subtitle">Cập nhật thông tin nhân viên</p>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["error"]
+        </div>
+    }
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i> @TempData["success"]
+        </div>
+    }
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <form asp-action="Edit" asp-area="Admin" asp-controller="Employees" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="UserId" />
+
+            <div class="form-grid">
+                <!-- Họ và tên -->
+                <div class="form-group form-group--full">
+                    <label asp-for="FullName" class="form-label">
+                        Họ và tên <span class="required">*</span>
+                    </label>
+                    <input asp-for="FullName"
+                           class="form-control"
+                           placeholder="Nhập họ và tên" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        Email <span class="required">*</span>
+                    </label>
+                    <input asp-for="Email" type="email"
+                           class="form-control"
+                           placeholder="example@email.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Số điện thoại -->
+                <div class="form-group">
+                    <label asp-for="Phone" class="form-label">
+                        Số điện thoại <span class="required">*</span>
+                    </label>
+                    <input asp-for="Phone" type="tel"
+                           class="form-control"
+                           placeholder="0912345678" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <!-- Ngày sinh -->
+                <div class="form-group">
+                    <label asp-for="Birthday" class="form-label">
+                        Ngày sinh
+                    </label>
+                    <input asp-for="Birthday" type="date"
+                           class="form-control" />
+                    <span asp-validation-for="Birthday" class="text-danger"></span>
+                </div>
+
+                <!-- Trạng thái -->
+                <div class="form-group">
+                    <label class="form-label">Trạng thái</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input asp-for="IsActive" type="checkbox" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">Đang làm việc</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model State Errors -->
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState[""]?.Errors.Count > 0)
+            {
+                <div class="alert alert-danger mt-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    @foreach (var error in ViewData.ModelState[""].Errors)
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn--outline">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+                <button type="submit" class="btn btn--primary">
+                    <i class="bi bi-check-circle"></i> Cập nhật
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group--full {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .required {
+        color: #d32f2f;
+    }
+
+    .form-control {
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+    .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-top: 8px;
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 26px;
+    }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .toggle-slider {
+        background-color: #4CAF50;
+    }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+    .toggle-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .alert {
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-danger {
+        background: #ffebee;
+        color: #d32f2f;
+        border-left: 4px solid #d32f2f;
+    }
+
+    .alert-success {
+        background: #e8f5e9;
+        color: #388e3c;
+        border-left: 4px solid #388e3c;
+    }
+
+    .text-danger {
+        color: #d32f2f;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

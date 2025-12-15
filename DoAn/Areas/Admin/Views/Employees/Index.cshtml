@@ -1,22 +1,75 @@
-﻿@{
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model List<DoAn.Models.Accounts.User>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var permString = User.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value;
+    var perms = permString?.Split(",") ?? new string[] { };
+}
+
+@if (!perms.Contains("VIEW_STAFF"))
+{
+    <div class="alert alert-danger mt-3">
+        ❌ Bạn không có quyền xem danh sách nhân viên.
+    </div>
+    return;
+}
+
 <div class="admin-page">
     <!-- Tiêu đề -->
     <div class="admin-header">
         <h2 class="admin-title">Quản lý nhân viên</h2>
+        <p class="admin-subtitle">Tổng số: <strong>@ViewBag.TotalItems</strong> nhân viên</p>
     </div>
 
     <!-- Thanh công cụ -->
     <div class="admin-toolbar">
         <div class="filter-group">
-            <div class="filter-item">Tất cả</div>
-            <div class="filter-item">Trạng thái</div>
-            <div class="filter-item">Sắp xếp</div>
+            <form method="get" id="filterForm">
+                <!-- Tìm kiếm -->
+                <input type="text"
+                       name="searchTerm"
+                       value="@ViewBag.SearchTerm"
+                       placeholder="Tìm theo tên, email, SĐT..."
+                       class="filter-input">
+
+                <!-- Lọc trạng thái -->
+                <select name="isActive" class="filter-item" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="true" selected="@(ViewBag.IsActive == true)">Đang làm việc</option>
+                    <option value="false" selected="@(ViewBag.IsActive == false)">Đã nghỉ việc</option>
+                </select>
+
+                <!-- Sắp xếp -->
+                <select name="sortBy" class="filter-item" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Mới nhất</option>
+                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc")">Tên A-Z</option>
+                    <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Tên Z-A</option>
+                    <option value="date_asc" selected="@(ViewBag.SortBy == "date_asc")">Cũ nhất</option>
+                    <option value="date_desc" selected="@(ViewBag.SortBy == "date_desc")">Mới nhất</option>
+                </select>
+
+                <button type="submit" class="btn btn--secondary">
+                    <i class="bi bi-search"></i> Tìm kiếm
+                </button>
+
+                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm) || ViewBag.IsActive != null || !string.IsNullOrEmpty(ViewBag.SortBy))
+                {
+                    <a href="@Url.Action("Index")" class="btn btn--outline">
+                        <i class="bi bi-x-circle"></i> Xóa bộ lọc
+                    </a>
+                }
+            </form>
         </div>
+
         <div class="action-group">
-            <button class="btn btn--primary">Thêm mới</button>
+            @if (perms.Contains("CREATE_STAFF"))
+            {
+                <a href="/Admin/Employees/Create" class="btn btn--primary">
+                    <button>
+                        <i class="bi bi-plus-circle"></i> Thêm mới
+                    </button>
+                </a>
+            }
         </div>
     </div>
 
@@ -24,40 +77,262 @@
     <table class="table table--dark">
         <thead>
             <tr>
-                <th><input type="checkbox" name="name" value="false" /></th>
+                <th width="50"><input type="checkbox" id="selectAll" /></th>
                 <th>Họ và tên</th>
                 <th>Số điện thoại</th>
                 <th>Email</th>
                 <th>Ngày sinh</th>
                 <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th width="150">Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var employee in Model)
+            @if (Model.Count == 0)
             {
                 <tr>
-                    <td><input type="checkbox" name="name" value="false" /></td>
-                    @* <td><img src="@employee." height="100" width="100" alt="@movie.Title" /></td> *@
-                    <td><p class="movie-title">@employee.FullName</p></td>
-                    <td><p class="movie-description">@employee.Phone</p></td>
-                    <td><p class="">@employee.Email</p></td>
-                    <td><p class="">@employee.Birthday</p></td>
-                    <td><p class="">@employee.IsActive</p></td>
-                    <td>
-                        <div class="actions">
-                            <button><i class="bi bi-eye-fill"></i></button>
-                            <button><i class="bi bi-pencil-square"></i></button>
-                            <button><i class="bi bi-trash3-fill"></i></button>
-                        </div>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        <i class="bi bi-inbox" style="font-size: 48px; color: #999;"></i>
+                        <p style="margin-top: 10px; color: #999;">Không tìm thấy nhân viên nào</p>
                     </td>
                 </tr>
+            }
+            else
+            {
+                @foreach (var employee in Model)
+                {
+                    <tr>
+                        <td><input type="checkbox" class="row-checkbox" value="@employee.UserId" /></td>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    @employee.FullName.Substring(0, 1).ToUpper()
+                                </div>
+                                <strong>@employee.FullName</strong>
+                            </div>
+                        </td>
+                        <td>@employee.Phone</td>
+                        <td>@employee.Email</td>
+                        <td>@employee.Birthday.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (employee.IsActive == true)
+                            {
+                                <span class="status-badge status-active">
+                                    <i class="bi bi-check-circle"></i> Đang làm việc
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-inactive">
+                                    <i class="bi bi-x-circle"></i> Đã nghỉ việc
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <div class="actions">
+                                @if (perms.Contains("VIEW_STAFF"))
+                                {
+                                    <a asp-area="Admin" asp-controller="Employees" asp-action="Details" asp-route-id="@employee.UserId"
+                                       class="action-btn action-view" title="Xem chi tiết">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                }
+                                @if (perms.Contains("UPDATE_STAFF"))
+                                {
+                                    <a asp-area="Admin" asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.UserId"
+                                       class="action-btn action-edit" title="Chỉnh sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                }
+                                @if (perms.Contains("DELETE_STAFF") && employee.IsActive == true)
+                                {
+                                    <button  class="action-btn action-delete"
+                                            onclick="confirmDelete(@employee.UserId, '@employee.FullName')"
+                                            title="Vô hiệu hóa">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7">Tổng kết</td>
+                <td colspan="7">
+                    <div class="pagination">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage - 1)&searchTerm=@ViewBag.SearchTerm&isActive=@ViewBag.IsActive&sortBy=@ViewBag.SortBy"
+                               class="page-link">« Trước</a>
+                        }
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            if (i == ViewBag.CurrentPage)
+                            {
+                                <span class="page-link active">@i</span>
+                            }
+                            else
+                            {
+                                <a href="?page=@i&searchTerm=@ViewBag.SearchTerm&isActive=@ViewBag.IsActive&sortBy=@ViewBag.SortBy"
+                                   class="page-link">@i</a>
+                            }
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <a href="?page=@(ViewBag.CurrentPage + 1)&searchTerm=@ViewBag.SearchTerm&isActive=@ViewBag.IsActive&sortBy=@ViewBag.SortBy"
+                               class="page-link">Sau »</a>
+                        }
+                    </div>
+                </td>
             </tr>
         </tfoot>
     </table>
 </div>
+
+<!-- Form delete ẩn -->
+<form id="deleteForm" method="post" asp-action="Delete" style="display: none;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteId" />
+</form>
+
+<style>
+    .admin-subtitle {
+        color: #666;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .filter-input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        width: 250px;
+        font-size: 14px;
+    }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: #e8f5e9;
+        color: #388e3c;
+    }
+
+    .status-inactive {
+        background: #ffebee;
+        color: #d32f2f;
+    }
+
+    .action-btn {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .action-view {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+
+        .action-view:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+    .action-edit {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+        .action-edit:hover {
+            background: #f57c00;
+            color: white;
+        }
+
+    .action-delete {
+        background: #ffebee;
+        color: #d32f2f;
+    }
+
+        .action-delete:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+    .page-link {
+        padding: 8px 12px;
+        margin: 0 4px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.3s;
+    }
+
+        .page-link:hover {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .page-link.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+            font-weight: bold;
+        }
+</style>
+
+<script>
+    function confirmDelete(id, name) {
+        if (confirm(`Bạn có chắc muốn vô hiệu hóa nhân viên "${name}"?`)) {
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteForm').submit();
+        }
+    }
+
+    // Select all checkbox
+    document.getElementById('selectAll')?.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+</script>

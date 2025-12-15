@@ -1,0 +1,306 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model DoAn.Areas.Admin.ViewModels.EmployeeCreateViewModel
+
+<div class="admin-page">
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <h2 class="form-title">
+                <i class="bi bi-person-plus"></i> Thêm nhân viên mới
+            </h2>
+            <a asp-action="Index" class="btn btn--outline">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <!-- Form -->
+        <form asp-action="Create" method="post" class="employee-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            @if (TempData["error"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-circle"></i> @TempData["error"]
+                </div>
+            }
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="bi bi-person-circle"></i> Thông tin cá nhân
+                </h3>
+
+                <div class="form-grid">
+                    <!-- Họ và tên -->
+                    <div class="form-group full-width">
+                        <label for="FullName" class="form-label required">Họ và tên</label>
+                        <input name="FullName" id="FullName" type="text" class="form-control" placeholder="Nguyễn Văn A" value="@Model?.FullName" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="Email" class="form-label required">Email</label>
+                        <input name="Email" id="Email" type="email" class="form-control" placeholder="example@email.com" value="@Model?.Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="form-group">
+                        <label for="Phone" class="form-label required">Số điện thoại</label>
+                        <input name="Phone" id="Phone" type="text" class="form-control" placeholder="0123456789" value="@Model?.Phone" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <!-- Ngày sinh -->
+                    <div class="form-group">
+                        <label for="Birthday" class="form-label required">Ngày sinh</label>
+                        <input name="Birthday" id="Birthday" type="date" class="form-control" max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" value="@Model?.Birthday.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Birthday" class="text-danger"></span>
+                        <small class="form-text">Nhân viên phải từ 18 tuổi trở lên</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="bi bi-shield-lock"></i> Thông tin đăng nhập
+                </h3>
+
+                <div class="form-grid">
+                    <!-- Mật khẩu -->
+                    <div class="form-group">
+                        <label asp-for="Password" class="form-label required">Mật khẩu</label>
+                        <div class="password-input">
+                            <input asp-for="Password" type="password" class="form-control"
+                                   id="password" placeholder="Ít nhất 6 ký tự" />
+                            <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="form-label required">Xác nhận mật khẩu</label>
+                        <div class="password-input">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control"
+                                   id="confirmPassword" placeholder="Nhập lại mật khẩu" />
+                            <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary btn--lg">
+                    <i class="bi bi-check-circle"></i> Tạo nhân viên
+                </button>
+                <a asp-action="Index" class="btn btn--secondary btn--lg">
+                    <i class="bi bi-x-circle"></i> Hủy bỏ
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-container {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .form-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+    }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+        .form-label.required::after {
+            content: " *";
+            color: #d32f2f;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+    .form-text {
+        display: block;
+        margin-top: 5px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #999;
+        font-size: 18px;
+        padding: 5px;
+    }
+
+        .toggle-password:hover {
+            color: #555;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn--lg {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+
+    .text-danger {
+        color: #d32f2f;
+        font-size: 13px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .alert-danger {
+        background: #ffebee;
+        color: #d32f2f;
+        border-left: 4px solid #d32f2f;
+    }
+
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = event.currentTarget.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'bi bi-eye-slash';
+        } else {
+            input.type = 'password';
+            icon.className = 'bi bi-eye';
+        }
+    }
+
+    // Validate tuổi
+    document.addEventListener('DOMContentLoaded', function() {
+        const birthdayInput = document.querySelector('input[name="Birthday"]');
+        if (birthdayInput) {
+            birthdayInput.addEventListener('change', function() {
+                const birthDate = new Date(this.value);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                if (age < 18) {
+                    alert('Nhân viên phải từ 18 tuổi trở lên!');
+                    this.value = '';
+                }
+            });
+        }
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

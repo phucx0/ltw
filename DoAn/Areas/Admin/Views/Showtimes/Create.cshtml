@@ -15,18 +15,21 @@
         <h2 class="admin-title">Thêm suất chiếu mới</h2>
     </div>
 
+    @if (ViewBag.Error != null)
+    {
+        <div class="bg-red-200 rounded-sm px-4 py-2 text-red-900 my-2">@ViewBag.Error</div>
+    }
+
     <form asp-action="Create" asp-controller="Showtimes" asp-area="Admin" method="post">
 
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <a asp-action="Index" asp-controller="Showtimes" asp-area="Admin" class="btn btn-secondary">
+        <div class="flex items-center justify-between mb-2">
+            <a asp-action="Index" asp-controller="Showtimes" asp-area="Admin">
                 Quay lại
             </a>
-            <button type="submit" class="btn btn-secondary">Xác nhận thêm phim</button>
+            <button type="submit" class="bg-[#0084FF] px-4 py-2 rounded-sm text-white">Xác nhận thêm phim</button>
         </div>
 
         <div class="form-wrapper">
-            
-
             <!-- Thời lượng & Lịch chiếu & Trạng thái -->
             <div class="form-section">
                 <div class="form-section-title">Thời lượng & Lịch chiếu & Trạng thái</div>
@@ -67,6 +70,7 @@
             <!-- Đánh giá -->
             <div class="form-section">
                 <div class="form-section-title">Ngày & Giờ bắt đầu chiếu</div>
+
                 <div class="form-field">
                     <label>Thời gian bắt đầu chiếu</label>
                     <input type="datetime-local" id="StartTime" name="StartTime" required />

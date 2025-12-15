@@ -29,6 +29,8 @@ namespace DoAn.Areas.Admin.Controllers
                     .ThenInclude(r => r.Branch)
                 .AsQueryable();
 
+
+
             if (branchId != null)
             {
                 query = query.Where(s => s.Room.Branch.BranchId == branchId);
@@ -40,14 +42,14 @@ namespace DoAn.Areas.Admin.Controllers
             ViewBag.CurrentPage = page;
 
             var showtimes = query
-                .OrderBy(s => s.ShowtimeId)
+                .OrderByDescending(s => s.StartTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
             return View(showtimes);
         }
 
-        public async Task<IActionResult> Create(int? branchId) 
+        public async Task<IActionResult> Create(int? branchId)
         {
             var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
             ViewBag.SelectedBranchId = branchId;
@@ -67,15 +69,15 @@ namespace DoAn.Areas.Admin.Controllers
 
             return View(vm);
         }
-
         [HttpPost]
         public IActionResult Create(ShowtimeCreateViewModel model)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(model.RoomId);
-            Console.WriteLine(model.MovieId);
-            Console.WriteLine(model.StartTime);
-            Console.WriteLine(model.EndTime);
+
+            //Console.ForegroundColor = ConsoleColor.Red;
+            //Console.WriteLine(model.RoomId);
+            //Console.WriteLine(model.MovieId);
+            //Console.WriteLine(model.StartTime);
+            //Console.WriteLine(model.EndTime);
 
             ModelState.Remove("Movies");
             ModelState.Remove("Branches");
@@ -83,32 +85,47 @@ namespace DoAn.Areas.Admin.Controllers
             ModelState.Remove("Showtime");
 
             var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
-
-            if (!ModelState.IsValid)
+            try
             {
-                Console.WriteLine("Làm mới");
-                // load lại dropdown nếu có lỗi
+                if (!ModelState.IsValid)
+                {
+                    Console.WriteLine("Làm mới");
+                    // load lại dropdown nếu có lỗi
+                    model.Movies = db.Movies.ToList();
+                    model.Branches = db.Branches.ToList();
+                    model.Rooms = db.Rooms.Where(r => r.BranchId == model.BranchId).ToList();
+                    return View(model);
+                }
+
+                var showtime = new Showtime
+                {
+                    MovieId = model.MovieId,
+                    RoomId = model.RoomId,
+                    StartTime = model.StartTime,
+                    EndTime = model.EndTime
+                };
+
+
+                db.Showtimes.Add(showtime);
+                db.SaveChanges();
+                Console.WriteLine("Thêm suất chiếu thành công!");
+                Console.ResetColor();
+                TempData["success"] = "Thêm suất chiếu thành công!";
+                return RedirectToAction("Index", "Showtimes");
+            }
+            catch (Exception ex)
+            {
+                var dbError = ex.InnerException?.InnerException?.Message
+                       ?? ex.InnerException?.Message
+                       ?? ex.Message;
+
                 model.Movies = db.Movies.ToList();
                 model.Branches = db.Branches.ToList();
                 model.Rooms = db.Rooms.Where(r => r.BranchId == model.BranchId).ToList();
+                Console.WriteLine("[Create Showtime]: " + dbError);
+                ViewBag.Error = dbError;
                 return View(model);
             }
-
-            var showtime = new Showtime
-            {
-                MovieId = model.MovieId,
-                RoomId = model.RoomId,
-                StartTime = model.StartTime,
-                EndTime = model.EndTime
-            };
-
-
-            db.Showtimes.Add(showtime);
-            db.SaveChanges();
-            Console.WriteLine("Thêm suất chiếu thành công!");
-            Console.ResetColor();
-            TempData["success"] = "Thêm suất chiếu thành công!";
-            return RedirectToAction("Index", "Showtimes");
         }
 
         public IActionResult Edit(int showtimeId)

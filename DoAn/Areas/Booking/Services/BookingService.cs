@@ -45,11 +45,11 @@ namespace DoAn.Areas.Booking.Services
             return (booking, payment);
         }
 
-        public async Task<bool> InsertTickets(int bookingId, int userId)
+        public async Task<bool> InsertTickets(ModelContext db, int bookingId, int userId)
         {
             try
             {
-                var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
+                //var db = _dbFactory.Create("MOVIE_TICKET", "app_user", "app123");
                 var bookingSeats = db.BookingSeat
                     .Where(b => b.BookingId == bookingId)
                     .ToList();

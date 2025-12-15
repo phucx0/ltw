@@ -58,7 +58,7 @@ namespace DoAn.Controllers
 
             // Lấy danh sách ngày có suất chiếu 
             var showDates = movie.Showtimes
-                .Where(s => s.StartTime >= DateTime.Now)
+                //.Where(s => s.StartTime >= DateTime.Now)
                 .Select(s => s.StartTime.Date)
                 .Distinct()
                 .OrderBy(d => d)
